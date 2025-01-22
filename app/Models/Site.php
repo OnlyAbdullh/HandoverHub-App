@@ -58,4 +58,8 @@ class Site extends Model
     {
         return $this->hasOne(Tower_information::class);
     }
+    public function solarWindInformation()
+    {
+        return $this->hasOne(Solar_wind_information::class);
+    }
 }
