@@ -50,4 +50,8 @@ class Site extends Model
     {
         return $this->hasOne(Rectifier_information::class);
     }
+    public function environmentInformation()
+    {
+        return $this->hasOne(Environment_information::class);
+    }
 }
