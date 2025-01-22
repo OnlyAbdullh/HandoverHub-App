@@ -54,4 +54,8 @@ class Site extends Model
     {
         return $this->hasOne(Environment_information::class);
     }
+    public function towerInformation()
+    {
+        return $this->hasOne(Tower_information::class);
+    }
 }
