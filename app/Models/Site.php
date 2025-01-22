@@ -41,4 +41,8 @@ class Site extends Model
     {
         return $this->hasOne(Fiber_information::class);
     }
+    public function bandInformation()
+    {
+        return $this->hasOne(Band_information::class);
+    }
 }
