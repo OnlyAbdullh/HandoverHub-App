@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('du_2_type')->nullable();
             $table->string('ru_1_type')->nullable();
             $table->string('ru_2_type')->nullable();
-            $table->text('gsm_900_remarks')->nullable();
+            $table->text('remarks')->nullable();
             $table->timestamps();
         });
     }
