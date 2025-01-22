@@ -45,4 +45,9 @@ class Site extends Model
     {
         return $this->hasOne(Band_information::class);
     }
+
+    public function rectifierInformation()
+    {
+        return $this->hasOne(Rectifier_information::class);
+    }
 }
