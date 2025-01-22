@@ -37,4 +37,8 @@ class Site extends Model
     {
         return $this->hasOne(Tcu_information::class);
     }
+    public function fiberInformation()
+    {
+        return $this->hasOne(Fiber_information::class);
+    }
 }
