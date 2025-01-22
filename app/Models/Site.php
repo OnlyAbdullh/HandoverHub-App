@@ -33,4 +33,8 @@ class Site extends Model
     {
         return $this->hasOne(Ampere_information::class);
     }
+    public function tcuInformation()
+    {
+        return $this->hasOne(Tcu_information::class);
+    }
 }

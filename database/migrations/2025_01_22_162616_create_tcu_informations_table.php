@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ampere_informations', function (Blueprint $table) {
+        Schema::create('tcu_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->integer('capacity');
-            $table->string('time');
-            $table->integer('cable_length');
-            $table->text('details');
+            $table->integer('tcu_types')->comment('1=TCU, 2=2G, 4=3G, 8=LTE');
+            $table->text('remarks')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ampere_informations');
+        Schema::dropIfExists('tcu_informations');
     }
 };
