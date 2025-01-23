@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('battery_type');
             $table->string('batteries_cabinet_type');
             $table->boolean('cabinet_cage')->default(0);
-            $table->integer('batteries_status')->comment('1=Bad, 2=Good, 4=Very Good');
+            $table->string('batteries_status');
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

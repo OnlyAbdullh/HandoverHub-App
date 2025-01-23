@@ -13,12 +13,60 @@ class SiteInfrastructureController extends Controller
         try {
             $site = Site::create($request->input('sites'));
 
-            $site->towerInformation()->create($request->input('tower_informations'));
-            $site->bandInformation()->create($request->input('band_informations'));
-            $site->generatorInformation()->create($request->input('generator_informations'));
+            // Store site images
+            foreach ($request->file('site_images', []) as $image) {
+                $site->images()->create([
+                    'image' => $image->store('public/site'),
+                    'image_type' => 'original',
+                ]);
+            }
+
+            foreach ($request->file('site_additional_images', []) as $image) {
+                $site->images()->create([
+                    'image' => $image->store('public/site'),
+                    'image_type' => 'additional',
+                ]);
+            }
+
+            $relatedEntities = [
+                'tower_informations' => 'towerImages',
+                'band_informations' => 'bandImages',
+                'generator_informations' => 'generatorImages',
+                'solar_wind_informations' => 'solarImages',
+                'rectifier_informations' => 'rectifierImages' // This will have rectifier images and battery images keys
+            ];
+
+            foreach ($relatedEntities as $relation => $imagesKey) {
+                $entity = $site->{$relation}()->create($request->input($relation));
+
+                if ($relation === 'rectifier_informations') {
+
+                    foreach ($request->file('rectifierImages', []) as $image) {
+                        $entity->images()->create([
+                            'image' => $image->store('public/rectifier/rectifierImages'),
+                            'image_type' => 'original',
+                        ]);
+                    }
+
+                    foreach ($request->file('batteryImages', []) as $image) {
+                        $entity->images()->create([
+                            'image' => $image->store('public/rectifier/batteryImages'),
+                            'image_type' => 'additional', // Differentiate rectifier from battery images
+                        ]);
+                    }
+                } else {
+                    $folder = str_replace('_informations', '', $relation);
+                    foreach ($request->file($imagesKey, []) as $image) {
+                        $entity->images()->create([
+                            'image' => $image->store("public/{$folder}"),
+                            'image_type' => 'original',
+                        ]);
+                    }
+                }
+            }
+
             $site->solarWindInformation()->create($request->input('solar_wind_informations'));
             $site->environmentInformation()->create($request->input('environment_informations'));
-            $site->rectifierInformation()->create($request->input('rectifier_informations'));
             $site->ldgInformation()->create($request->input('ldg_informations'));
             $site->amperesInformation()->create($request->input('amperes_informations'));
             $site->tcuInformation()->create($request->input('tcu_informations'));
@@ -31,6 +79,7 @@ class SiteInfrastructureController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
 
 }
