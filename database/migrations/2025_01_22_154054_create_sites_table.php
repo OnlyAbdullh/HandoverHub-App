@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('cabinet_number');
             $table->string('electricity_meter');
             $table->integer('electricity_meter_reading');
+            $table->text('generator_remark')->nullable();
             $table->timestamps();
         });
     }

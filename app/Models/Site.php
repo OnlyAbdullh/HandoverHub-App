@@ -28,6 +28,7 @@ class Site extends Model
         'cabinet_number',
         'electricity_meter',
         'electricity_meter_reading',
+        'generator_remark'
     ];
     public function ampereInformation()
     {
@@ -61,5 +62,9 @@ class Site extends Model
     public function solarWindInformation()
     {
         return $this->hasOne(Solar_wind_information::class);
+    }
+    public function generatorInformation()
+    {
+        return $this->hasOne(Generator_information::class);
     }
 }
