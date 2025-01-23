@@ -17,10 +17,12 @@ return new class extends Migration {
             $table->string('gen_type_and_capacity');
             $table->string('gen_hour_meter');
             $table->string('gen_fuel_consumption');
-            $table->enum('type', ['internal', 'external']);
-            $table->string('capacity')->nullable();
-            $table->string('existing_fuel')->nullable();
-            $table->boolean('cage')->default(0);
+            $table->string('internal_capacity');
+            $table->string('internal_existing_fuel');
+            $table->boolean('internal_cage')->default(0);
+            $table->string('external_capacity');
+            $table->string('external_existing_fuel')->nullable();
+            $table->boolean('external_cage')->default(0);
             $table->boolean('fuel_sensor_exiting')->default(0);
             $table->boolean('fuel_sensor_working')->default(0);
             $table->string('fuel_sensor_type');

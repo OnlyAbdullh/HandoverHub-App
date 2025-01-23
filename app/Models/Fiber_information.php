@@ -9,4 +9,8 @@ class Fiber_information extends Model
 {
     use HasFactory;
     protected $fillable = ['site_id', 'destination', 'remarks'];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 }

@@ -9,4 +9,8 @@ class Lvdp_information extends Model
 {
     use HasFactory;
     protected $fillable = ['site_id', 'exiting', 'working', 'status', 'remarks'];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 }

@@ -9,4 +9,8 @@ class Ampere_information extends Model
 {
     use HasFactory;
     protected $fillable = ['site_id', 'capacity', 'time', 'cable_length', 'details'];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 }

@@ -24,6 +24,10 @@ class Generator_information extends Model
         'ampere_to_owner',
         'circuit_breakers_quantity',
     ];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');

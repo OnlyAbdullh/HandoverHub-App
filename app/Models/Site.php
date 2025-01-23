@@ -42,12 +42,12 @@ class Site extends Model
     {
         return $this->hasOne(Fiber_information::class);
     }
-    public function bandInformation()
+    public function band_informations()
     {
         return $this->hasOne(Band_information::class);
     }
 
-    public function rectifierInformation()
+    public function rectifier_informations()
     {
         return $this->hasOne(Rectifier_information::class);
     }
@@ -55,15 +55,15 @@ class Site extends Model
     {
         return $this->hasOne(Environment_information::class);
     }
-    public function towerInformation()
+    public function tower_informations()
     {
         return $this->hasOne(Tower_information::class);
     }
-    public function solarWindInformation()
+    public function solar_wind_informations()
     {
         return $this->hasOne(Solar_wind_information::class);
     }
-    public function generatorInformation()
+    public function generator_informations()
     {
         return $this->hasOne(Generator_information::class);
     }

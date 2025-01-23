@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Site;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SiteInfrastructureController extends Controller
 {
@@ -37,10 +39,10 @@ class SiteInfrastructureController extends Controller
             ];
 
             foreach ($relatedEntities as $relation => $imagesKey) {
+
                 $entity = $site->{$relation}()->create($request->input($relation));
 
-                if ($relation === 'rectifier_informations') {
-
+                if ($relation === 'rectifierInformation') {
                     foreach ($request->file('rectifierImages', []) as $image) {
                         $entity->images()->create([
                             'image' => $image->store('public/rectifier/rectifierImages'),
@@ -55,7 +57,7 @@ class SiteInfrastructureController extends Controller
                         ]);
                     }
                 } else {
-                    $folder = str_replace('_informations', '', $relation);
+                    $folder = str_replace('Information', '', $relation);
                     foreach ($request->file($imagesKey, []) as $image) {
                         $entity->images()->create([
                             'image' => $image->store("public/{$folder}"),
@@ -65,10 +67,10 @@ class SiteInfrastructureController extends Controller
                 }
             }
 
-            $site->solarWindInformation()->create($request->input('solar_wind_informations'));
+            $site->fiberInformation()->create($request->input('fiber_informations'));
             $site->environmentInformation()->create($request->input('environment_informations'));
-            $site->ldgInformation()->create($request->input('ldg_informations'));
-            $site->amperesInformation()->create($request->input('amperes_informations'));
+            $site->lvdpInformation()->create($request->input('lvdp_informations'));
+            $site->ampereInformation()->create($request->input('amperes_informations'));
             $site->tcuInformation()->create($request->input('tcu_informations'));
 
             DB::commit();

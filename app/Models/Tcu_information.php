@@ -9,4 +9,8 @@ class Tcu_information extends Model
 {
     use HasFactory;
     protected $fillable = ['site_id', 'tcu_types', 'remarks'];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 }

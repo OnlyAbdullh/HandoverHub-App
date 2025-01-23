@@ -26,4 +26,8 @@ class Environment_information extends Model
         'working',
         'remarks',
     ];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 }

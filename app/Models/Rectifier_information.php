@@ -23,6 +23,10 @@ class Rectifier_information extends Model
         'batteries_status',
         'remarks',
     ];
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
