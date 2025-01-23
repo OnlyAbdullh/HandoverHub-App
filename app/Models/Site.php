@@ -67,4 +67,8 @@ class Site extends Model
     {
         return $this->hasOne(Generator_information::class);
     }
+    public function lvdpInformation()
+    {
+        return $this->hasOne(Lvdp_information::class);
+    }
 }
