@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('generator_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->string('generator_number')->unique();//1 and 2 type
             $table->string('gen_type_and_capacity');
             $table->string('gen_hour_meter');
             $table->string('gen_fuel_consumption');
@@ -21,7 +20,7 @@ return new class extends Migration {
             $table->string('internal_existing_fuel');
             $table->boolean('internal_cage')->default(0);
             $table->string('external_capacity');
-            $table->string('external_existing_fuel')->nullable();
+            $table->string('external_existing_fuel');
             $table->boolean('external_cage')->default(0);
             $table->boolean('fuel_sensor_exiting')->default(0);
             $table->boolean('fuel_sensor_working')->default(0);

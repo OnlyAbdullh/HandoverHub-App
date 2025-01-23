@@ -13,9 +13,10 @@ class SiteInfrastructureController extends Controller
         DB::beginTransaction();
 
         try {
+            // Create the site record
             $site = Site::create($request->input('sites'));
 
-            // Store site images
+            // Handle site images
             foreach ($request->file('site_images', []) as $image) {
                 $site->images()->create([
                     'image' => $image->store('public/site'),
@@ -23,6 +24,7 @@ class SiteInfrastructureController extends Controller
                 ]);
             }
 
+            // Handle additional site images
             foreach ($request->file('site_additional_images', []) as $image) {
                 $site->images()->create([
                     'image' => $image->store('public/site'),
@@ -30,19 +32,18 @@ class SiteInfrastructureController extends Controller
                 ]);
             }
 
+            // Handle related entities
             $relatedEntities = [
                 'tower_informations' => 'towerImages',
                 'band_informations' => 'bandImages',
-                'generator_informations' => 'generatorImages',
                 'solar_wind_informations' => 'solarImages',
                 'rectifier_informations' => 'rectifierImages' // This will have rectifier images and battery images keys
             ];
 
             foreach ($relatedEntities as $relation => $imagesKey) {
-
                 $entity = $site->{$relation}()->create($request->input($relation));
 
-                if ($relation === 'rectifierInformation') {
+                if ($relation === 'rectifier_informations') {
                     foreach ($request->file('rectifierImages', []) as $image) {
                         $entity->images()->create([
                             'image' => $image->store('public/rectifier/rectifierImages'),
@@ -57,7 +58,7 @@ class SiteInfrastructureController extends Controller
                         ]);
                     }
                 } else {
-                    $folder = str_replace('Information', '', $relation);
+                    $folder = str_replace('_informations', '', $relation);
                     foreach ($request->file($imagesKey, []) as $image) {
                         $entity->images()->create([
                             'image' => $image->store("public/{$folder}"),
@@ -67,11 +68,19 @@ class SiteInfrastructureController extends Controller
                 }
             }
 
-            $site->fiberInformation()->create($request->input('fiber_informations'));
-            $site->environmentInformation()->create($request->input('environment_informations'));
-            $site->lvdpInformation()->create($request->input('lvdp_informations'));
-            $site->ampereInformation()->create($request->input('amperes_informations'));
-            $site->tcuInformation()->create($request->input('tcu_informations'));
+            // Handle generator_informations (one-to-many relationship)
+            if ($request->has('generator_informations')) {
+                foreach ($request->input('generator_informations') as $generatorInfo) {
+                    $site->generator_informations()->create($generatorInfo);
+                }
+            }
+
+            // Handle other related entities
+            $site->fiber_informations()->create($request->input('fiber_informations'));
+            $site->environment_informations()->create($request->input('environment_informations'));
+            $site->lvdp_informations()->create($request->input('lvdp_informations'));
+            $site->amperes_informations()->create($request->input('amperes_informations'));
+            $site->tcu_informations()->create($request->input('tcu_informations'));
 
             DB::commit();
 

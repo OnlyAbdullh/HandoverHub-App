@@ -30,15 +30,15 @@ class Site extends Model
         'electricity_meter_reading',
         'generator_remark'
     ];
-    public function ampereInformation()
+    public function amperes_informations()
     {
         return $this->hasOne(Ampere_information::class);
     }
-    public function tcuInformation()
+    public function tcu_informations()
     {
         return $this->hasOne(Tcu_information::class);
     }
-    public function fiberInformation()
+    public function fiber_informations()
     {
         return $this->hasOne(Fiber_information::class);
     }
@@ -51,7 +51,7 @@ class Site extends Model
     {
         return $this->hasOne(Rectifier_information::class);
     }
-    public function environmentInformation()
+    public function environment_informations()
     {
         return $this->hasOne(Environment_information::class);
     }
@@ -65,9 +65,9 @@ class Site extends Model
     }
     public function generator_informations()
     {
-        return $this->hasOne(Generator_information::class);
+        return $this->hasMany(Generator_information::class);
     }
-    public function lvdpInformation()
+    public function lvdp_informations()
     {
         return $this->hasOne(Lvdp_information::class);
     }
