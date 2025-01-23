@@ -71,4 +71,8 @@ class Site extends Model
     {
         return $this->hasOne(Lvdp_information::class);
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }

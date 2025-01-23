@@ -23,4 +23,8 @@ class Rectifier_information extends Model
         'batteries_status',
         'remarks',
     ];
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
