@@ -16,11 +16,11 @@ return new class extends Migration
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
             $table->string('rectifier_1_type_and_voltage');
             $table->string('rectifier_2_type_and_voltage');
-            $table->integer('module_1_quantity');
-            $table->integer('module_2_quantity');
-            $table->integer('faulty_module_1_quantity');
-            $table->integer('faulty_module_2_quantity');
-            $table->integer('number_of_batteries');
+            $table->string('module_1_quantity');
+            $table->string('module_2_quantity');
+            $table->string('faulty_module_1_quantity');
+            $table->string('faulty_module_2_quantity');
+            $table->string('number_of_batteries');
             $table->string('battery_type');
             $table->string('batteries_cabinet_type');
             $table->boolean('cabinet_cage')->default(0);

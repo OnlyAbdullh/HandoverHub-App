@@ -29,9 +29,9 @@ return new class extends Migration
             $table->boolean('wind');
             $table->boolean('grid');
             $table->boolean('fence');
-            $table->integer('cabinet_number');
+            $table->string('cabinet_number');
             $table->string('electricity_meter');
-            $table->integer('electricity_meter_reading');
+            $table->string('electricity_meter_reading');
             $table->text('generator_remark')->nullable();
             $table->timestamps();
         });

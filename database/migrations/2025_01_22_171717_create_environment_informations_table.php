@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('environment_informations', function (Blueprint $table) {
             $table->id();
             $table->string('power_control_serial_number');
-            $table->integer('ampere_consumption');
+            $table->string('ampere_consumption');
             $table->boolean('mini_phase')->default(0);
             $table->boolean('three_phase')->default(0);
             $table->string('power_control_ownership');
-            $table->integer('fan_quantity');
-            $table->integer('faulty_fan_quantity');
+            $table->string('fan_quantity');
+            $table->string('faulty_fan_quantity');
             $table->boolean('earthing_system')->default(0);
             $table->string('air_conditioner_1_type');
             $table->string('air_conditioner_2_type');
