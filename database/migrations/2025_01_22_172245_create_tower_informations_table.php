@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tower_informations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
             $table->boolean('mast')->default(0);
             $table->boolean('tower')->default(0);;
             $table->boolean('monopole')->default(0);;
