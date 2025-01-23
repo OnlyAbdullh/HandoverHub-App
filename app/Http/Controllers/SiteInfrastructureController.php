@@ -13,10 +13,8 @@ class SiteInfrastructureController extends Controller
         DB::beginTransaction();
 
         try {
-            // Create the site record
             $site = Site::create($request->input('sites'));
 
-            // Handle site images
             foreach ($request->file('site_images', []) as $image) {
                 $site->images()->create([
                     'image' => $image->store('public/site'),
@@ -32,7 +30,6 @@ class SiteInfrastructureController extends Controller
                 ]);
             }
 
-            // Handle related entities
             $relatedEntities = [
                 'tower_informations' => 'towerImages',
                 'band_informations' => 'bandImages',
@@ -41,34 +38,35 @@ class SiteInfrastructureController extends Controller
             ];
 
             foreach ($relatedEntities as $relation => $imagesKey) {
-                $entity = $site->{$relation}()->create($request->input($relation));
+                if ($request->has($relation)) {
+                    $entity = $site->{$relation}()->create($request->input($relation));
 
-                if ($relation === 'rectifier_informations') {
-                    foreach ($request->file('rectifierImages', []) as $image) {
-                        $entity->images()->create([
-                            'image' => $image->store('public/rectifier/rectifierImages'),
-                            'image_type' => 'original',
-                        ]);
-                    }
+                    if ($relation === 'rectifier_informations') {
+                        foreach ($request->file('rectifierImages', []) as $image) {
+                            $entity->images()->create([
+                                'image' => $image->store('public/rectifier/rectifierImages'),
+                                'image_type' => 'original',
+                            ]);
+                        }
 
-                    foreach ($request->file('batteryImages', []) as $image) {
-                        $entity->images()->create([
-                            'image' => $image->store('public/rectifier/batteryImages'),
-                            'image_type' => 'additional', // Differentiate rectifier from battery images
-                        ]);
-                    }
-                } else {
-                    $folder = str_replace('_informations', '', $relation);
-                    foreach ($request->file($imagesKey, []) as $image) {
-                        $entity->images()->create([
-                            'image' => $image->store("public/{$folder}"),
-                            'image_type' => 'original',
-                        ]);
+                        foreach ($request->file('batteryImages', []) as $image) {
+                            $entity->images()->create([
+                                'image' => $image->store('public/rectifier/batteryImages'),
+                                'image_type' => 'additional', // Differentiate rectifier from battery images
+                            ]);
+                        }
+                    } else {
+                        $folder = str_replace('_informations', '', $relation);
+                        foreach ($request->file($imagesKey, []) as $image) {
+                            $entity->images()->create([
+                                'image' => $image->store("public/{$folder}"),
+                                'image_type' => 'original',
+                            ]);
+                        }
                     }
                 }
             }
 
-            // Handle generator_informations (one-to-many relationship)
             if ($request->has('generator_informations')) {
                 foreach ($request->input('generator_informations') as $generatorInfo) {
                     $site->generator_informations()->create($generatorInfo);
@@ -90,7 +88,6 @@ class SiteInfrastructureController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
 
 }
