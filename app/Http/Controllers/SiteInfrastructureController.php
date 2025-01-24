@@ -17,7 +17,7 @@ class SiteInfrastructureController extends Controller
 
             foreach ($request->file('site_images', []) as $image) {
                 $site->images()->create([
-                    'image' => $image->store('public/site'),
+                    'image' => $image->store('public/site/original'),
                     'image_type' => 'original',
                 ]);
             }
@@ -25,7 +25,7 @@ class SiteInfrastructureController extends Controller
             // Handle additional site images
             foreach ($request->file('site_additional_images', []) as $image) {
                 $site->images()->create([
-                    'image' => $image->store('public/site'),
+                    'image' => $image->store('public/site/additional'),
                     'image_type' => 'additional',
                 ]);
             }
@@ -73,7 +73,6 @@ class SiteInfrastructureController extends Controller
                 }
             }
 
-            // Handle other related entities
             $site->fiber_informations()->create($request->input('fiber_informations'));
             $site->environment_informations()->create($request->input('environment_informations'));
             $site->lvdp_informations()->create($request->input('lvdp_informations'));
