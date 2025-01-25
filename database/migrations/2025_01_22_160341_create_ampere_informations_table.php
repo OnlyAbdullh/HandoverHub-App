@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('ampere_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->string('capacity');
-            $table->string('time');
-            $table->string('cable_length');
-            $table->text('details');
+            $table->string('capacity')->nullable();
+            $table->string('time')->nullable();
+            $table->string('cable_length')->nullable();
+            $table->text('details')->nullable();
             $table->timestamps();
         });
     }

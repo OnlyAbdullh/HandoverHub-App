@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('fiber_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->string('destination');
+            $table->string('destination')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

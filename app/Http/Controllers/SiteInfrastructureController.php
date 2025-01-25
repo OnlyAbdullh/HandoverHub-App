@@ -22,7 +22,6 @@ class SiteInfrastructureController extends Controller
                 ]);
             }
 
-            // Handle additional site images
             foreach ($request->file('site_additional_images', []) as $image) {
                 $site->images()->create([
                     'image' => $image->store('public/site/additional'),
@@ -34,7 +33,7 @@ class SiteInfrastructureController extends Controller
                 'tower_informations' => 'towerImages',
                 'band_informations' => 'bandImages',
                 'solar_wind_informations' => 'solarImages',
-                'rectifier_informations' => 'rectifierImages' // This will have rectifier images and battery images keys
+                'rectifier_informations' => 'rectifierImages'
             ];
 
             foreach ($relatedEntities as $relation => $imagesKey) {
@@ -77,7 +76,29 @@ class SiteInfrastructureController extends Controller
             $site->environment_informations()->create($request->input('environment_informations'));
             $site->lvdp_informations()->create($request->input('lvdp_informations'));
             $site->amperes_informations()->create($request->input('amperes_informations'));
-            $site->tcu_informations()->create($request->input('tcu_informations'));
+
+            // Convert tcu_types list into a number using bitwise OR operation.
+            // Example: If tcu_types contains [1, 2, 4], the result will be 1 | 2 | 4 = 7.
+
+            $tcuData = $request->input('tcu_informations');
+            $state = $tcuData['tcu'];
+
+            if ($state == 1 && isset($tcuData['tcu_types']) && is_array($tcuData['tcu_types'])) {
+                $tcuTypeMap = [
+                    '2G' => 1,
+                    '3G' => 2,
+                    'LTE' => 4,
+                ];
+
+                $tcuData['tcu_types'] = array_map(function ($type) use ($tcuTypeMap) {
+                    return $tcuTypeMap[$type] ?? 0;
+                }, $tcuData['tcu_types']);
+
+                $tcuData['tcu_types'] = array_reduce($tcuData['tcu_types'], function ($carry, $type) {
+                    return $carry | $type;
+                }, 0);
+            }
+            $site->tcu_informations()->create($tcuData);
 
             DB::commit();
 
@@ -87,6 +108,5 @@ class SiteInfrastructureController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
 }

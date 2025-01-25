@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
             $table->boolean('exiting')->default(0);
             $table->boolean('working')->default(0);
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

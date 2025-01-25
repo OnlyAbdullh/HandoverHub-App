@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('band_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->enum('band_type', ['GSM 900', 'GSM 1800', '3G', 'LTE']);
+            $table->enum('band_type', ['GSM 900', 'GSM 1800', '3G', 'LTE'])->nullable();
             $table->string('rbs_1_type')->nullable();
             $table->string('rbs_2_type')->nullable();
             $table->string('du_1_type')->nullable();

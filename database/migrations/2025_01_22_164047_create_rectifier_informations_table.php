@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('rectifier_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->string('rectifier_1_type_and_voltage');
-            $table->string('rectifier_2_type_and_voltage');
-            $table->string('module_1_quantity');
-            $table->string('module_2_quantity');
-            $table->string('faulty_module_1_quantity');
-            $table->string('faulty_module_2_quantity');
-            $table->string('number_of_batteries');
-            $table->string('battery_type');
-            $table->string('batteries_cabinet_type');
-            $table->boolean('cabinet_cage')->default(0);
-            $table->string('batteries_status');
+            $table->string('rectifier_1_type_and_voltage')->nullable();
+            $table->string('rectifier_2_type_and_voltage')->nullable();
+            $table->string('module_1_quantity')->nullable();
+            $table->string('module_2_quantity')->nullable();
+            $table->string('faulty_module_1_quantity')->nullable();
+            $table->string('faulty_module_2_quantity')->nullable();
+            $table->string('number_of_batteries')->nullable();
+            $table->string('battery_type')->nullable();
+            $table->string('batteries_cabinet_type')->nullable();
+            $table->boolean('cabinet_cage')->default(0)->nullable();
+            $table->string('batteries_status')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

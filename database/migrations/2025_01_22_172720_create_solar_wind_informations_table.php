@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('solar_wind_informations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('site_id')->constrained('sites')->onDelete('cascade');
-            $table->string('solar_type');
-            $table->string('solar_capacity');
-            $table->string('number_of_panels');
-            $table->string('number_of_modules');
-            $table->string('number_of_faulty_modules');
-            $table->string('number_of_batteries');
-            $table->string('battery_type');
-            $table->string('battery_status');
+            $table->string('solar_type')->nullable();
+            $table->string('solar_capacity')->nullable();
+            $table->string('number_of_panels')->nullable();
+            $table->string('number_of_modules')->nullable();
+            $table->string('number_of_faulty_modules')->nullable();
+            $table->string('number_of_batteries')->nullable();
+            $table->string('battery_type')->nullable();
+            $table->string('battery_status')->nullable();
             $table->text('wind_remarks')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
