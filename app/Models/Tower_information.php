@@ -13,4 +13,8 @@ class Tower_information extends Model
     {
         return $this->belongsTo(Site::class);
     }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
