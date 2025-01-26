@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('image');
             $table->unsignedBigInteger('imageable_id');
             $table->string('imageable_type');
-            $table->enum('image_type', ['original', 'additional'])->default('original');
             $table->timestamps();
         });
     }

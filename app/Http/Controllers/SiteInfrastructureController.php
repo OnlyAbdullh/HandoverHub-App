@@ -13,57 +13,43 @@ class SiteInfrastructureController extends Controller
         DB::beginTransaction();
 
         try {
-            $site = Site::create($request->input('sites'));
+            $siteData = $request->input('sites', []);
+            $site = Site::create($siteData ?: []);
 
-            foreach ($request->file('site_images', []) as $image) {
-                $site->images()->create([
-                    'image' => $image->store('public/site/original'),
-                    'image_type' => 'original',
-                ]);
-            }
-
-            foreach ($request->file('site_additional_images', []) as $image) {
-                $site->images()->create([
-                    'image' => $image->store('public/site/additional'),
-                    'image_type' => 'additional',
-                ]);
-            }
+            $this->storeImages($site, $request->file('general_site_images', []), ' site/original');
+            $this->storeImages($site, $request->file('additional_images', []), ' site/additional', 'additional');
+            $this->storeImages($site, $request->file('transmission_images', []), ' transmission');
 
             $relatedEntities = [
                 'tower_informations' => 'towerImages',
-                'band_informations' => 'bandImages',
-                'solar_wind_informations' => 'solarImages',
-                'rectifier_informations' => 'rectifierImages'
+                'band_informations' => 'rbs_images',
+                'solar_wind_informations' => 'solar_and_wind_batteries_images',
+                'rectifier_informations' => 'rectifier_images',
+                'generator_informations' => 'generator_images',
             ];
-
             foreach ($relatedEntities as $relation => $imagesKey) {
                 if ($request->has($relation)) {
-                    $entity = $site->{$relation}()->create($request->input($relation));
-
-                    if ($relation === 'rectifier_informations') {
-                        foreach ($request->file('rectifierImages', []) as $image) {
-                            $entity->images()->create([
-                                'image' => $image->store('public/rectifier/rectifierImages'),
-                                'image_type' => 'original',
-                            ]);
-                        }
-
-                        foreach ($request->file('batteryImages', []) as $image) {
-                            $entity->images()->create([
-                                'image' => $image->store('public/rectifier/batteryImages'),
-                                'image_type' => 'additional', // Differentiate rectifier from battery images
-                            ]);
-                        }
-                    } else {
-                        $folder = str_replace('_informations', '', $relation);
-                        foreach ($request->file($imagesKey, []) as $image) {
-                            $entity->images()->create([
-                                'image' => $image->store("public/{$folder}"),
-                                'image_type' => 'original',
-                            ]);
-                        }
-                    }
+                    $this->storeRelatedEntity($site, $relation, $imagesKey, $request);
                 }
+            }
+
+            $this->storeImages($site, $request->file('fuel_cage_images', []), ' fuel_cage', 'fuel_cage');
+
+            if ($request->filled('fiber_informations')) {
+                $site->fiber_informations()->create($request->input('fiber_informations'));
+            }
+            if ($request->filled('environment_informations')) {
+                $site->environment_informations()->create($request->input('environment_informations'));
+            }
+            if ($request->filled('lvdp_informations')) {
+                $site->lvdp_informations()->create($request->input('lvdp_informations'));
+            }
+            if ($request->filled('amperes_informations')) {
+                $site->amperes_informations()->create($request->input('amperes_informations'));
+            }
+
+            if ($request->filled('tcu_informations')) {
+                $this->storeTcuInformation($site, $request->input('tcu_informations'));
             }
 
             if ($request->has('generator_informations')) {
@@ -72,41 +58,63 @@ class SiteInfrastructureController extends Controller
                 }
             }
 
-            $site->fiber_informations()->create($request->input('fiber_informations'));
-            $site->environment_informations()->create($request->input('environment_informations'));
-            $site->lvdp_informations()->create($request->input('lvdp_informations'));
-            $site->amperes_informations()->create($request->input('amperes_informations'));
-
-            // Convert tcu_types list into a number using bitwise OR operation.
-            // Example: If tcu_types contains [1, 2, 4], the result will be 1 | 2 | 4 = 7.
-
-            $tcuData = $request->input('tcu_informations');
-            $state = $tcuData['tcu'];
-
-            if ($state == 1 && isset($tcuData['tcu_types']) && is_array($tcuData['tcu_types'])) {
-                $tcuTypeMap = [
-                    '2G' => 1,
-                    '3G' => 2,
-                    'LTE' => 4,
-                ];
-
-                $tcuData['tcu_types'] = array_map(function ($type) use ($tcuTypeMap) {
-                    return $tcuTypeMap[$type] ?? 0;
-                }, $tcuData['tcu_types']);
-
-                $tcuData['tcu_types'] = array_reduce($tcuData['tcu_types'], function ($carry, $type) {
-                    return $carry | $type;
-                }, 0);
+            if ($request->has('band_informations')) {
+                foreach ($request->input('band_informations') as $bandInfo) {
+                    $site->band_informations()->create($bandInfo);
+                }
             }
-            $site->tcu_informations()->create($tcuData);
 
             DB::commit();
 
-            return response()->json(['message' => 'Data inserted successfully'], 201);
+            return response()->json(['message' => 'Data inserted successfully', 'site_id' => $site->id], 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
+
+    private function storeImages($model, $images, $path, $type = 'original')
+    {
+        foreach ($images as $image) {
+            $model->images()->create([
+                'image' => $image->store($path, 'public'),
+                'imageable_type' => $type,
+            ]);
+        }
+    }
+
+
+    private function storeRelatedEntity($site, $relation, $imagesKey, $request)
+    {
+        if ($request->has($relation)) {
+            $entity = $site->{$relation}()->create($request->input($relation));
+
+            $folder = str_replace('_informations', '', $relation);
+            if ($relation === 'rectifier_informations') {
+                $this->storeImages($entity, $request->file('rectifier_images', []), 'rectifier/rectifierImages');
+                $this->storeImages($entity, $request->file('rectifier_batteries_images', []), 'rectifier/batteryImages', 'additional');
+            } else {
+                $this->storeImages($entity, $request->file($imagesKey, []), "{$folder}");
+            }
+        }
+    }
+
+
+    private function storeTcuInformation($site, $tcuData)
+    {
+        if (isset($tcuData['tcu']) && $tcuData['tcu'] == 1 && isset($tcuData['tcu_types']) && is_array($tcuData['tcu_types'])) {
+            $tcuTypeMap = [
+                '2G' => 1,
+                '3G' => 2,
+                'LTE' => 4,
+            ];
+            $tcuData['tcu_types'] = array_reduce(array_map(function ($type) use ($tcuTypeMap) {
+                return $tcuTypeMap[$type] ?? 0;
+            }, $tcuData['tcu_types']), function ($carry, $type) {
+                return $carry | $type;
+            }, 0);
+        }
+        $site->tcu_informations()->create($tcuData);
+    }
 }
