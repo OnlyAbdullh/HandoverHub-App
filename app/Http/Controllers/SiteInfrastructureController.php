@@ -14,8 +14,11 @@ class SiteInfrastructureController extends Controller
 
         try {
             $siteData = $request->input('sites', []);
+            $exist = Site::where('code', $siteData['code'])->exists();
+            if ($exist) {
+                return response()->json(['message' => 'This code already entered'], 400);
+            }
             $site = Site::create($siteData ?: []);
-
             $this->storeImages($site, $request->file('general_site_images', []), ' site/original');
             $this->storeImages($site, $request->file('additional_images', []), ' site/additional', 'additional');
             $this->storeImages($site, $request->file('transmission_images', []), ' transmission','transmission');
@@ -107,9 +110,6 @@ class SiteInfrastructureController extends Controller
             }
         }
     }
-
-
-
 
     private function storeTcuInformation($site, $tcuData)
     {
