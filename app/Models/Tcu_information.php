@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Tcu_information extends Model
 {
     use HasFactory;
-    protected $fillable = ['site_id', 'tcu_types', 'remarks','tcu'];
+
+    protected $hidden = ['created_at', 'updated_at'];
+
+    protected $fillable = ['site_id', 'tcu_types', 'remarks', 'tcu'];
+
     public function site()
     {
         return $this->belongsTo(Site::class);

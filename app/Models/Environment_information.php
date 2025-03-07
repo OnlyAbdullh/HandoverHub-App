@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Environment_information extends Model
 {
     use HasFactory;
+
+    protected $hidden = ['created_at', 'updated_at'];
+
     protected $fillable = [
         'power_control_serial_number',
         'ampere_consumption',
@@ -26,6 +29,7 @@ class Environment_information extends Model
         'working',
         'remarks',
     ];
+
     public function site()
     {
         return $this->belongsTo(Site::class);

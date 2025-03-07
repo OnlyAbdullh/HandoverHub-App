@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Rectifier_information extends Model
 {
     use HasFactory;
+
+    protected $hidden = ['created_at', 'updated_at'];
+
     protected $fillable = [
         'site_id',
         'rectifier_1_type_and_voltage',
@@ -23,10 +26,12 @@ class Rectifier_information extends Model
         'batteries_status',
         'remarks',
     ];
+
     public function site()
     {
         return $this->belongsTo(Site::class);
     }
+
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
