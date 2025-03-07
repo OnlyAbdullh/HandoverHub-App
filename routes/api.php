@@ -20,3 +20,4 @@ Route::post('site/store', [SiteInfrastructureController::class, 'storeAllData'])
 Route::get('sites', [SiteInfrastructureController::class, 'index']);
 
 Route::delete('sites/delete', [SiteInfrastructureController::class, 'deleteSites']);
+Route::get('sites/{id}', [SiteInfrastructureController::class, 'showSite']);

@@ -105,4 +105,8 @@ class SiteService
             throw $e;
         }
     }
+    public function getSiteDetails (int $siteId)
+    {
+        return $this->siteRepository->getSiteDetails($siteId);
+    }
 }

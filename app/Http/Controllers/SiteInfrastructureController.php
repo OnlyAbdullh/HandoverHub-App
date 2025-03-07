@@ -41,4 +41,13 @@ class SiteInfrastructureController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function showSite(int $id)
+    {
+        try {
+            $site = $this->siteService->getSiteDetails($id);
+            return response()->json($site);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
 }

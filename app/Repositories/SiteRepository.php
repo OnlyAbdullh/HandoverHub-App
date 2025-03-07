@@ -158,4 +158,20 @@ class SiteRepository implements SiteRepositoryInterface
 
         return Site::whereIn('id', $siteIds)->delete();
     }
+    public function getSiteDetails(int $siteId)
+    {
+        return Site::with([
+            // Load only the relationships that contain details
+            'tower_informations',
+            'band_informations',
+            'solar_wind_informations',
+            'rectifier_informations',
+            'generator_informations',
+            'fiber_informations',
+            'environment_informations',
+            'lvdp_informations',
+            'amperes_informations',
+            'tcu_informations',
+        ])->findOrFail($siteId);
+    }
 }
