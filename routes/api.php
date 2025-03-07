@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SiteInfrastructureController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('site/store', [\App\Http\Controllers\SiteInfrastructureController::class, 'storeAllData']);
+Route::post('site/store', [SiteInfrastructureController::class, 'storeAllData']);
+
+Route::get('sites', [SiteInfrastructureController::class, 'index']);

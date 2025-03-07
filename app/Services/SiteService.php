@@ -89,4 +89,8 @@ class SiteService
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function getAllSites()
+    {
+        return $this->siteRepository->getAllSites();
+    }
 }

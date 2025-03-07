@@ -18,4 +18,9 @@ class SiteInfrastructureController extends Controller
     {
         return $this->siteService->storeAllData($request);
     }
+    public function index()
+    {
+        $sites = $this->siteService->getAllSites();
+        return response()->json($sites);
+    }
 }

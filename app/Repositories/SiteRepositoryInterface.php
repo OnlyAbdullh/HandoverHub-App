@@ -18,4 +18,5 @@ interface SiteRepositoryInterface
     public function storeRelatedEntity(Site $site, string $relation, $imagesKey, array $data, array $files): void;
 
     public function storeTcuInformation(Site $site, array $tcuData): void;
+    public function getAllSites();
 }

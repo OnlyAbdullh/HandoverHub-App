@@ -76,4 +76,8 @@ class SiteRepository implements SiteRepositoryInterface
         }
         $site->tcu_informations()->create($tcuData);
     }
+    public function getAllSites()
+    {
+        return Site::select('name', 'code', 'area', 'street', 'city')->get();
+    }
 }
