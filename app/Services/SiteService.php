@@ -93,4 +93,16 @@ class SiteService
     {
         return $this->siteRepository->getAllSites();
     }
+    public function deleteSites(array $siteIds): int
+    {
+        DB::beginTransaction();
+        try {
+            $deletedCount = $this->siteRepository->deleteSites($siteIds);
+            DB::commit();
+            return $deletedCount;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
 }

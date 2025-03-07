@@ -19,4 +19,5 @@ interface SiteRepositoryInterface
 
     public function storeTcuInformation(Site $site, array $tcuData): void;
     public function getAllSites();
+    public function deleteSites(array $siteIds): int;
 }

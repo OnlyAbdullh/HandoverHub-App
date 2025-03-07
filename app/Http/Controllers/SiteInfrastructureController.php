@@ -18,9 +18,27 @@ class SiteInfrastructureController extends Controller
     {
         return $this->siteService->storeAllData($request);
     }
+
     public function index()
     {
         $sites = $this->siteService->getAllSites();
         return response()->json($sites);
+    }
+
+    public function deleteSites(Request $request)
+    {
+        $siteIds = $request->input('ids', []);
+        if (empty($siteIds)) {
+            return response()->json(['message' => 'No site IDs provided'], 400);
+        }
+
+        try {
+            $deletedCount = $this->siteService->deleteSites($siteIds);
+            return response()->json([
+                'message' => "$deletedCount site(s) deleted successfully"
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

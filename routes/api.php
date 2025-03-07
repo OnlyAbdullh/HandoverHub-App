@@ -18,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::post('site/store', [SiteInfrastructureController::class, 'storeAllData']);
 
 Route::get('sites', [SiteInfrastructureController::class, 'index']);
+
+Route::delete('sites/delete', [SiteInfrastructureController::class, 'deleteSites']);
