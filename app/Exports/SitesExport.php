@@ -32,7 +32,6 @@ class SitesExport implements FromCollection, WithHeadings
         ])->whereIn('id', $this->siteIds)
             ->get();
 
-
         $rows = [];
         foreach ($sites as $site) {
             //[1] site_information
@@ -82,17 +81,27 @@ class SitesExport implements FromCollection, WithHeadings
             ]);
 
             // [3] band_informations (One-To-Many)
-            $bandSingle = optional($site->band_informations->first());
-            $rowData = array_merge($rowData, [
-                'band_type' => $bandSingle->band_type,
-                'band_rbs_1_type' => $bandSingle->rbs_1_type,
-                'band_rbs_2_type' => $bandSingle->rbs_2_type,
-                'band_du_1_type' => $bandSingle->du_1_type,
-                'band_du_2_type' => $bandSingle->du_2_type,
-                'band_ru_1_type' => $bandSingle->ru_1_type,
-                'band_ru_2_type' => $bandSingle->ru_2_type,
-                'band_remarks' => $bandSingle->remarks,
-            ]);
+            $bands = $site->band_informations->filter(function ($band) {
+                return collect($band->getAttributes())
+                    ->except(['id', 'site_id'])
+                    ->filter()
+                    ->isNotEmpty();
+            });
+
+            if ($bands->isNotEmpty()) {
+                $rowData['band_informations'] = $bands->map(function ($band) {
+                    return [
+                        'band_type'      => $band->band_type,
+                        'band_rbs_1_type'=> $band->rbs_1_type,
+                        'band_rbs_2_type'=> $band->rbs_2_type,
+                        'band_du_1_type' => $band->du_1_type,
+                        'band_du_2_type' => $band->du_2_type,
+                        'band_ru_1_type' => $band->ru_1_type,
+                        'band_ru_2_type' => $band->ru_2_type,
+                        'band_remarks'   => $band->remarks,
+                    ];
+                })->values()->toArray();
+            }
 
             // [4] generator_informations (One-To-Many)
             $generators = $site->generator_informations;
