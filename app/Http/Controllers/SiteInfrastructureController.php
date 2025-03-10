@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SitesExport;
 use App\Services\SiteService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SiteInfrastructureController extends Controller
 {
@@ -49,5 +51,11 @@ class SiteInfrastructureController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
+    }
+    public function exportSelectedSites(Request $request)
+    {
+        $siteIds = $request->input('site_ids', []);
+
+        return Excel::download(new SitesExport($siteIds), 'sites.xlsx');
     }
 }
