@@ -27,32 +27,26 @@ class SiteService
 
             $site = $this->siteRepository->createSite($siteData);
 
-            // Store site images
             $this->siteRepository->storeImages($site, $request->file('general_site_images', []), 'site/original');
             $this->siteRepository->storeImages($site, $request->file('additional_images', []), 'site/additional', 'additional');
             $this->siteRepository->storeImages($site, $request->file('transmission_images', []), 'transmission', 'transmission');
             $this->siteRepository->storeImages($site, $request->file('fuel_cage_images', []), 'fuel_cage', 'fuel_cage');
 
-            // Define related entities mapping
             $relatedEntities = [
                 'tower_informations'      => 'tower_images',
-                'band_informations'       => 'rbs_images',
                 'solar_wind_informations' => 'solar_and_wind_batteries_images',
                 'rectifier_informations'  => [
                     'rectifier_images'           => 'rectifier/rectifierImages',
                     'rectifier_batteries_images' => 'rectifier/batteryImages',
                 ],
-                'generator_informations'  => 'generator_images',
             ];
 
-            // Store related entities and their images
             foreach ($relatedEntities as $relation => $imagesKey) {
                 $data  = $request->input($relation, []);
                 $files = $request->allFiles();
                 $this->siteRepository->storeRelatedEntity($site, $relation, $imagesKey, $data, $files);
             }
 
-            // Store additional information if provided
             if ($request->filled('fiber_informations')) {
                 $site->fiber_informations()->create($request->input('fiber_informations'));
             }
@@ -69,15 +63,21 @@ class SiteService
                 $this->siteRepository->storeTcuInformation($site, $request->input('tcu_informations'));
             }
 
-            if ($request->has('generator_informations')) {
-                foreach ($request->input('generator_informations') as $generatorInfo) {
-                    $site->generator_informations()->create($generatorInfo);
-                }
-            }
+            $relations = [
+                'generator_informations' => 'generator_images',
+                'band_informations'      => 'rbs_images',
+            ];
 
-            if ($request->has('band_informations')) {
-                foreach ($request->input('band_informations') as $bandInfo) {
-                    $site->band_informations()->create($bandInfo);
+            foreach ($relations as $relation => $fileKey) {
+                if ($request->has($relation)) {
+                    foreach ($request->input($relation) as $info) {
+                        $filtered = array_filter($info, function ($value) {
+                            return !is_null($value) && $value !== '';
+                        });
+                        if (!empty($filtered) || $request->hasFile($fileKey)) {
+                            $site->{$relation}()->create($filtered);
+                        }
+                    }
                 }
             }
 
