@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\SiteResource;
 use App\Models\Site;
 use App\Repositories\SiteRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -119,27 +121,27 @@ class SiteRepository implements SiteRepositoryInterface
         // or (imageable_type = 'App\\Models\\GeneratorInformation' AND id in $generatorInfoIds), etc.
 
         $imagesQuery = DB::table('images')
-            ->where(function($q) use ($siteIds) {
+            ->where(function ($q) use ($siteIds) {
                 $q->where('imageable_type', 'App\\Models\\Site')
                     ->whereIn('imageable_id', $siteIds);
             })
-            ->orWhere(function($q) use ($generatorInfoIds) {
+            ->orWhere(function ($q) use ($generatorInfoIds) {
                 $q->where('imageable_type', 'App\\Models\\Generator_information')
                     ->whereIn('imageable_id', $generatorInfoIds);
             })
-            ->orWhere(function($q) use ($bandInfoIds) {
+            ->orWhere(function ($q) use ($bandInfoIds) {
                 $q->where('imageable_type', 'App\\Models\\Band_information')
                     ->whereIn('imageable_id', $bandInfoIds);
             })
-            ->orWhere(function($q) use ($towerInfoIds) {
+            ->orWhere(function ($q) use ($towerInfoIds) {
                 $q->where('imageable_type', 'App\\Models\\Tower_information')
                     ->whereIn('imageable_id', $towerInfoIds);
             })
-            ->orWhere(function($q) use ($rectifierInfoIds) {
+            ->orWhere(function ($q) use ($rectifierInfoIds) {
                 $q->where('imageable_type', 'App\\Models\\Rectifier_information')
                     ->whereIn('imageable_id', $rectifierInfoIds);
             })
-            ->orWhere(function($q) use ($solarWindInfoIds) {
+            ->orWhere(function ($q) use ($solarWindInfoIds) {
                 $q->where('imageable_type', 'App\\Models\\Solar_wind_information')
                     ->whereIn('imageable_id', $solarWindInfoIds);
             });
@@ -150,7 +152,7 @@ class SiteRepository implements SiteRepositoryInterface
         $allImages = $imagesQuery->pluck('image')->toArray();
 
         // 4) Delete those files in one go
-        if (! empty($allImages)) {
+        if (!empty($allImages)) {
             // Assuming 'image' column holds paths relative to storage/app/public,
             // e.g. "site/original/abc.jpg" or "generator/xyz.png"
             Storage::disk('public')->delete($allImages);
@@ -160,18 +162,18 @@ class SiteRepository implements SiteRepositoryInterface
     }
     public function getSiteDetails(int $siteId)
     {
-        return Site::with([
-            // Load only the relationships that contain details
+        $site = Site::with([
             'tower_informations',
             'band_informations',
+            'generator_informations',
             'solar_wind_informations',
             'rectifier_informations',
-            'generator_informations',
-            'fiber_informations',
             'environment_informations',
             'lvdp_informations',
+            'fiber_informations',
             'amperes_informations',
             'tcu_informations',
         ])->findOrFail($siteId);
+        return new SiteResource($site);
     }
 }

@@ -33,16 +33,16 @@ class SiteService
             $this->siteRepository->storeImages($site, $request->file('fuel_cage_images', []), 'fuel_cage', 'fuel_cage');
 
             $relatedEntities = [
-                'tower_informations'      => 'tower_images',
+                'tower_informations' => 'tower_images',
                 'solar_wind_informations' => 'solar_and_wind_batteries_images',
-                'rectifier_informations'  => [
-                    'rectifier_images'           => 'rectifier/rectifierImages',
+                'rectifier_informations' => [
+                    'rectifier_images' => 'rectifier/rectifierImages',
                     'rectifier_batteries_images' => 'rectifier/batteryImages',
                 ],
             ];
 
             foreach ($relatedEntities as $relation => $imagesKey) {
-                $data  = $request->input($relation, []);
+                $data = $request->input($relation, []);
                 $files = $request->allFiles();
                 $this->siteRepository->storeRelatedEntity($site, $relation, $imagesKey, $data, $files);
             }
@@ -65,7 +65,7 @@ class SiteService
 
             $relations = [
                 'generator_informations' => 'generator_images',
-                'band_informations'      => 'rbs_images',
+                'band_informations' => 'rbs_images',
             ];
 
             foreach ($relations as $relation => $fileKey) {
@@ -89,10 +89,12 @@ class SiteService
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
     public function getAllSites()
     {
         return $this->siteRepository->getAllSites();
     }
+
     public function deleteSites(array $siteIds): int
     {
         DB::beginTransaction();
@@ -105,7 +107,8 @@ class SiteService
             throw $e;
         }
     }
-    public function getSiteDetails (int $siteId)
+
+    public function getSiteDetails(int $siteId)
     {
         return $this->siteRepository->getSiteDetails($siteId);
     }

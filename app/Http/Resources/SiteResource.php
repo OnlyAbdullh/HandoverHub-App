@@ -14,6 +14,7 @@ class SiteResource extends JsonResource
      */
     public function toArray($request)
     {
+        $bands = $this->whenLoaded('band_informations');
         return [
             'sites' => [
                 'name' => $this->name,
@@ -38,7 +39,12 @@ class SiteResource extends JsonResource
                 'generator_remark' => $this->generator_remark,
             ],
             'tower_informations' => new TowerInformationResource($this->whenLoaded('tower_informations')),
-            'band_informations' => new BandInformationResource($this->whenLoaded('band_informations')),
+            'band_informations' => [
+                'GSM_900'   => $bands ? new BandInformationResource($bands->firstWhere('band_type', 'GSM 900')) : null,
+                'GSM_1800'  => $bands ? new BandInformationResource($bands->firstWhere('band_type', 'GSM 1800')) : null,
+                '3G'        => $bands ? new BandInformationResource($bands->firstWhere('band_type', '3G')) : null,
+                'LTE'       => $bands ? new BandInformationResource($bands->firstWhere('band_type', 'LTE')) : null,
+            ],
             'generator_informations' => GeneratorInformationResource::collection($this->whenLoaded('generator_informations')),
             'solar_wind_informations' => new SolarWindInformationResource($this->whenLoaded('solar_wind_informations')),
             'rectifier_informations' => new RectifierInformationResource($this->whenLoaded('rectifier_informations')),
