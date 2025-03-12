@@ -176,4 +176,10 @@ class SiteRepository implements SiteRepositoryInterface
         ])->findOrFail($siteId);
         return new SiteResource($site);
     }
+    public function getSiteImages(int $siteId, string $imageType)
+    {
+        $site = Site::findOrFail($siteId);
+
+        return $site->images()->where('type', $imageType)->get();
+    }
 }

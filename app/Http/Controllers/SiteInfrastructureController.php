@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\SitesExport;
+use App\Http\Resources\ImageResource;
 use App\Services\SiteService;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -43,6 +44,7 @@ class SiteInfrastructureController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
     public function showSite(int $id)
     {
         try {
@@ -52,10 +54,25 @@ class SiteInfrastructureController extends Controller
             return response()->json(['error' => $e->getMessage()], 404);
         }
     }
+
     public function exportSelectedSites(Request $request)
     {
         $siteIds = $request->input('site_ids', []);
 
         return Excel::download(new SitesExport($siteIds), 'sites.xlsx');
+    }
+
+    public function getSiteImages($siteId, $type)
+    {
+        try {
+            $images = $this->siteService->getSiteImages($siteId, $type);
+            return response()->json([
+                'data' => ImageResource::collection($images)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }

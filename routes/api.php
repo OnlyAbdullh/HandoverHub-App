@@ -25,3 +25,5 @@ Route::get('sites/{id}', [SiteInfrastructureController::class, 'showSite']);
 
 Route::post('/sites/export', [SiteInfrastructureController::class, 'exportSelectedSites'])
     ->name('sites.export.selected');
+
+Route::get('/site-images/{siteId}/{type}', [SiteInfrastructureController::class, 'getSiteImages']);

@@ -21,4 +21,5 @@ interface SiteRepositoryInterface
     public function getAllSites();
     public function deleteSites(array $siteIds): int;
     public function getSiteDetails(int $siteId);
+    public function getSiteImages(int $siteId, string $imageType);
 }

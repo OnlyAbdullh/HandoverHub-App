@@ -5,10 +5,17 @@ namespace App\Services;
 use App\Repositories\SiteRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class SiteService
 {
     protected $siteRepository;
+    protected array $allowedImageTypes = [
+        'original',
+        'additional',
+        'transmission',
+        'fuel_cage'
+    ];
 
     public function __construct(SiteRepositoryInterface $siteRepository)
     {
@@ -40,7 +47,6 @@ class SiteService
                     'rectifier_batteries_images' => 'rectifier/batteryImages',
                 ],
             ];
-
             foreach ($relatedEntities as $relation => $imagesKey) {
                 $data = $request->input($relation, []);
                 $files = $request->allFiles();
@@ -111,5 +117,13 @@ class SiteService
     public function getSiteDetails(int $siteId)
     {
         return $this->siteRepository->getSiteDetails($siteId);
+    }
+    public function getSiteImages(int $siteId, string $imageType)
+    {
+        if (!in_array($imageType, $this->allowedImageTypes)) {
+            throw new Exception('the type of the images is not true');
+        }
+        $images = $this->siteRepository->getSiteImages($siteId, $imageType);
+        return $images;
     }
 }
