@@ -3,15 +3,28 @@
 namespace App\Repositories;
 
 use App\Http\Resources\SiteResource;
+use App\Models\Image;
 use App\Models\Site;
-use App\Repositories\SiteRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Tower_information;
+use App\Models\Solar_wind_information;
+use App\Models\Rectifier_information;
+use App\Models\Generator_information;
+use App\Models\Band_information;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class SiteRepository implements SiteRepositoryInterface
 {
+    protected $typeModelMapping = [
+        'tower_images' => Tower_information::class,
+        'solar_and_wind_batteries_images' => Solar_wind_information::class,
+        'rectifier_images' => Rectifier_information::class,
+        'rectifier_batteries_images' => Rectifier_information::class,
+        'generator_images' => Generator_information::class,
+        'rbs_images' => Band_information::class,
+    ];
+
     public function siteExists(string $code): bool
     {
         return Site::where('code', $code)->exists();
@@ -49,7 +62,7 @@ class SiteRepository implements SiteRepositoryInterface
             foreach ($imagesKey as $key => $folder) {
                 if (isset($files[$key]) && !empty($files[$key])) {
                     $entity = $entity ?: $site->{$relation}()->create([]);
-                    $this->storeImages($entity, $files[$key], $folder);
+                    $this->storeImages($entity, $files[$key], $folder,$key);
                 }
             }
         } else {
@@ -57,7 +70,7 @@ class SiteRepository implements SiteRepositoryInterface
             if (isset($files[$imagesKey]) && !empty($files[$imagesKey])) {
                 $entity = $entity ?: $site->{$relation}()->create([]);
                 $folder = str_replace('_informations', '', $relation);
-                $this->storeImages($entity, $files[$imagesKey], $folder);
+                $this->storeImages($entity, $files[$imagesKey], $folder,$imagesKey);
             }
         }
     }
@@ -160,6 +173,7 @@ class SiteRepository implements SiteRepositoryInterface
 
         return Site::whereIn('id', $siteIds)->delete();
     }
+
     public function getSiteDetails(int $siteId)
     {
         $site = Site::with([
@@ -176,10 +190,25 @@ class SiteRepository implements SiteRepositoryInterface
         ])->findOrFail($siteId);
         return new SiteResource($site);
     }
+
     public function getSiteImages(int $siteId, string $imageType)
     {
         $site = Site::findOrFail($siteId);
 
         return $site->images()->where('type', $imageType)->get();
+    }
+
+    public function getImages(int $siteId, string $type)
+    {
+        if (!array_key_exists($type, $this->typeModelMapping)) {
+            throw new \InvalidArgumentException("Invalid image type: {$type}");
+        }
+
+        $modelClass = $this->typeModelMapping[$type];
+        return Image::where('type', $type)
+            ->whereHasMorph('imageable', [$modelClass], function ($query) use ($siteId) {
+                $query->where('site_id', $siteId);
+            })
+            ->get();
     }
 }

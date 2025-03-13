@@ -75,4 +75,15 @@ class SiteInfrastructureController extends Controller
             ], 400);
         }
     }
+
+    public function getImages($siteId, $type)
+    {
+        try {
+            $images = $this->siteService->getImages($siteId, $type);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+
+        return response()->json(['data' => ImageResource::collection($images)], 200);
+    }
 }

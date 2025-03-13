@@ -128,4 +128,8 @@ class SiteService
         return $images;
     }
 
+    public function getImages(int $siteId, string $type)
+    {
+        return $this->siteRepository->getImages($siteId, $type);
+    }
 }
