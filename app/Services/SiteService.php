@@ -6,6 +6,7 @@ use App\Repositories\SiteRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class SiteService
 {
@@ -73,6 +74,7 @@ class SiteService
                 'generator_informations' => 'generator_images',
                 'band_informations' => 'rbs_images',
             ];
+            $files = $request->allFiles();
 
             foreach ($relations as $relation => $fileKey) {
                 if ($request->has($relation)) {
@@ -80,9 +82,7 @@ class SiteService
                         $filtered = array_filter($info, function ($value) {
                             return !is_null($value) && $value !== '';
                         });
-                        if (!empty($filtered) || $request->hasFile($fileKey)) {
-                            $site->{$relation}()->create($filtered);
-                        }
+                        $this->siteRepository->storeRelatedEntity($site, $relation, $fileKey, $filtered, $files);
                     }
                 }
             }
@@ -118,6 +118,7 @@ class SiteService
     {
         return $this->siteRepository->getSiteDetails($siteId);
     }
+
     public function getSiteImages(int $siteId, string $imageType)
     {
         if (!in_array($imageType, $this->allowedImageTypes)) {
@@ -126,4 +127,5 @@ class SiteService
         $images = $this->siteRepository->getSiteImages($siteId, $imageType);
         return $images;
     }
+
 }
