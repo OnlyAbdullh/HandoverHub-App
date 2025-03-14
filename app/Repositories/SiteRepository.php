@@ -223,10 +223,17 @@ class SiteRepository implements SiteRepositoryInterface
         }
 
         if (isset($data['band_informations'])) {
-            if ($site->band_informations) {
-                $site->band_informations->update($data['band_informations']);
-            } else {
-                $site->band_informations()->create($data['band_informations']);
+            foreach ($data['band_informations'] as $bandType => $bandData) {
+                if (!in_array($bandType, ['GSM 900', 'GSM 1800', '3G', 'LTE'])) {
+                    throw new \Exception('no band_types are provided');
+                }
+                $bandRecord = $site->band_informations()->where('band_type', $bandType)->first();
+                if ($bandRecord) {
+                    $bandRecord->update($bandData);
+                } else {
+                    $bandData['band_type'] = $bandType;
+                    $site->band_informations()->create($bandData);
+                }
             }
         }
 
