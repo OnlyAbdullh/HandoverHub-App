@@ -25,6 +25,12 @@ class SiteRepository implements SiteRepositoryInterface
         'rbs_images' => Band_information::class,
     ];
 
+    protected $tcuTypeMap = [
+        '2G' => 1,
+        '3G' => 2,
+        'LTE' => 4,
+    ];
+
     public function siteExists(string $code): bool
     {
         return Site::where('code', $code)->exists();
@@ -77,20 +83,8 @@ class SiteRepository implements SiteRepositoryInterface
 
     public function storeTcuInformation(Site $site, array $tcuData): void
     {
-        if (isset($tcuData['tcu_types']) && is_array($tcuData['tcu_types'])) {
-            $tcuTypeMap = [
-                '2G' => 1,
-                '3G' => 2,
-                'LTE' => 4,
-            ];
-            $tcuTypesValue = 0;
-            foreach ($tcuData['tcu_types'] as $type) {
-                $tcuTypesValue |= $tcuTypeMap[trim($type)] ?? 0;
-            }
-            $tcuData['tcu_types'] = $tcuTypesValue;
-        } else {
-            $tcuData['tcu_types'] = 0;
-        }
+        $tcuTypesValue = $this->convertTcuTypes($tcuData['tcu_types'] ?? []);
+        $tcuData['tcu_types'] = $tcuTypesValue;
         $site->tcu_informations()->create($tcuData);
     }
 
@@ -298,11 +292,25 @@ class SiteRepository implements SiteRepositoryInterface
         }
 
         if (isset($data['tcu_informations'])) {
+            $tcuData = $data['tcu_informations'];
+            $tcuData['tcu_types'] = $this->convertTcuTypes($tcuData['tcu_types'] ?? []);
             if ($site->tcu_informations) {
-                $site->tcu_informations->update($data['tcu_informations']);
+                $site->tcu_informations->update($tcuData);
             } else {
-                $site->tcu_informations()->create($data['tcu_informations']);
+                $site->tcu_informations()->create($tcuData);
             }
         }
+    }
+
+    private function convertTcuTypes($types): int
+    {
+        if (!is_array($types)) {
+            return (int)$types;
+        }
+        $tcuTypesValue = 0;
+        foreach ($types as $type) {
+            $tcuTypesValue |= $this->tcuTypeMap[trim($type)] ?? 0;
+        }
+        return $tcuTypesValue;
     }
 }
