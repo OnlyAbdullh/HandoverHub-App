@@ -80,10 +80,13 @@ class SiteInfrastructureController extends Controller
     {
         try {
             $images = $this->siteService->getImages($siteId, $type);
+            $uniqueImages = $images->unique(function($item) {
+                return $item->image;
+            });
         } catch (\InvalidArgumentException $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        return response()->json(['data' => ImageResource::collection($images)], 200);
+        return response()->json(['data' => ImageResource::collection($uniqueImages)]);
     }
 }
