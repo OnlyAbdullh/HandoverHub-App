@@ -15,6 +15,7 @@ class GeneratorInformationResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'                      => $this->id,
             'gen_type_and_capacity'   => $this->gen_type_and_capacity,
             'gen_hour_meter'          => $this->gen_hour_meter,
             'gen_fuel_consumption'    => $this->gen_fuel_consumption,
