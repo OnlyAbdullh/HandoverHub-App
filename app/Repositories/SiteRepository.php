@@ -62,7 +62,7 @@ class SiteRepository implements SiteRepositoryInterface
             foreach ($imagesKey as $key => $folder) {
                 if (isset($files[$key]) && !empty($files[$key])) {
                     $entity = $entity ?: $site->{$relation}()->create([]);
-                    $this->storeImages($entity, $files[$key], $folder,$key);
+                    $this->storeImages($entity, $files[$key], $folder, $key);
                 }
             }
         } else {
@@ -70,7 +70,7 @@ class SiteRepository implements SiteRepositoryInterface
             if (isset($files[$imagesKey]) && !empty($files[$imagesKey])) {
                 $entity = $entity ?: $site->{$relation}()->create([]);
                 $folder = str_replace('_informations', '', $relation);
-                $this->storeImages($entity, $files[$imagesKey], $folder,$imagesKey);
+                $this->storeImages($entity, $files[$imagesKey], $folder, $imagesKey);
             }
         }
     }
@@ -210,5 +210,99 @@ class SiteRepository implements SiteRepositoryInterface
                 $query->where('site_id', $siteId);
             })
             ->get();
+    }
+
+    public function updateSiteInformation($siteId, array $data)
+    {
+        $site = Site::findOrFail($siteId);
+
+        if (isset($data['sites'])) {
+            $site->update($data['sites']);
+        }
+
+        if (isset($data['tower_informations'])) {
+            if ($site->tower_informations) {
+                $site->tower_informations->update($data['tower_informations']);
+            } else {
+                $site->tower_informations()->create($data['tower_informations']);
+            }
+        }
+
+        if (isset($data['band_informations'])) {
+            if ($site->band_informations) {
+                $site->band_informations->update($data['band_informations']);
+            } else {
+                $site->band_informations()->create($data['band_informations']);
+            }
+        }
+
+        if (isset($data['generator_informations'])) {
+            foreach ($data['generator_informations'] as $genData) {
+                if (isset($genData['id'])) {
+                    $generator = $site->generator_informations()->find($genData['id']);
+                    if ($generator) {
+                        $generator->update($genData);
+                    }
+                } else {
+                    $site->generator_informations()->create($genData);
+                }
+            }
+        }
+
+        if (isset($data['solar_wind_informations'])) {
+            if ($site->solar_wind_informations) {
+                $site->solar_wind_informations->update($data['solar_wind_informations']);
+            } else {
+                $site->solar_wind_informations()->create($data['solar_wind_informations']);
+            }
+        }
+
+        if (isset($data['rectifier_informations'])) {
+            if ($site->rectifier_informations) {
+                $site->rectifier_informations->update($data['rectifier_informations']);
+            } else {
+                $site->rectifier_informations()->create($data['rectifier_informations']);
+            }
+        }
+
+        if (isset($data['environment_informations'])) {
+            if ($site->environment_informations) {
+                $site->environment_informations->update($data['environment_informations']);
+            } else {
+                $site->environment_informations()->create($data['environment_informations']);
+            }
+        }
+
+        if (isset($data['lvdp_informations'])) {
+            if ($site->lvdp_informations) {
+                $site->lvdp_informations->update($data['lvdp_informations']);
+            } else {
+                $site->lvdp_informations()->create($data['lvdp_informations']);
+            }
+        }
+
+        if (isset($data['fiber_informations'])) {
+            if ($site->fiber_informations) {
+                $site->fiber_informations->update($data['fiber_informations']);
+            } else {
+                $site->fiber_informations()->create($data['fiber_informations']);
+            }
+        }
+
+        if (isset($data['amperes_informations'])) {
+            if ($site->amperes_informations) {
+                $site->amperes_informations->update($data['amperes_informations']);
+            } else {
+                $site->amperes_informations()->create($data['amperes_informations']);
+            }
+        }
+
+        if (isset($data['tcu_informations'])) {
+            if ($site->tcu_informations) {
+                $site->tcu_informations->update($data['tcu_informations']);
+            } else {
+                $site->tcu_informations()->create($data['tcu_informations']);
+            }
+        }
     }
 }

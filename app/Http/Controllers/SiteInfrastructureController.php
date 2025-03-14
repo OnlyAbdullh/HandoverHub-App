@@ -80,7 +80,7 @@ class SiteInfrastructureController extends Controller
     {
         try {
             $images = $this->siteService->getImages($siteId, $type);
-            $uniqueImages = $images->unique(function($item) {
+            $uniqueImages = $images->unique(function ($item) {
                 return $item->image;
             });
         } catch (\InvalidArgumentException $e) {
@@ -88,5 +88,14 @@ class SiteInfrastructureController extends Controller
         }
 
         return response()->json(['data' => ImageResource::collection($uniqueImages)]);
+    }
+
+    public function update(Request $request, $siteId)
+    {
+        try {
+            $this->siteService->updateSiteInformation($siteId, $request->all());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 }

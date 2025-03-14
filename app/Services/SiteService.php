@@ -132,4 +132,9 @@ class SiteService
     {
         return $this->siteRepository->getImages($siteId, $type);
     }
+
+    public function updateSiteInformation($siteId, array $data)
+    {
+        $this->siteRepository->updateSiteInformation($siteId, $data);
+    }
 }
