@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|unique:users,username',
+            'username' => 'required|string|unique:users,name',
             'password' => 'required|string|min:6',
             'role' => 'required|string'
         ]);
 
         $user = User::create([
-            'username' => $request->username,
+            'name' => $request->username,
             'password' => Hash::make($request->password),
         ]);
 
+        if (!Role::where('name', $request->role)->exists()) {
+            return response()->json(['error' => 'The specified role does not exist.'], 400);
+        }
         $user->assignRole($request->role);
 
         return response()->json([
@@ -35,7 +39,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('username', $request->username)->first();
+        $user = User::where('name', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
