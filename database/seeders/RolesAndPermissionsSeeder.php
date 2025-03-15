@@ -22,14 +22,13 @@ class RolesAndPermissionsSeeder extends Seeder
         $sitePermissions = [
             'site.create',
             'site.get',
-            'site.show',
+            'site.view',
             'site.update',
             'site.delete',
             'site.export',
             'site.images',
         ];
 
-        // Define user-related permissions for user management APIs
         $userPermissions = [
             'user.create',
             'user.view',
@@ -37,30 +36,25 @@ class RolesAndPermissionsSeeder extends Seeder
             'user.delete',
         ];
 
-        // Create or get the site permissions
-        foreach ($sitePermissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        // Create permissions with the correct guard
+        foreach (array_merge($sitePermissions, $userPermissions) as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'sanctum'
+            ]);
         }
 
-        // Create or get the user permissions
-        foreach ($userPermissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
-        }
+        // Create roles with correct guard
+        $role1 = Role::firstOrCreate(['name' => 'sites_viewer', 'guard_name' => 'sanctum']);
+        $role1->syncPermissions(['site.get', 'site.view', 'site.images', 'site.export']);
 
-        // Role 1: Can read all the sites.
-        $role1 = Role::firstOrCreate(['name' => 'sites_viewer']);
-        $role1->syncPermissions(['site.view', 'site.images', 'site.export']);
+        $role2 = Role::firstOrCreate(['name' => 'own_sites_viewer', 'guard_name' => 'sanctum']);
+        $role2->syncPermissions(['site.get', 'site.view', 'site.images', 'site.export']);
 
-        // Role 2: Can read only his own sites.
-        $role2 = Role::firstOrCreate(['name' => 'own_sites_viewer']);
-        $role2->syncPermissions(['site.view', 'site.images', 'site.export']);
-
-        // Role 3: Site Manager (full access on sites, no user management)
-        $role3 = Role::firstOrCreate(['name' => 'site_manager']);
+        $role3 = Role::firstOrCreate(['name' => 'site_manager', 'guard_name' => 'sanctum']);
         $role3->syncPermissions($sitePermissions);
 
-        // Role 4: User Manager (can edit/delete sites & manage users)
-        $role4 = Role::firstOrCreate(['name' => 'user_manager']);
+        $role4 = Role::firstOrCreate(['name' => 'user_manager', 'guard_name' => 'sanctum']);
         $role4->syncPermissions($userPermissions);
     }
 }
