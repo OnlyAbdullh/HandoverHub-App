@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Site;
 use App\Repositories\SiteRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,9 +34,13 @@ class SiteService
             if ($this->siteRepository->siteExists($siteData['code'] ?? '')) {
                 return response()->json(['message' => 'This code already entered'], 400);
             }
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+            $siteData['user_name'] = $user->username;
 
             $site = $this->siteRepository->createSite($siteData);
-
             $this->siteRepository->storeImages($site, $request->file('general_site_images', []), 'site/original');
             $this->siteRepository->storeImages($site, $request->file('additional_images', []), 'site/additional', 'additional');
             $this->siteRepository->storeImages($site, $request->file('transmission_images', []), 'transmission', 'transmission');
@@ -101,7 +106,7 @@ class SiteService
     {
         $user = Auth::user();
 
-        if ($user->hasRole('mtn_account')) {
+        if ($user->hasRole('employee')) {
             return $this->siteRepository->getSitesByUsername($user->username);
         } else {
             return $this->siteRepository->getAllSites();
@@ -123,6 +128,14 @@ class SiteService
 
     public function getSiteDetails(int $siteId)
     {
+        $user = auth()->user();
+
+        if ($user->hasRole('employee')) {
+            $siteUserName = Site::where('id', $siteId)->value('user_name');
+            if ($siteUserName !== $user->username) {
+                throw new Exception('you do not have the right to view this site', 403);
+            }
+        }
         return $this->siteRepository->getSiteDetails($siteId);
     }
 

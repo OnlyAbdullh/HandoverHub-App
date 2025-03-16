@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:site.images');
 
     Route::get('sites/{id}', [SiteInfrastructureController::class, 'showSite'])
-        ->middleware('permission:site.show');
+        ->middleware('permission:site.view');
 
     Route::put('sites/{id}', [SiteInfrastructureController::class, 'update'])
         ->middleware('permission:site.update');

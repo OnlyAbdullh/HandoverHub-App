@@ -12,6 +12,7 @@ class Site extends Model
     protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = [
+        'user_name',
         'name',
         'code',
         'governorate',

@@ -96,7 +96,7 @@ class SiteRepository implements SiteRepositoryInterface
     public function getSitesByUsername(string $username)
     {
         return Site::select('name', 'code', 'area', 'street', 'city')
-            ->where('username', $username)
+            ->where('user_name', $username)
             ->get();
     }
 
