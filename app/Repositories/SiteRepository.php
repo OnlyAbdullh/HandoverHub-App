@@ -93,6 +93,13 @@ class SiteRepository implements SiteRepositoryInterface
         return Site::select('name', 'code', 'area', 'street', 'city')->get();
     }
 
+    public function getSitesByUsername(string $username)
+    {
+        return Site::select('name', 'code', 'area', 'street', 'city')
+            ->where('username', $username)
+            ->get();
+    }
+
     public function deleteSites(array $siteIds): int
     {
         // 1) Collect all child-record IDs first, so we know what to look for in the images table.

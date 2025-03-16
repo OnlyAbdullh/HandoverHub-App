@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\SiteRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Storage;
@@ -98,7 +99,13 @@ class SiteService
 
     public function getAllSites()
     {
-        return $this->siteRepository->getAllSites();
+        $user = Auth::user();
+
+        if ($user->hasRole('mtn_account')) {
+            return $this->siteRepository->getSitesByUsername($user->username);
+        } else {
+            return $this->siteRepository->getAllSites();
+        }
     }
 
     public function deleteSites(array $siteIds): int

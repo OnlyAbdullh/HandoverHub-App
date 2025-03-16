@@ -12,19 +12,20 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|unique:users,name',
+            'username' => 'required|string|unique:users,username',
             'password' => 'required|string|min:6',
             'role' => 'required|string'
-        ]);
-
-        $user = User::create([
-            'name' => $request->username,
-            'password' => Hash::make($request->password),
         ]);
 
         if (!Role::where('name', $request->role)->exists()) {
             return response()->json(['error' => 'The specified role does not exist.'], 400);
         }
+
+        $user = User::create([
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+        ]);
+
         $user->assignRole($request->role);
 
         return response()->json([
@@ -39,7 +40,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('name', $request->username)->first();
+        $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);

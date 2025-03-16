@@ -14,13 +14,13 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!User::where('name', 'Super Admin')->exists()) {
+        if (!User::where('username', 'Super Admin')->exists()) {
             $admin = User::create([
-                'name' => 'Super Admin',
+                'username' => 'Super Admin',
                 'password' => Hash::make('12345678'),
             ]);
 
-            $admin->assignRole('user_manager');
+            $admin->assignRole('manager');
             echo " created successfully\n";
         } else {
             echo "already exist\n";
