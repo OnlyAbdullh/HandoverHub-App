@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 
 class UserController extends Controller
@@ -36,10 +37,25 @@ class UserController extends Controller
      */
     public function deleteUsers(Request $request)
     {
-        User::whereIn('id', $request->ids)->delete();
+        try {
+            DB::transaction(function () use ($request) {
+                PersonalAccessToken::whereIn('tokenable_id', $request->ids)
+                    ->where('tokenable_type', User::class)
+                    ->delete();
 
-        return response()->json(['message' => 'Users deleted successfully'], 200);
+                User::whereIn('id', $request->ids)->delete();
+            });
+
+            return response()->json(['message' => 'Users deleted successfully'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while deleting users',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function updateUser(Request $request)
     {
