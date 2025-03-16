@@ -141,6 +141,13 @@ class SiteService
 
     public function getSiteImages(int $siteId, string $imageType)
     {
+        $user = Auth::user();
+        if ($user->hasRole('employee')) {
+            $siteUserName = Site::where('id', $siteId)->value('user_name');
+            if ($siteUserName !== $user->username) {
+                throw new Exception('you do not have the right to view the images of this site', 403);
+            }
+        }
         if (!in_array($imageType, $this->allowedImageTypes)) {
             throw new Exception('the type of the images is not true');
         }
@@ -150,6 +157,13 @@ class SiteService
 
     public function getImages(int $siteId, string $type)
     {
+        $user = Auth::user();
+        if ($user->hasRole('employee')) {
+            $siteUserName = Site::where('id', $siteId)->value('user_name');
+            if ($siteUserName !== $user->username) {
+                throw new Exception('you do not have the right to view the images of this site', 403);
+            }
+        }
         return $this->siteRepository->getImages($siteId, $type);
     }
 

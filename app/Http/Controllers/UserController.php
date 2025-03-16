@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -15,7 +16,7 @@ class UserController extends Controller
             $role = $user->getRoleNames()->first() ?? null;
             return [
                 'id' => $user->id,
-                'username' => $user->name,
+                'username' => $user->username,
                 'role' => $role,
             ];
         });
@@ -35,13 +36,35 @@ class UserController extends Controller
      */
     public function deleteUsers(Request $request)
     {
-
-        // Optional: Prevent deletion of the authenticated user.
-        // $idsToDelete = array_diff($request->ids, [$request->user()->id]);
-
         User::whereIn('id', $request->ids)->delete();
 
         return response()->json(['message' => 'Users deleted successfully'], 200);
     }
 
+    public function updateUser(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $user = User::findOrFail($request->id);
+
+            if ($request->filled('username')) {
+                $user->username = $request->username;
+            }
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->save();
+            DB::commit();
+
+            return response()->json([
+                'message' => 'User updated successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'un Expected Error'
+            ], 500);
+        }
+    }
 }
