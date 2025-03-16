@@ -18,27 +18,42 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::group(['middleware' => 'role:site_manager'], function () {
-        Route::post('site/store', [SiteInfrastructureController::class, 'storeAllData']);
-        Route::delete('sites/delete', [SiteInfrastructureController::class, 'deleteSites']);
-        Route::put('sites/{id}', [SiteInfrastructureController::class, 'update']);
-    });
+    Route::post('site/store', [SiteInfrastructureController::class, 'storeAllData'])
+        ->middleware('permission:site.create');
 
-    Route::group(['middleware' => 'role:site_manager|sites_viewer|own_sites_viewer'], function () {
-        Route::get('sites', [SiteInfrastructureController::class, 'index']);
-        Route::get('sites/{id}', [SiteInfrastructureController::class, 'showSite']);
-        Route::post('sites/export', [SiteInfrastructureController::class, 'exportSelectedSites'])
-            ->name('sites.export.selected');
-        Route::get('site-images/{siteId}/{type}', [SiteInfrastructureController::class, 'getSiteImages']);
-        Route::get('images/{siteId}/{type}', [SiteInfrastructureController::class, 'getImages']);
-    });
+    Route::get('sites', [SiteInfrastructureController::class, 'index'])
+        ->middleware('permission:site.get');
 
-    Route::group(['middleware' => 'role:user_manager'], function () {
-        Route::post('admin/generate-user', [AuthController::class, 'register']);
-        Route::get('users', [UserController::class, 'getUsers']);
-        Route::delete('users-delete', [UserController::class, 'deleteUsers']);
-        Route::put('users-edit', [UserController::class, 'updateUser']);
-    });
+    Route::get('site-images/{siteId}/{type}', [SiteInfrastructureController::class, 'getSiteImages'])
+        ->middleware('permission:site.images');
+
+    Route::get('images/{siteId}/{type}', [SiteInfrastructureController::class, 'getImages'])
+        ->middleware('permission:site.images');
+
+    Route::get('sites/{id}', [SiteInfrastructureController::class, 'showSite'])
+        ->middleware('permission:site.show');
+
+    Route::put('sites/{id}', [SiteInfrastructureController::class, 'update'])
+        ->middleware('permission:site.update');
+
+    Route::delete('sites/delete', [SiteInfrastructureController::class, 'deleteSites'])
+        ->middleware('permission:site.delete');
+
+    Route::post('sites/export', [SiteInfrastructureController::class, 'exportSelectedSites'])
+        ->middleware('permission:site.export')
+        ->name('sites.export.selected');
+
+    Route::post('admin/generate-user', [AuthController::class, 'register'])
+        ->middleware('permission:user.create');
+
+    Route::get('users', [UserController::class, 'getUsers'])
+        ->middleware('permission:user.view');
+
+    Route::put('users-edit', [UserController::class, 'updateUser'])
+        ->middleware('permission:user.update');
+
+    Route::delete('users-delete', [UserController::class, 'deleteUsers'])
+        ->middleware('permission:user.delete');
 
     Route::get('logout', [AuthController::class, 'logout']);
 });
