@@ -90,7 +90,7 @@ class SiteRepository implements SiteRepositoryInterface
 
     public function getAllSites()
     {
-        return Site::select('name', 'code', 'area', 'street', 'city')->get();
+        return Site::select('id', 'user_name', 'name', 'code', 'area', 'street', 'city')->get();
     }
 
     public function getSitesByUsername(string $username)
