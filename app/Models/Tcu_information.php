@@ -17,6 +17,7 @@ class Tcu_information extends Model
     {
         return $this->belongsTo(Site::class);
     }
+
     protected $appends = ['tcu_types_array'];
 
     public function getTcuTypesArrayAttribute(): array
@@ -29,9 +30,7 @@ class Tcu_information extends Model
 
         $result = [];
         foreach ($tcuTypeMap as $type => $bit) {
-            if (($this->tcu_types & $bit) === $bit) {
-                $result[] = $type;
-            }
+            $result[$type] = (($this->tcu_types & $bit) === $bit);
         }
         return $result;
     }
