@@ -230,20 +230,22 @@ class SiteRepository implements SiteRepositoryInterface
         }
 
         if (isset($data['band_informations'])) {
-            foreach ($data['band_informations'] as $bandType => $bandData) {
+            foreach ($data['band_informations'] as $bandData) {
+                if (!isset($bandData['band_type'])) {
+                    throw new \Exception('band_type is missing from the request');
+                }
+                $bandType = $bandData['band_type'];
                 if (!in_array($bandType, ['GSM 900', 'GSM 1800', '3G', 'LTE'])) {
-                    throw new \Exception('no band_types are provided');
+                    throw new \Exception('no valid band_type is provided');
                 }
                 $bandRecord = $site->band_informations()->where('band_type', $bandType)->first();
                 if ($bandRecord) {
                     $bandRecord->update($bandData);
                 } else {
-                    $bandData['band_type'] = $bandType;
                     $site->band_informations()->create($bandData);
                 }
             }
         }
-
         if (isset($data['generator_informations'])) {
             foreach ($data['generator_informations'] as $genData) {
                 if (isset($genData['id'])) {
@@ -252,6 +254,9 @@ class SiteRepository implements SiteRepositoryInterface
                         $generator->update($genData);
                     }
                 } else {
+                    if ($site->generator_informations()->count() >= 2) {
+                        throw new \Exception("There are already 2 generators for this site.");
+                    }
                     $site->generator_informations()->create($genData);
                 }
             }

@@ -97,6 +97,7 @@ class SiteInfrastructureController extends Controller
     {
         try {
             $this->siteService->updateSiteInformation($siteId, $request->all());
+            return response()->json('Site information updated successfully', 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
