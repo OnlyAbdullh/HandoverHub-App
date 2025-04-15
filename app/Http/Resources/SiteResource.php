@@ -17,6 +17,7 @@ class SiteResource extends JsonResource
         $bands = $this->whenLoaded('band_informations');
         return [
             'site' => [
+                'id'=>$this->id,
                 'name' => $this->name,
                 'code' => $this->code,
                 'governorate' => $this->governorate,
