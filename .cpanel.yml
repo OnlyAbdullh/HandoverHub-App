@@ -1,0 +1,20 @@
+# .cpanel.yml
+version: 2
+
+# تعريف المهام التي ستنفّذ عند كل نشر
+deployment:
+  tasks:
+    - composer install --no-dev --optimize-autoloader
+
+    - php artisan migrate --force
+
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan view:cache
+
+    - php artisan queue:restart
+
+
+# ملاحظات:
+# - تأكد أن ملفك هذا تمّ git add/commit/push عليه إلى الفرع الرئيسي (main أو master).
+# - يمكنك تعديل أي أمر أو إضافة مهام أخرى حسب احتياج مشروعك.
