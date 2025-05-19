@@ -63,3 +63,4 @@ Route::post('login', [AuthController::class, 'login']);
 
 
 Route::post('brands/import', [BrandImportController::class, 'import']);
+Route::post('brands', [BrandImportController::class, 'store']);

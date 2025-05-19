@@ -35,4 +35,22 @@ class BrandImportController extends Controller
         ], 200);
     }
 
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'brands' => 'required|array|min:1',
+            'brands.*' => 'nullable|string',
+        ]);
+
+        $names = $data['brands'];
+        $type = $request->input('type');
+
+        $processed = Brand::importBatch($names, $type);
+
+        return response()->json([
+            'message' => "Processed {$processed} brands.",
+            'count' => $processed,
+            'type_used' => $type,
+        ], 201);
+    }
 }
