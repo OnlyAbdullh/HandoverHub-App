@@ -6,6 +6,7 @@ use App\Http\Controllers\SiteInfrastructureController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MtnSiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,3 +65,6 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::post('brands/import', [BrandImportController::class, 'import']);
 Route::post('brands', [BrandImportController::class, 'store']);
+
+Route::apiResource('mtn-sites', MtnSiteController::class);
+Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);

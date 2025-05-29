@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,4 +52,15 @@ class Handler extends ExceptionHandler
             ], 403);
         });
     }
+
+
+
+    /*   public function invalidJson($request, \Illuminate\Validation\ValidationException $exception)
+       {
+           return response()->json([
+               'data' => null,
+               'message' => $exception->getMessage(),
+               'status' => 422
+           ], 422);
+       }*/
 }
