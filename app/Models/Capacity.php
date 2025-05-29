@@ -11,6 +11,11 @@ class Capacity extends Model
 
     protected $fillable = ['value'];
 
+
+    protected $casts = [
+        'value' => 'integer',
+    ];
+
     /**
      * Get the engines with this capacity.
      */

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandImportController;
+use App\Http\Controllers\CapacityController;
 use App\Http\Controllers\SiteInfrastructureController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -68,3 +69,10 @@ Route::post('brands', [BrandImportController::class, 'store']);
 
 Route::apiResource('mtn-sites', MtnSiteController::class);
 Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);
+
+Route::prefix('capacities')->group(function () {
+    Route::get('/', [CapacityController::class, 'index']);
+    Route::post('/', [CapacityController::class, 'store']);
+    Route::put('/{id}', [CapacityController::class, 'update']);
+    Route::delete('/{id}', [CapacityController::class, 'destroy']);
+});

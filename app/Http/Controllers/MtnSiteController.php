@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateMtnSiteRequest;
 use App\Http\Requests\StoreMtnSiteRequest;
+use App\Http\Requests\UpdateRequests\UpdateMtnSiteRequest;
 use App\Http\Resources\MtnSiteResource;
 use App\Services\MtnSiteService;
 use Illuminate\Http\Request;
