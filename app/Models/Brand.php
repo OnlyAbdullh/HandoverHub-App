@@ -9,8 +9,49 @@ class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type'];
+    protected $fillable = [
+        'name',
+        'type'
+    ];
 
+    protected $casts = [
+        'type' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    // Constants for type enum
+    const TYPE_GENERATOR = 'generator';
+    const TYPE_ENGINE = 'engine';
+
+    public static function getTypeOptions(): array
+    {
+        return [
+            self::TYPE_GENERATOR => 'Generator',
+            self::TYPE_ENGINE => 'Engine',
+        ];
+    }
+
+    // Scopes
+    public function scopeByType($query, string $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeByName($query, string $name)
+    {
+        return $query->where('name', 'LIKE', "%{$name}%");
+    }
+
+    public function scopeGenerators($query)
+    {
+        return $query->byType(self::TYPE_GENERATOR);
+    }
+
+    public function scopeEngines($query)
+    {
+        return $query->byType(self::TYPE_ENGINE);
+    }
     public function engines()
     {
         return $this->hasMany(Engine::class);

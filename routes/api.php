@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandImportController;
 use App\Http\Controllers\CapacityController;
 use App\Http\Controllers\SiteInfrastructureController;
@@ -75,4 +76,11 @@ Route::prefix('capacities')->group(function () {
     Route::post('/', [CapacityController::class, 'store']);
     Route::put('/{id}', [CapacityController::class, 'update']);
     Route::delete('/{id}', [CapacityController::class, 'destroy']);
+});
+
+Route::prefix('brands')->group(function () {
+    Route::get('/', [BrandController::class, 'index']);
+    Route::post('/', [BrandController::class, 'store']);
+    Route::put('/{brand}', [BrandController::class, 'update']);
+    Route::delete('/{brand}', [BrandController::class, 'destroy']);
 });
