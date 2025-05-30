@@ -16,7 +16,7 @@ class CapacityResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'value' => $this->value,
+            'capacity' => $this->value,
         ];
     }
 }

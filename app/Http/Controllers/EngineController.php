@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateEngineRequest;
+use App\Http\Resources\EngineResource;
 use App\Services\EngineService;
 use App\Exceptions\EngineException;
 use Illuminate\Http\JsonResponse;
@@ -24,7 +25,7 @@ class EngineController extends Controller
         $result = $this->engineService->getAllEngines();
 
         return response()->json([
-            'data' => $result['data'],
+            'data' => EngineResource::collection($result['data']),
             'message' => $result['message'],
             'status' => $result['status']
         ], $result['status']);
@@ -39,9 +40,9 @@ class EngineController extends Controller
             $result = $this->engineService->createEngine($request->validated());
 
             return response()->json([
-                'data' => $result['data'],
+                'data' => new EngineResource($result['data']),
                 'message' => $result['message'],
-                'status' => $result['status']
+                'status' => $result['status'],
             ], $result['status']);
 
         } catch (EngineException $e) {
@@ -75,12 +76,6 @@ class EngineController extends Controller
                 'status' => $e->getCode()
             ], $e->getCode());
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'data' => null,
-                'message' => 'Internal server error',
-                'status' => 500
-            ], 500);
         }
     }
 }

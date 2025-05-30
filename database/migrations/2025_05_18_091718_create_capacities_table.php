@@ -10,6 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        Schema::create('capacities', function (Blueprint $table) {
+            $table->id();
+            $table->integer('value');
+            $table->timestamps();
+        });
     }
 
     /**

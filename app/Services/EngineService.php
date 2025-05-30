@@ -27,7 +27,7 @@ class EngineService
             $engines = $this->engineRepository->getAllWithRelations();
 
             return [
-                'data' => $engines->toArray(),
+                'data' => $engines,
                 'message' => 'Engines retrieved successfully',
                 'status' => 200
             ];
@@ -70,6 +70,8 @@ class EngineService
             }
 
             $engine = $this->engineRepository->create($data);
+
+            //$engine->load(['brand:id,name', 'capacity:id,value']);
 
             DB::commit();
 

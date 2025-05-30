@@ -24,7 +24,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('parts', function (Blueprint $table) {
+        Schema::table('engines', function (Blueprint $table) {
             $table->dropUnique('brand_capacity_unique');
         });
         Schema::dropIfExists('engines');

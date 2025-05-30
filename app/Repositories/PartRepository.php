@@ -1,0 +1,71 @@
+<?php
+namespace App\Repositories;
+
+use App\Models\Part;
+use App\Repositories\Contracts\PartRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+
+class PartRepository implements PartRepositoryInterface
+{
+    protected $model;
+
+    public function __construct(Part $model)
+    {
+        $this->model = $model;
+    }
+
+    public function all(): Collection
+    {
+        return $this->model->with([
+            'engines.brand',
+            'engines.capacity'
+        ])->get();
+    }
+
+    public function find($id): ?Part
+    {
+        return $this->model->with([
+            'engines.brand',
+            'engines.capacity'
+        ])->find($id);
+    }
+
+    public function create(array $data): Part
+    {
+        return $this->model->create($data);
+    }
+
+    public function update($id, array $data): bool
+    {
+        $part = $this->model->find($id);
+        if (!$part) {
+            return false;
+        }
+        return $part->update($data);
+    }
+
+    public function delete($id): bool
+    {
+        $part = $this->model->find($id);
+        if (!$part) {
+            return false;
+        }
+        return $part->delete();
+    }
+
+    public function attachEngines($partId, array $engineIds): void
+    {
+        $part = $this->model->find($partId);
+        if ($part) {
+            $part->engines()->attach($engineIds);
+        }
+    }
+
+    public function syncEngines($partId, array $engineIds): void
+    {
+        $part = $this->model->find($partId);
+        if ($part) {
+            $part->engines()->sync($engineIds);
+        }
+    }
+}

@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->boolean('is_public')->default(true);
-            $table->index(['name', 'is_public']);
+            $table->boolean('is_general')->default(true);
+            $table->index(['name', 'is_general']);
             $table->timestamps();
         });
     }
@@ -26,7 +26,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('parts', function (Blueprint $table) {
-            $table->dropIndex(['name', 'is_public']);
+            $table->dropIndex(['name', 'is_general']);
         });
         Schema::dropIfExists('parts');
     }
