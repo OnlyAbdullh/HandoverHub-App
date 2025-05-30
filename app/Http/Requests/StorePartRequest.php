@@ -24,7 +24,7 @@ class StorePartRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255|unique:parts,code',
-            'is_general' => 'boolean',
+            'is_general' => ['required', 'boolean'],
             'engine_ids' => 'array',
             'engine_ids.*' => 'exists:engines,id'
         ];
@@ -33,10 +33,10 @@ class StorePartRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'اسم القطعة مطلوب',
-            'code.required' => 'كود القطعة مطلوب',
-            'code.unique' => 'كود القطعة موجود مسبقاً',
-            'engine_ids.*.exists' => 'أحد المحركات المحددة غير موجود'
+            'name.required' => 'the name of the part is required',
+            'code.required' => 'the code of the part is required',
+            'code.unique' => 'the code of the part is already exist',
+            'engine_ids.*.exists' => 'one of the Engines is not exist'
         ];
     }
 }

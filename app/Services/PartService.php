@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\Contracts\PartRepositoryInterface;
@@ -49,7 +50,7 @@ class PartService
             $partData = [
                 'name' => $data['name'],
                 'code' => $data['code'],
-                'is_general' => $data['is_general'] ?? false
+                'is_general' => $data['is_general']
             ];
 
             $part = $this->partRepository->create($partData);
@@ -63,7 +64,7 @@ class PartService
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error creating part: ' . $e->getMessage());
-            throw new Exception('فشل في إنشاء القطعة');
+            throw new Exception('فشل في إنشاء المادة');
         }
     }
 
@@ -80,7 +81,7 @@ class PartService
 
             $updated = $this->partRepository->update($id, $partData);
             if (!$updated) {
-                throw new Exception('القطعة غير موجودة');
+                throw new Exception('part is not exist');
             }
 
             if (isset($data['engine_ids'])) {
@@ -103,7 +104,7 @@ class PartService
 
             $deleted = $this->partRepository->delete($id);
             if (!$deleted) {
-                throw new Exception('القطعة غير موجودة');
+                throw new Exception('part is not exist');
             }
 
             DB::commit();

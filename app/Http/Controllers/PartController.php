@@ -28,7 +28,7 @@ class PartController extends Controller
 
             return response()->json([
                 'data' => PartResource::collection($parts),
-                'message' => 'تم جلب القطع بنجاح',
+                'message' => 'Engines retrieved successfully',
                 'status' => 200
             ], 200);
         } catch (Exception $e) {
@@ -49,7 +49,7 @@ class PartController extends Controller
 
             return response()->json([
                 'data' => new PartResource($part),
-                'message' => 'تم إنشاء القطعة بنجاح',
+                'message' => 'part created successfully',
                 'status' => 201
             ], 201);
         } catch (Exception $e) {
@@ -70,14 +70,14 @@ class PartController extends Controller
 
             return response()->json([
                 'data' => new PartResource($part),
-                'message' => 'تم تحديث القطعة بنجاح',
+                'message' => 'Engine updated successfully',
                 'status' => 200
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                'status' => $e->getMessage() === 'القطعة غير موجودة' ? 404 : 500
-            ], $e->getMessage() === 'القطعة غير موجودة' ? 404 : 500);
+                'status' => $e->getMessage() === 'part is not exist' ? 404 : 500
+            ], $e->getMessage() === 'part is not exist' ? 404 : 500);
         }
     }
 
@@ -90,14 +90,14 @@ class PartController extends Controller
             $this->partService->deletePart($id);
 
             return response()->json([
-                'message' => 'تم حذف القطعة بنجاح',
+                'message' => 'part deleted successfully',
                 'status' => 200
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                'status' => $e->getMessage() === 'القطعة غير موجودة' ? 404 : 500
-            ], $e->getMessage() === 'القطعة غير موجودة' ? 404 : 500);
+                'status' => $e->getMessage() === 'part is not exist' ? 404 : 500
+            ], $e->getMessage() === 'part is not exist' ? 404 : 500);
         }
     }
 }

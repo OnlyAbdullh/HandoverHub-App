@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\Part;
@@ -22,7 +23,7 @@ class PartRepository implements PartRepositoryInterface
         ])->get();
     }
 
-    public function find($id): ?Part
+    public function find($id): \Illuminate\Database\Eloquent\Builder|array|Collection|\Illuminate\Database\Eloquent\Model
     {
         return $this->model->with([
             'engines.brand',
