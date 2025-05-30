@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandImportController;
 use App\Http\Controllers\CapacityController;
+use App\Http\Controllers\EngineController;
 use App\Http\Controllers\SiteInfrastructureController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -84,3 +85,7 @@ Route::prefix('brands')->group(function () {
     Route::put('/{brand}', [BrandController::class, 'update']);
     Route::delete('/{brand}', [BrandController::class, 'destroy']);
 });
+
+Route::apiResource('engines', EngineController::class)->only([
+    'index', 'store', 'destroy'
+]);

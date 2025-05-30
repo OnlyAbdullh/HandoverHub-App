@@ -52,6 +52,7 @@ class Brand extends Model
     {
         return $query->byType(self::TYPE_ENGINE);
     }
+
     public function engines()
     {
         return $this->hasMany(Engine::class);

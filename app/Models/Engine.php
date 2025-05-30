@@ -9,7 +9,15 @@ class Engine extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['brand_id', 'capacity_id'];
+    protected $fillable = [
+        'brand_id',
+        'capacity_id',
+    ];
+
+    protected $casts = [
+        'brand_id' => 'integer',
+        'capacity_id' => 'integer',
+    ];
 
     /**
      * Get the brand of this engine.
@@ -25,6 +33,21 @@ class Engine extends Model
     public function capacity()
     {
         return $this->belongsTo(Capacity::class);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'engine_brand' => [
+                'id' => $this->brand?->id,
+                'brand' => $this->brand?->name ?? '',
+            ],
+            'engine_capacity' => [
+                'id' => $this->capacity?->id,
+                'capacity' => $this->capacity?->name ?? '',
+            ],
+        ];
     }
 
     /**
