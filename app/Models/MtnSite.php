@@ -10,14 +10,17 @@ class MtnSite extends Model
 {
     use HasFactory;
 
+    protected $table = 'mtn_sites';
+
+
     protected $fillable = ['name', 'code', 'longitude', 'latitude'];
 
     /**
      * Get the generators at this site.
      */
-    public function generators()
+    public function generators(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Generator::class);
+        return $this->hasMany(Generator::class, 'mtn_site_id');
     }
 
     /**

@@ -10,6 +10,8 @@ use App\Repositories\Contracts\EngineRepositoryInterface;
 use App\Repositories\Contracts\PartRepositoryInterface;
 use App\Repositories\Contracts\SiteRepositoryInterface;
 use App\Repositories\EngineRepository;
+use App\Repositories\GeneratorRepository;
+use App\Repositories\Contracts\GeneratorRepositoryInterface;
 use App\Repositories\PartRepository;
 use App\Repositories\SiteRepository;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BrandRepositoryInterface::class, BrandRepository::class);
         $this->app->bind(EngineRepositoryInterface::class, EngineRepository::class);
         $this->app->bind(PartRepositoryInterface::class, PartRepository::class);
+        $this->app->bind(GeneratorRepositoryInterface::class, GeneratorRepository::class);
+
     }
 
     /**

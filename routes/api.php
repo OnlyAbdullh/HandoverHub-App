@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandImportController;
 use App\Http\Controllers\CapacityController;
 use App\Http\Controllers\EngineController;
+use App\Http\Controllers\GeneratorController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\SiteInfrastructureController;
 use App\Http\Controllers\UserController;
@@ -97,4 +98,13 @@ Route::prefix('parts')->group(function () {
     Route::post('/', [PartController::class, 'store']);
     Route::put('/{id}', [PartController::class, 'update']);
     Route::delete('/{id}', [PartController::class, 'destroy']);
+});
+
+Route::prefix('generators')->group(function () {
+    // Basic CRUD operations
+    Route::get('/', [GeneratorController::class, 'index']);
+    Route::post('/', [GeneratorController::class, 'store']);
+    Route::get('/{id}', [GeneratorController::class, 'show']);
+    Route::put('/{id}', [GeneratorController::class, 'update']);
+    Route::delete('/{id}', [GeneratorController::class, 'destroy']);
 });

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('engine_id')->constrained()->onDelete('cascade');
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
 
-            $table->foreignId('mtn_site_id')->constrained()->onDelete('cascade');
+            $table->foreignId('mtn_site_id')->nullable()->constrained()->onDelete('cascade');
             $table->decimal('initial_meter')->default(0);
             $table->unique(['engine_id', 'brand_id'], 'generators_engine_brand_unique');
             $table->timestamps();
