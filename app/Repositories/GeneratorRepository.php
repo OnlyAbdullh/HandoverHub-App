@@ -27,7 +27,7 @@ class GeneratorRepository implements GeneratorRepositoryInterface
                 'brand:id,name',
                 'engine.brand:id,name',
                 'engine.capacity:id,value',
-                'mtn_site:id,name,code'
+                'mtn_site:id,name,code,longitude,latitude'
             ])
             ->get();
     }
@@ -43,11 +43,10 @@ class GeneratorRepository implements GeneratorRepositoryInterface
             'brand:id,name',
             'engine.brand:id,name',
             'engine.capacity:id,value',
-            'mtn_site:id,name,code'
+            'mtn_site:id,name,code,longitude,latitude'
         ])->find($id);
 
     }
-
 
     /**
      * Create new generator

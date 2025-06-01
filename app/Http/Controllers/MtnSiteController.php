@@ -87,4 +87,8 @@ class MtnSiteController extends Controller
             'message' => 'MTN Site deleted successfully'
         ], Response::HTTP_OK);
     }
+    public function getGenerator()
+    {
+
+    }
 }

@@ -73,6 +73,7 @@ Route::post('brands', [BrandImportController::class, 'store']);
 
 Route::apiResource('mtn-sites', MtnSiteController::class);
 Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);
+Route::get('mtn-sites/generators/{id}', [MtnSiteController::class, 'getGenerator']);
 
 Route::prefix('capacities')->group(function () {
     Route::get('/', [CapacityController::class, 'index']);

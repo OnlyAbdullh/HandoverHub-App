@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
+use App\Http\Resources\GeneratorResource;
 use App\Repositories\Contracts\GeneratorRepositoryInterface;
-use App\Models\Generator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -28,7 +27,7 @@ class GeneratorService
             $generators = $this->generatorRepository->getAllWithRelations();
 
             return [
-                'data' => $this->formatGeneratorsResponse($generators),
+                'data' => GeneratorResource::collection($generators),
                 'message' => 'Generators retrieved successfully',
                 'status' => 200
             ];
@@ -63,7 +62,7 @@ class GeneratorService
             }
 
             return [
-                'data' => $this->formatSingleGeneratorResponse($generator),
+                'data' => new GeneratorResource($generator),
                 'message' => 'Generator details retrieved successfully',
                 'status' => 200
             ];
@@ -92,11 +91,10 @@ class GeneratorService
             $generator = $this->generatorRepository->create($data);
             $generatorWithRelations = $this->generatorRepository->findWithRelations($generator->id);
             //   \Log::info('Generator with relations:', (array)$generatorWithRelations->toArray());
-
             DB::commit();
 
             return [
-                'data' => $this->formatSingleGeneratorResponse($generatorWithRelations),
+                'data' => new GeneratorResource($generatorWithRelations),
                 'message' => 'Generator created successfully',
                 'status' => 201
             ];
@@ -140,7 +138,7 @@ class GeneratorService
             $responseMessage = $this->getUpdateMessage($data);
 
             return [
-                'data' => $this->formatSingleGeneratorResponse($generatorWithRelations),
+                'data' => new GeneratorResource($generatorWithRelations),
                 'message' => $responseMessage,
                 'status' => 200
             ];
@@ -194,53 +192,6 @@ class GeneratorService
                 'status' => 500
             ];
         }
-    }
-
-    /**
-     * Format generators collection response
-     *
-     * @param Collection $generators
-     * @return array
-     */
-    private function formatGeneratorsResponse(Collection $generators): array
-    {
-        return $generators->map(function ($generator) {
-            return $this->formatSingleGeneratorResponse($generator);
-        })->toArray();
-    }
-
-    /**
-     * Format single generator response
-     *
-     * @param Generator $generator
-     * @return array
-     */
-    private function formatSingleGeneratorResponse(Generator $generator): array
-    {
-        return [
-            'id' => $generator->id,
-            'brand' => [
-                'id' => $generator->brand?->id,
-                'brand' => $generator->brand?->name ?? ''
-            ],
-            'engine' => [
-                'id' => $generator->engine?->id,
-                'engine_brand' => [
-                    'id' => $generator->engine?->brand?->id,
-                    'brand' => $generator->engine?->brand?->name ?? ''
-                ],
-                'engine_capacity' => [
-                    'id' => $generator->engine?->capacity?->id,
-                    'capacity' => $generator->engine?->capacity?->value ?? 0
-                ]
-            ],
-            'initial_meter' => $generator->initial_meter ?? '',
-            'site' => [
-                'name' => $generator->mtn_site?->name ?? '',
-                'code' => $generator->mtn_site?->code ?? '',
-                'id' => $generator->mtn_site?->id
-            ]
-        ];
     }
 
 
