@@ -139,4 +139,8 @@ class MtnSiteService
             throw $e;
         }
     }
+    public function getGeneratorsBySiteId(int $siteId)
+    {
+        return $this->mtnSiteRepository->getGenerators($siteId);
+    }
 }

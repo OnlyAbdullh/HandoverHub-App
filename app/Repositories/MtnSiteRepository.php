@@ -107,4 +107,14 @@ class MtnSiteRepository
 
         return $query->exists();
     }
+    public function getGenerators(int $siteId)
+    {
+        return MtnSite::with([
+            'generators.engine.brand',
+            'generators.engine.capacity',
+            'generators.brand'
+        ])
+            ->findOrFail($siteId)
+            ->generators;
+    }
 }
