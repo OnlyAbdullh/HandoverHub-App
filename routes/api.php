@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandImportController;
 use App\Http\Controllers\CapacityController;
+use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\EngineController;
 use App\Http\Controllers\GeneratorController;
 use App\Http\Controllers\PartController;
@@ -102,10 +103,16 @@ Route::prefix('parts')->group(function () {
 });
 
 Route::prefix('generators')->group(function () {
-    // Basic CRUD operations
     Route::get('/', [GeneratorController::class, 'index']);
     Route::post('/', [GeneratorController::class, 'store']);
     Route::get('/{id}', [GeneratorController::class, 'show']);
     Route::put('/{id}', [GeneratorController::class, 'update']);
     Route::delete('/{id}', [GeneratorController::class, 'destroy']);
+});
+
+Route::prefix('completed-tasks')->group(function () {
+    Route::get('/', [CompletedTaskController::class, 'index']);
+    Route::post('/', [CompletedTaskController::class, 'store']);
+    Route::put('/{id}', [CompletedTaskController::class, 'update']);
+    Route::delete('/{id}', [CompletedTaskController::class, 'destroy']);
 });

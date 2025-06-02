@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Repositories\BrandRepository;
 use App\Repositories\CapacityRepository;
+use App\Repositories\CompletedTaskRepository;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Repositories\Contracts\CapacityRepositoryInterface;
+use App\Repositories\Contracts\CompletedTaskRepositoryInterface;
 use App\Repositories\Contracts\EngineRepositoryInterface;
 use App\Repositories\Contracts\PartRepositoryInterface;
 use App\Repositories\Contracts\SiteRepositoryInterface;
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(EngineRepositoryInterface::class, EngineRepository::class);
         $this->app->bind(PartRepositoryInterface::class, PartRepository::class);
         $this->app->bind(GeneratorRepositoryInterface::class, GeneratorRepository::class);
+        $this->app->bind(CompletedTaskRepositoryInterface::class, CompletedTaskRepository::class);
 
     }
 
