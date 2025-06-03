@@ -14,9 +14,8 @@ class CompletedTask extends Model
     /**
      * Get the reports that include this completed task.
      */
-    public function reports()
+    public function report()
     {
-        return $this->belongsToMany(Report::class, 'report_tasks')
-            ->withTimestamps();
+        return $this->belongsTo(Report::class);
     }
 }

@@ -61,8 +61,7 @@ class Report extends Model
      */
     public function completedTasks()
     {
-        return $this->belongsToMany(CompletedTask::class, 'report_tasks')
-            ->withTimestamps();
+        return $this->hasMany(CompletedTask::class);
     }
 
     /**
