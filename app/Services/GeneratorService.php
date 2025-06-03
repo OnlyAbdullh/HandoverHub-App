@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Http\Resources\GeneratorResource;
+use App\Models\MtnSite;
 use App\Repositories\Contracts\GeneratorRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response;
 
 class GeneratorService
 {
@@ -24,7 +26,7 @@ class GeneratorService
     /**
      * ترجع كل المولدات أو المولدات غير المربوطة حسب قيمة $onlyUnassigned
      *
-     * @param  bool  $onlyUnassigned
+     * @param bool $onlyUnassigned
      * @return array
      */
     public function getAllGenerators(bool $onlyUnassigned = false): array
@@ -33,19 +35,19 @@ class GeneratorService
             $generators = $this->generatorRepository->getAllWithRelations($onlyUnassigned);
 
             return [
-                'data'    => GeneratorResource::collection($generators),
+                'data' => GeneratorResource::collection($generators),
                 'message' => $onlyUnassigned
                     ? 'Unassigned generators retrieved successfully'
                     : 'All generators retrieved successfully',
-                'status'  => 200,
+                'status' => 200,
             ];
         } catch (\Exception $e) {
             Log::error('Error in getAllGenerators: ' . $e->getMessage());
 
             return [
-                'data'    => [],
+                'data' => [],
                 'message' => 'Error retrieving generators',
-                'status'  => 500,
+                'status' => 500,
             ];
         }
     }
@@ -227,5 +229,58 @@ class GeneratorService
         }
 
         return 'Generator updated successfully';
+    }
+
+    /**
+     * يربط مجموعة مولدات بموقع معيّن بعد التحقق أنها غير مربوطة.
+     *
+     * @param MtnSite $site
+     * @param int[] $generatorIds ا
+     * @return array
+     */
+    public function assignGeneratorsToSite(
+        MtnSite $site,
+        array   $generatorIds
+    ): array
+    {
+        try {
+            DB::beginTransaction();
+
+            $unassignedCount = $this->generatorRepository
+                ->countUnassignedByIds($generatorIds);
+
+            if ($unassignedCount !== count($generatorIds)) {
+                DB::rollBack();
+
+                return [
+                    'data' => [],
+                    'message' => 'بعض المولدات إما مرتبطة بالفعل أو غير موجودة.',
+                    'status' => Response::HTTP_BAD_REQUEST, // 400
+                ];
+            }
+
+            $updatedRows = $this->generatorRepository
+                ->assignGeneratorsToSite($generatorIds, $site->id);
+
+            DB::commit();
+
+            return [
+                'data' => [
+                    'assigned_count' => $updatedRows,
+                    'site_id' => $site->id,
+                ],
+                'message' => 'تم ربط المولدات بالموقع بنجاح.',
+                'status' => Response::HTTP_OK, // 200
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in GeneratorService@assignGeneratorsToSite: ' . $e->getMessage());
+
+            return [
+                'data' => [],
+                'message' => 'حصل خطأ في الخادم أثناء ربط المولدات.',
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR, // 500
+            ];
+        }
     }
 }

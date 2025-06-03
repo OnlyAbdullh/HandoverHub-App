@@ -101,4 +101,25 @@ class GeneratorRepository implements GeneratorRepositoryInterface
     {
         return $this->model->where('id', $id)->exists();
     }
+
+    public function countUnassignedByIds(array $generatorIds): int
+    {
+        return $this->model
+            ->whereIn('id', $generatorIds)
+            ->whereNull('mtn_site_id')
+            ->count();
+    }
+
+    /**
+     * @param int[] $generatorIds
+     * @param int $siteId
+     * @return int
+     */
+    public function assignGeneratorsToSite(array $generatorIds, int $siteId): int
+    {
+        return $this->model
+            ->whereIn('id', $generatorIds)
+            ->whereNull('mtn_site_id')
+            ->update(['mtn_site_id' => $siteId]);
+    }
 }

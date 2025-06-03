@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AssignGeneratorsRequest;
 use App\Http\Requests\StoreGeneratorRequest;
 use App\Http\Requests\UpdateRequests\UpdateGeneratorRequest;
+use App\Models\MtnSite;
 use App\Services\GeneratorService;
 use Illuminate\Http\JsonResponse;
 
@@ -89,6 +91,19 @@ class GeneratorController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $result = $this->generatorService->deleteGenerator($id);
+
+        return response()->json($result, $result['status']);
+    }
+
+    public function assignGeneratorsToSite(
+        AssignGeneratorsRequest $request,
+        MtnSite                 $site
+    ): JsonResponse
+    {
+        $generatorIds = $request->getGeneratorIds();
+
+        $result = $this->generatorService
+            ->assignGeneratorsToSite($site, $generatorIds);
 
         return response()->json($result, $result['status']);
     }
