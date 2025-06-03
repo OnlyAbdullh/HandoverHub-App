@@ -24,7 +24,18 @@ class GeneratorController extends Controller
      */
     public function index(): JsonResponse
     {
-        $result = $this->generatorService->getAllGenerators();
+        $result = $this->generatorService->getAllGenerators(false);
+
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * GET /api/generators/unassigned
+     * يُعيد فقط المولدات التي mtn_site_id فيها null
+     */
+    public function getUnassigned(): JsonResponse
+    {
+        $result = $this->generatorService->getAllGenerators(true);
 
         return response()->json($result, $result['status']);
     }

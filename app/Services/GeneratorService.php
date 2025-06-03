@@ -21,23 +21,31 @@ class GeneratorService
      *
      * @return array
      */
-    public function getAllGenerators(): array
+    /**
+     * ترجع كل المولدات أو المولدات غير المربوطة حسب قيمة $onlyUnassigned
+     *
+     * @param  bool  $onlyUnassigned
+     * @return array
+     */
+    public function getAllGenerators(bool $onlyUnassigned = false): array
     {
         try {
-            $generators = $this->generatorRepository->getAllWithRelations();
+            $generators = $this->generatorRepository->getAllWithRelations($onlyUnassigned);
 
             return [
-                'data' => GeneratorResource::collection($generators),
-                'message' => 'Generators retrieved successfully',
-                'status' => 200
+                'data'    => GeneratorResource::collection($generators),
+                'message' => $onlyUnassigned
+                    ? 'Unassigned generators retrieved successfully'
+                    : 'All generators retrieved successfully',
+                'status'  => 200,
             ];
         } catch (\Exception $e) {
-            Log::error('Error retrieving generators: ' . $e->getMessage());
+            Log::error('Error in getAllGenerators: ' . $e->getMessage());
 
             return [
-                'data' => [],
+                'data'    => [],
                 'message' => 'Error retrieving generators',
-                'status' => 500
+                'status'  => 500,
             ];
         }
     }

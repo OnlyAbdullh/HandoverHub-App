@@ -17,19 +17,24 @@ class GeneratorRepository implements GeneratorRepositoryInterface
 
     /**
      * Get all generators with relationships
-     *
+     * @param bool $onlyUnassigned
      * @return Collection
      */
-    public function getAllWithRelations(): Collection
+    public function getAllWithRelations(bool $onlyUnassigned = false): Collection
     {
-        return $this->model
+        $query = $this->model
             ->with([
                 'brand:id,name',
                 'engine.brand:id,name',
                 'engine.capacity:id,value',
-                'mtn_site:id,name,code,longitude,latitude'
-            ])
-            ->get();
+                'mtn_site:id,name,code,longitude,latitude',
+            ]);
+
+        if ($onlyUnassigned) {
+            $query->whereNull('mtn_site_id');
+        }
+
+        return $query->get();
     }
 
     /**

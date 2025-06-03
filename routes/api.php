@@ -108,6 +108,7 @@ Route::prefix('generators')->group(function () {
     Route::get('/{id}', [GeneratorController::class, 'show']);
     Route::put('/{id}', [GeneratorController::class, 'update']);
     Route::delete('/{id}', [GeneratorController::class, 'destroy']);
+    Route::get('/unassigned', [GeneratorController::class, 'getUnassigned']);
 });
 
 Route::prefix('completed-tasks')->group(function () {
