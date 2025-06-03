@@ -28,7 +28,7 @@ class PartController extends Controller
 
             return response()->json([
                 'data' => PartResource::collection($parts),
-                'message' => 'Engines retrieved successfully',
+                'message' => 'Parts retrieved successfully',
                 'status' => 200
             ], 200);
         } catch (Exception $e) {

@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Models\Brand;
 use App\Models\Capacity;
+use App\Models\Engine;
 use App\Repositories\Contracts\EngineRepositoryInterface;
 use App\Exceptions\EngineException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response;
 
 class EngineService
 {
@@ -126,6 +128,27 @@ class EngineService
             DB::rollBack();
             Log::error('Error deleting engine: ' . $e->getMessage());
             throw new EngineException('Failed to delete engine');
+        }
+    }
+
+    public function getPartsByEngine(Engine $engine): array
+    {
+        try {
+            $parts = $this->engineRepository->getPartsByEngine($engine);
+
+            return [
+                'data' => $parts,  // سنحوّله لاحقًا إلى Resource داخل الـ Controller إن أردت
+                'message' => 'Parts retrieved successfully for engine ID ' . $engine->id,
+                'status' => Response::HTTP_OK,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in EngineService@getPartsByEngine: ' . $e->getMessage());
+
+            return [
+                'data' => [],
+                'message' => 'Server error while retrieving parts for engine.',
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ];
         }
     }
 }

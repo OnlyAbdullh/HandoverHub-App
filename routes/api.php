@@ -94,7 +94,9 @@ Route::prefix('brands')->group(function () {
 Route::apiResource('engines', EngineController::class)->only([
     'index', 'store', 'destroy'
 ]);
-
+Route::get('/engines/{engine}/parts', [EngineController::class, 'getPartsByEngine'])
+    ->name('engines.parts')
+    ->whereNumber('engine');
 
 Route::prefix('parts')->group(function () {
     Route::get('/', [PartController::class, 'index']);

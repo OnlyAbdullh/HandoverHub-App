@@ -64,4 +64,11 @@ class EngineRepository implements EngineRepositoryInterface
     {
         return $this->model->find($id);
     }
+
+    public function getPartsByEngine(Engine $engine): Collection
+    {
+        return $engine
+            ->parts()
+            ->get();
+    }
 }

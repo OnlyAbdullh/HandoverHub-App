@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateEngineRequest;
 use App\Http\Resources\EngineResource;
+use App\Http\Resources\PartResource;
+use App\Models\Engine;
 use App\Services\EngineService;
 use App\Exceptions\EngineException;
 use Illuminate\Http\JsonResponse;
@@ -77,5 +79,15 @@ class EngineController extends Controller
             ], $e->getCode());
 
         }
+    }
+
+    public function getPartsByEngine(Engine $engine): JsonResponse
+    {
+        $result = $this->engineService->getPartsByEngine($engine);
+
+        if ($result['status'] === 200) {
+            $result['data'] = PartResource::collection($result['data']);
+        }
+        return response()->json($result, $result['status']);
     }
 }
