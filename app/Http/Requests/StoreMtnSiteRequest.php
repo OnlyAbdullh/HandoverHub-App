@@ -28,8 +28,8 @@ class StoreMtnSiteRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:50', 'unique:mtn_sites,code'],
-            'longitude' => ['required', 'string', 'max:50'],
-            'latitude' => ['required', 'string', 'max:50'],
+            'longitude' => ['sometimes', 'string', 'max:50'],
+            'latitude' => ['sometimes', 'string', 'max:50'],
         ];
     }
 
@@ -44,8 +44,6 @@ class StoreMtnSiteRequest extends FormRequest
             'name.required' => 'The site name is required',
             'code.required' => 'The site code is required',
             'code.unique' => 'كود الموقع موجود مسبقا',
-            'longitude.required' => 'The longitude is required',
-            'latitude.required' => 'The latitude is required',
         ];
     }
 }
