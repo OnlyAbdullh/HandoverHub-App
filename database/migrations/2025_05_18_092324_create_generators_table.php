@@ -17,7 +17,6 @@ return new class extends Migration {
 
             $table->foreignId('mtn_site_id')->nullable()->constrained()->onDelete('cascade');
             $table->decimal('initial_meter')->default(0);
-            $table->unique(['engine_id', 'brand_id'], 'generators_engine_brand_unique');
             $table->timestamps();
         });
     }
@@ -27,10 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-
-        Schema::table('generators', function (Blueprint $table) {
-            $table->dropUnique('generators_engine_brand_unique');
-        });
         Schema::dropIfExists('generators');
     }
 };
