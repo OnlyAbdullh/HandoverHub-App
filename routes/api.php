@@ -74,6 +74,7 @@ Route::post('brands/import', [BrandImportController::class, 'import']);
 Route::post('brands', [BrandImportController::class, 'store']);
 
 Route::apiResource('mtn-sites', MtnSiteController::class);
+Route::delete('mtn-sites', [MtnSiteController::class, 'destroyBatch']);
 Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);
 Route::get('mtn-sites/generators/{id}', [MtnSiteController::class, 'getGenerator']);
 Route::post('/mtn-sites/{site}/assign-generators', [GeneratorController::class, 'assignGeneratorsToSite']);
@@ -82,7 +83,7 @@ Route::prefix('capacities')->group(function () {
     Route::get('/', [CapacityController::class, 'index']);
     Route::post('/', [CapacityController::class, 'store']);
     Route::put('/{id}', [CapacityController::class, 'update']);
-    Route::delete('/{id}', [CapacityController::class, 'destroy']);
+    Route::delete('/', [CapacityController::class, 'destroyList']);
 });
 
 Route::prefix('brands')->group(function () {

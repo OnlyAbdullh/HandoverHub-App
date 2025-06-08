@@ -77,40 +77,22 @@ class CapacityService
         }
     }
 
-    public function deleteCapacity(int $id): array
+    public function deleteCapacities(array $ids): array
     {
         try {
-            $capacity = $this->capacityRepository->find($id);
-
-            if (!$capacity) {
-                return [
-                    'success' => false,
-                    'message' => 'Capacity not found',
-                    'data' => null
-                ];
-            }
-
-            $deleted = $this->capacityRepository->delete($id);
-
-            if ($deleted) {
-                return [
-                    'success' => true,
-                    'message' => 'Capacity deleted successfully',
-                    'data' => null
-                ];
-            }
+            $deletedCount = $this->capacityRepository->deleteMany($ids);
 
             return [
-                'success' => false,
-                'message' => 'Failed to delete capacity',
-                'data' => null
+                'success' => true,
+                'message' => 'Capacities deleted successfully.',
+                'deleted_count' => $deletedCount,
             ];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Failed to delete capacity: ' . $e->getMessage(),
-                'data' => null
+                'message' => 'Failed to delete capacities: ' . $e->getMessage(),
             ];
         }
     }
+
 }

@@ -50,7 +50,8 @@ class PartService
             $partData = [
                 'name' => $data['name'],
                 'code' => $data['code'],
-                'is_general' => $data['is_general']
+                'is_general' => $data['is_general'],
+                'note' => $data['note'],
             ];
 
             $part = $this->partRepository->create($partData);

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateRequests\UpdateMtnSiteRequest;
 use App\Http\Resources\GeneratorResource;
 use App\Http\Resources\MtnSiteResource;
 use App\Services\MtnSiteService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -75,38 +76,25 @@ class MtnSiteController extends Controller
     }
 
     /**
-     * Remove the specified MTN site from storage.
+     * حذف مجموعة من مواقع MTN دفعة واحدة
      *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroyBatch(Request $request): JsonResponse
     {
-        $this->mtnSiteService->deleteSite($id);
+        $payload = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|distinct|exists:mtn_sites,id',
+        ]);
+
+        $result = $this->mtnSiteService->deleteSites($payload['ids']);
 
         return response()->json([
-            'message' => 'MTN Site deleted successfully'
+            'message' => 'MTN Sites deleted successfully',
+            'deleted_ids' => $result['deleted'],
+            'skipped_ids' => $result['skipped'],
         ], Response::HTTP_OK);
-    }
-    public function getGenerator(int $id): array
-    {
-        try {
-            $generators = $this->mtnSiteService->getGeneratorsBySiteId($id);
-
-            return [
-                'data' => GeneratorResource::collection($generators),
-                'message' => 'Generators retrieved successfully',
-                'status' => 200
-            ];
-        } catch (\Exception $e) {
-            \Log::error('Error fetching generators for site ID ' . $id . ': ' . $e->getMessage());
-
-            return [
-                'data' => [],
-                'message' => 'Error retrieving generators',
-                'status' => 500
-            ];
-        }
     }
 
 }

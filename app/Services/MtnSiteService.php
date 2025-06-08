@@ -99,46 +99,58 @@ class MtnSiteService
     }
 
     /**
-     * Delete an MTN site
+     * حذف عدة مواقع دفعة واحدة مع التحقق من العلاقات
      *
-     * @param int $id
-     * @return bool
-     * @throws MtnSiteNotFoundException
+     * @param int[] $ids
+     * @return array{deleted: int[], skipped: int[]}
+     *
+     * @throws \Exception عند حدوث خطأ غير متوقع
      */
-    public function deleteSite($id)
+    public function deleteSites(array $ids): array
     {
+        $deleted = [];
+        $skipped = [];
+
+        DB::beginTransaction();
+
         try {
-            DB::beginTransaction();
+            $sites = $this->mtnSiteRepository->getByIds($ids);
 
-            $site = $this->mtnSiteRepository->findById($id);
-
-            if (!$site) {
-                throw new MtnSiteNotFoundException("MTN Site with ID {$id} not found");
+            $foundIds = $sites->pluck('id')->all();
+            $missingIds = array_diff($ids, $foundIds);
+            if (!empty($missingIds)) {
+                throw new MtnSiteNotFoundException(
+                    'Some MTN Sites not found: ' . implode(', ', $missingIds)
+                );
             }
 
-            // Check if site has related generators before deletion
-            if ($site->generators()->exists()) {
-                throw new \Exception("Cannot delete MTN Site with ID {$id} because it has related generators");
-            }
+            foreach ($sites as $site) {
+                if ($site->generators()->exists()) {
+                    $skipped[] = $site->id;
+                    continue;
+                }
 
-            $result = $this->mtnSiteRepository->delete($site);
+                $this->mtnSiteRepository->delete($site);
+                $deleted[] = $site->id;
+            }
 
             DB::commit();
 
-            return $result;
+            return compact('deleted', 'skipped');
+
         } catch (MtnSiteNotFoundException $e) {
             DB::rollBack();
             throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Error deleting MTN Site: " . $e->getMessage(), [
-                'id' => $id,
-                'exception' => $e
+            Log::error('Error deleting MTN Sites batch: ' . $e->getMessage(), [
+                'ids' => $ids,
+                'exception' => $e,
             ]);
-
             throw $e;
         }
     }
+
     public function getGeneratorsBySiteId(int $siteId)
     {
         return $this->mtnSiteRepository->getGenerators($siteId);

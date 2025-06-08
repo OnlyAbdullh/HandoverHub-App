@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateRequests\UpdateCapacityRequest;
 use App\Http\Resources\CapacityResource;
 use App\Services\CapacityService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CapacityController extends Controller
 {
@@ -76,22 +77,18 @@ class CapacityController extends Controller
         ], $statusCode);
     }
 
-    public function destroy(int $id): JsonResponse
+
+    public function destroyList(Request $request): JsonResponse
     {
-        $result = $this->capacityService->deleteCapacity($id);
+        $data = $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'integer|distinct|exists:capacities,id',
+        ]);
 
-        if ($result['success']) {
-            return response()->json([
-                'success' => true,
-                'message' => $result['message']
-            ]);
-        }
+        $result = $this->capacityService->deleteCapacities($data['ids']);
 
-        $statusCode = $result['message'] === 'Capacity not found' ? 404 : 400;
+        $status = $result['success'] ? 200 : 500;
 
-        return response()->json([
-            'success' => false,
-            'message' => $result['message']
-        ], $statusCode);
+        return response()->json($result, $status);
     }
 }

@@ -107,6 +107,7 @@ class MtnSiteRepository
 
         return $query->exists();
     }
+
     public function getGenerators(int $siteId)
     {
         return MtnSite::with([
@@ -116,5 +117,10 @@ class MtnSiteRepository
         ])
             ->findOrFail($siteId)
             ->generators;
+    }
+
+    public function getByIds(array $ids)
+    {
+        return MtnSite::whereIn('id', $ids)->get();
     }
 }

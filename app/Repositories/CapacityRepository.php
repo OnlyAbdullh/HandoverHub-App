@@ -41,14 +41,8 @@ class CapacityRepository implements CapacityRepositoryInterface
         return $capacity->update($data);
     }
 
-    public function delete(int $id): bool
+    public function deleteMany(array $ids): int
     {
-        $capacity = $this->find($id);
-
-        if (!$capacity) {
-            return false;
-        }
-
-        return $capacity->delete();
+        return Capacity::whereIn('id', $ids)->delete();
     }
 }
