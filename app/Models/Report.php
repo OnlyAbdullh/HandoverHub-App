@@ -10,13 +10,30 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'generator_id', 'mtn_site_id', 'visit_type', 'report_number',
-        'visit_date', 'visit_time', 'current_reading', 'previous_reading',
-        'ats_status', 'previous_visit_date', 'oil_pressure', 'temperature',
-        'burned_oil_quantity', 'battery_voltage', 'frequency',
-        'voltage_L1', 'voltage_L2', 'voltage_L3',
-        'load_L1', 'load_L2', 'load_L3',
-        'oil_quantity', 'visit_reason', 'technical_status'
+        'generator_id',
+        'mtn_site_id',
+        'visit_type',
+        'report_number',
+        'visit_date',
+        'visit_time',
+        'current_reading',
+        'previous_reading',
+        'link_status',
+        'previous_visit_date',
+        'oil_pressure',
+        'temperature',
+        'burned_oil_quantity',
+        'battery_voltage',
+        'frequency',
+        'voltage_L1',
+        'voltage_L2',
+        'voltage_L3',
+        'load_L1',
+        'load_L2',
+        'load_L3',
+        'oil_quantity',
+        'visit_reason',
+        'technical_status'
     ];
 
     protected $casts = [
@@ -51,7 +68,7 @@ class Report extends Model
     /**
      * Get the site for this report.
      */
-    public function site()
+    public function mtn_site()
     {
         return $this->belongsTo(MtnSite::class, 'mtn_site_id');
     }
@@ -69,9 +86,7 @@ class Report extends Model
      */
     public function replacedParts()
     {
-        return $this->belongsToMany(Part::class, 'replaced_parts')
-            ->withPivot('quantity', 'notes', 'is_faulty', 'last_replacement_date', 'current_work_hours', 'last_replacement_hours')
-            ->withTimestamps();
+        return $this->hasMany(ReplacedPart::class, 'report_id');
     }
 
     /**

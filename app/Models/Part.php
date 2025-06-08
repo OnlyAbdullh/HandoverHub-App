@@ -26,7 +26,14 @@ class Part extends Model
     public function reports()
     {
         return $this->belongsToMany(Report::class, 'replaced_parts')
-            ->withPivot('quantity', 'notes', 'is_faulty', 'last_replacement_date', 'current_work_hours', 'last_replacement_hours')
+            ->withPivot([
+                'quantity',
+                'notes',
+                'is_faulty',
+                'last_replacement_date',
+                'current_work_hours',
+                'last_replacement_hours'
+            ])
             ->withTimestamps();
     }
 }

@@ -9,7 +9,7 @@ class CompletedTask extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['description'];
+    protected $fillable = ['report_id', 'description'];
 
     /**
      * Get the reports that include this completed task.

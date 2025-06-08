@@ -1,0 +1,119 @@
+<?php
+// app/Http/Controllers/API/ReportController.php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ReportShowResource;
+use App\Services\ReportService;
+use App\Http\Requests\StoreReportRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class ReportController extends Controller
+{
+    protected $reportService;
+
+    public function __construct(ReportService $reportService)
+    {
+        $this->reportService = $reportService;
+    }
+
+    /**
+     * Get all reports
+     */
+    public function index(): JsonResponse
+    {
+        $result = $this->reportService->getAllReports();
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Get report details
+     */
+    public function show(int $id): JsonResponse
+    {
+        $report = $this->reportService->getReportDetails($id);
+
+        if (!$report) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Report not found',
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Report details retrieved successfully',
+            'data' => new ReportShowResource($report)
+        ], 200);
+    }
+
+    /**
+     * Create new report
+     */
+    public function store(StoreReportRequest $request): JsonResponse
+    {
+        $cityCode = $request->input('city_code', 'DEFAULT');
+        $result = $this->reportService->createReport($request->validated(), $cityCode);
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Update report
+     */
+    public function update(StoreReportRequest $request): JsonResponse
+    {
+        $result = $this->reportService->updateReport($request->validated());
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Delete report
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $result = $this->reportService->deleteReport($id);
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Add completed task to report
+     */
+    public function addTask(Request $request, int $reportId): JsonResponse
+    {
+        $result = $this->reportService->addCompletedTask(
+            $reportId,
+            $request->input('description')
+        );
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Delete completed task from report
+     */
+    public function deleteTask(int $reportId, int $taskId): JsonResponse
+    {
+        $result = $this->reportService->deleteCompletedTask($reportId, $taskId);
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Delete technician note from report
+     */
+    public function deleteNote(int $reportId, int $noteId): JsonResponse
+    {
+        $result = $this->reportService->deleteTechnicianNote($reportId, $noteId);
+        return response()->json($result, $result['status']);
+    }
+
+    /**
+     * Delete replaced part from report
+     */
+    public function deletePart(int $reportId, int $partId): JsonResponse
+    {
+        $result = $this->reportService->deleteReplacedPart($reportId, $partId);
+        return response()->json($result, $result['status']);
+    }
+}

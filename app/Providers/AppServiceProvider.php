@@ -10,11 +10,13 @@ use App\Repositories\Contracts\CapacityRepositoryInterface;
 use App\Repositories\Contracts\CompletedTaskRepositoryInterface;
 use App\Repositories\Contracts\EngineRepositoryInterface;
 use App\Repositories\Contracts\PartRepositoryInterface;
+use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Repositories\Contracts\SiteRepositoryInterface;
 use App\Repositories\EngineRepository;
 use App\Repositories\GeneratorRepository;
 use App\Repositories\Contracts\GeneratorRepositoryInterface;
 use App\Repositories\PartRepository;
+use App\Repositories\ReportRepository;
 use App\Repositories\SiteRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PartRepositoryInterface::class, PartRepository::class);
         $this->app->bind(GeneratorRepositoryInterface::class, GeneratorRepository::class);
         $this->app->bind(CompletedTaskRepositoryInterface::class, CompletedTaskRepository::class);
-
+        $this->app->bind(ReportRepositoryInterface::class, ReportRepository::class);
     }
 
     /**

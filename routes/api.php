@@ -8,6 +8,7 @@ use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\EngineController;
 use App\Http\Controllers\GeneratorController;
 use App\Http\Controllers\PartController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SiteInfrastructureController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -114,9 +115,14 @@ Route::prefix('generators')->group(function () {
     Route::delete('/{id}', [GeneratorController::class, 'destroy']);
 });
 
-Route::prefix('completed-tasks')->group(function () {
-    Route::get('/', [CompletedTaskController::class, 'index']);
-    Route::post('/', [CompletedTaskController::class, 'store']);
-    Route::put('/{id}', [CompletedTaskController::class, 'update']);
-    Route::delete('/{id}', [CompletedTaskController::class, 'destroy']);
+Route::prefix('reports')->group(function () {
+    Route::get('/', [ReportController::class, 'index']);
+    Route::get('{id}', [ReportController::class, 'show']);
+    Route::post('/', [ReportController::class, 'store']);
+    Route::put('/', [ReportController::class, 'update']);
+    Route::delete('{id}', [ReportController::class, 'destroy']);
+    Route::post('{reportId}/tasks', [ReportController::class, 'addTask']);
+    Route::delete('{reportId}/tasks/{taskId}', [ReportController::class, 'deleteTask']);
+    Route::delete('{reportId}/notes/{noteId}', [ReportController::class, 'deleteNote']);
+    Route::delete('{reportId}/parts/{partId}', [ReportController::class, 'deletePart']);
 });
