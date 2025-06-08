@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->string('name');
             $table->string('code')->unique();
             $table->boolean('is_general')->default(true);
+            $table->string('note')->nullable();
+            $table->date('replaced_date')->nullable();
             $table->index(['name', 'is_general']);
             $table->timestamps();
         });

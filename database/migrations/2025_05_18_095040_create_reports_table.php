@@ -36,6 +36,8 @@ return new class extends Migration {
             $table->decimal('oil_quantity', 5, 2)->nullable();
             $table->string('visit_reason')->nullable();
             $table->string('technical_status')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->index(['generator_id', 'mtn_site_id', 'visit_type'], 'idx_generator_site_visit');
             $table->timestamps();
         });
