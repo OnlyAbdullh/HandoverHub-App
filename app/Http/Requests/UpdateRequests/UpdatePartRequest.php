@@ -22,21 +22,19 @@ class UpdatePartRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:parts,code,' . $this->part,
-            'is_general' => 'boolean',
-            'engine_ids' => 'array',
-            'engine_ids.*' => 'exists:engines,id'
+            'name' => 'sometimes|string|max:255',
+            'code' => 'sometimes|string|max:255|unique:parts,code,' . $this->part,
+            'is_general' => 'sometimes|boolean',
+            /*       'engine_ids' => 'array',
+                   'engine_ids.*' => 'exists:engines,id'*/
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'اسم القطعة مطلوب',
-            'code.required' => 'كود القطعة مطلوب',
             'code.unique' => 'كود القطعة موجود مسبقاً',
-            'engine_ids.*.exists' => 'أحد المحركات المحددة غير موجود'
+            // 'engine_ids.*.exists' => 'أحد المحركات المحددة غير موجود'
         ];
     }
 }

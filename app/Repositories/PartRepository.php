@@ -62,11 +62,11 @@ class PartRepository implements PartRepositoryInterface
         }
     }
 
-    public function syncEngines($partId, array $engineIds): void
-    {
-        $part = $this->model->find($partId);
-        if ($part) {
-            $part->engines()->sync($engineIds);
-        }
-    }
+    /*  public function syncEngines($partId, array $engineIds): void
+      {
+          $part = $this->model->find($partId);
+          if ($part) {
+              $part->engines()->sync($engineIds);
+          }
+      }*/
 }

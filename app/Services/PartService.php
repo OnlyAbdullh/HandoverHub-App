@@ -73,20 +73,25 @@ class PartService
         try {
             DB::beginTransaction();
 
-            $partData = [
-                'name' => $data['name'],
-                'code' => $data['code'],
-                'is_general' => $data['is_general'] ?? false
-            ];
+            $partData = [];
+            if (isset($data['name'])) {
+                $partData['name'] = $data['name'];
+            }
+            if (isset($data['code'])) {
+                $partData['code'] = $data['code'];
+            }
+            if (isset($data['is_general'])) {
+                $partData['is_general'] = $data['is_general'];
+            }
 
             $updated = $this->partRepository->update($id, $partData);
             if (!$updated) {
                 throw new Exception('part is not exist');
             }
 
-            if (isset($data['engine_ids'])) {
-                $this->partRepository->syncEngines($id, $data['engine_ids']);
-            }
+            /*   if (isset($data['engine_ids'])) {
+                   $this->partRepository->syncEngines($id, $data['engine_ids']);
+               }*/
 
             DB::commit();
             return $this->partRepository->find($id);
