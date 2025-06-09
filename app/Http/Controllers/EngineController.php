@@ -10,7 +10,7 @@ use App\Models\Engine;
 use App\Services\EngineService;
 use App\Exceptions\EngineException;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Http\Request;
 class EngineController extends Controller
 {
     public function __construct(
@@ -60,15 +60,26 @@ class EngineController extends Controller
     /**
      * Delete engine
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
         try {
-            $result = $this->engineService->deleteEngine($id);
+            $ids = $request->input('ids');
+
+            if (!is_array($ids) || empty($ids)) {
+                return response()->json([
+                    'data' => null,
+                    'message' => 'Invalid or empty ID list',
+                    'status' => 400
+                ], 400);
+            }
+
+            $result = $this->engineService->deleteEngines($ids);
 
             return response()->json([
                 'data' => null,
                 'message' => $result['message'],
-                'status' => $result['status']
+                'status' => $result['status'],
+                'not_found_ids' => $result['not_found_ids'] ?? []
             ], $result['status']);
 
         } catch (EngineException $e) {
@@ -77,9 +88,9 @@ class EngineController extends Controller
                 'message' => $e->getMessage(),
                 'status' => $e->getCode()
             ], $e->getCode());
-
         }
     }
+
 
     public function getPartsByEngine(Engine $engine): JsonResponse
     {

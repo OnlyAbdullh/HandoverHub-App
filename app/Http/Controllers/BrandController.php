@@ -86,22 +86,24 @@ class BrandController extends Controller
         ], $statusCode);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
-        $result = $this->brandService->deleteBrand($id);
+        $ids = $request->input('ids');
 
-        if ($result['success']) {
+        if (!is_array($ids) || empty($ids)) {
             return response()->json([
-                'success' => true,
-                'message' => $result['message']
-            ]);
+                'success' => false,
+                'message' => 'Invalid or empty ID list'
+            ], 400);
         }
 
-        $statusCode = $result['message'] === 'Brand not found' ? 404 : 400;
+        $result = $this->brandService->deleteMultipleBrands($ids);
 
         return response()->json([
-            'success' => false,
-            'message' => $result['message']
-        ], $statusCode);
+            'success' => $result['success'],
+            'message' => $result['message'],
+            'not_found_ids' => $result['not_found_ids'] ?? []
+        ], $result['success'] ? 200 : 400);
     }
+
 }

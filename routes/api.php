@@ -90,12 +90,13 @@ Route::prefix('brands')->group(function () {
     Route::get('/', [BrandController::class, 'index']);
     Route::post('/', [BrandController::class, 'store']);
     Route::put('/{brand}', [BrandController::class, 'update']);
-    Route::delete('/{brand}', [BrandController::class, 'destroy']);
+    Route::delete('/', [BrandController::class, 'destroy']);
 });
 
 Route::apiResource('engines', EngineController::class)->only([
-    'index', 'store', 'destroy'
+    'index', 'store'
 ]);
+Route::delete('engines', [EngineController::class, 'destroy']);
 Route::get('/engines/parts/{engine}', [EngineController::class, 'getPartsByEngine'])
     ->name('engines.parts')
     ->whereNumber('engine');
@@ -104,7 +105,7 @@ Route::prefix('parts')->group(function () {
     Route::get('/', [PartController::class, 'index']);
     Route::post('/', [PartController::class, 'store']);
     Route::put('/{id}', [PartController::class, 'update']);
-    Route::delete('/{id}', [PartController::class, 'destroy']);
+    Route::delete('/', [PartController::class, 'destroy']);
 });
 
 Route::prefix('generators')->group(function () {

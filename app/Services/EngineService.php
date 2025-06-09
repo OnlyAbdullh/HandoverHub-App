@@ -97,28 +97,24 @@ class EngineService
     /**
      * Delete engine
      */
-    public function deleteEngine(int $id): array
+    public function deleteEngines(array $ids): array
     {
         try {
             DB::beginTransaction();
 
-            $engine = $this->engineRepository->findById($id);
-            if (!$engine) {
-                throw new EngineException('Engine not found');
-            }
+            $result = $this->engineRepository->deleteMany($ids);
 
-            $deleted = $this->engineRepository->delete($id);
-
-            if (!$deleted) {
-                throw new EngineException('Failed to delete engine');
+            if ($result['deleted_count'] === 0) {
+                throw new EngineException('No engines were deleted');
             }
 
             DB::commit();
 
             return [
                 'success' => true,
-                'message' => 'Engine deleted successfully',
-                'status' => 200
+                'message' => 'Engines deleted successfully',
+                'status' => 200,
+                'not_found_ids' => $result['not_found_ids']
             ];
 
         } catch (EngineException $e) {
@@ -126,10 +122,11 @@ class EngineService
             throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error deleting engine: ' . $e->getMessage());
-            throw new EngineException('Failed to delete engine');
+            Log::error('Error deleting engines: ' . $e->getMessage());
+            throw new EngineException('Failed to delete engines');
         }
     }
+
 
     public function getPartsByEngine(Engine $engine): array
     {

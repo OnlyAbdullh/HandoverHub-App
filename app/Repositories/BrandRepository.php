@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\Brand;
@@ -46,14 +47,17 @@ class BrandRepository implements BrandRepositoryInterface
         return $brand->update($data);
     }
 
-    public function delete(int $id): bool
+    public function deleteMany(array $ids): array
     {
-        $brand = $this->find($id);
+        $existingIds = $this->model->whereIn('id', $ids)->pluck('id')->toArray();
+        $notFoundIds = array_diff($ids, $existingIds);
 
-        if (!$brand) {
-            return false;
-        }
+        $deletedCount = $this->model->whereIn('id', $existingIds)->delete();
 
-        return $brand->delete();
+        return [
+            'deleted_count' => $deletedCount,
+            'not_found_ids' => array_values($notFoundIds)
+        ];
     }
+
 }

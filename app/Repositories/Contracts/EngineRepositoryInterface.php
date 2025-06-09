@@ -20,7 +20,7 @@ interface EngineRepositoryInterface
     /**
      * Delete engine by ID
      */
-    public function delete(int $id): bool;
+    public function deleteMany(array $ids): array;
 
     /**
      * Check if engine exists with given brand and capacity

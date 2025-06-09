@@ -108,39 +108,16 @@ class MtnSiteService
      */
     public function deleteSites(array $ids): array
     {
-        $deleted = [];
-        $skipped = [];
-
         DB::beginTransaction();
 
         try {
-            $sites = $this->mtnSiteRepository->getByIds($ids);
-
-            $foundIds = $sites->pluck('id')->all();
-            $missingIds = array_diff($ids, $foundIds);
-            if (!empty($missingIds)) {
-                throw new MtnSiteNotFoundException(
-                    'Some MTN Sites not found: ' . implode(', ', $missingIds)
-                );
-            }
-
-            foreach ($sites as $site) {
-                if ($site->generators()->exists()) {
-                    $skipped[] = $site->id;
-                    continue;
-                }
-
-                $this->mtnSiteRepository->delete($site);
-                $deleted[] = $site->id;
-            }
+            $deletedCount = $this->mtnSiteRepository->deleteManyByIds($ids);
 
             DB::commit();
 
-            return compact('deleted', 'skipped');
-
-        } catch (MtnSiteNotFoundException $e) {
-            DB::rollBack();
-            throw $e;
+            return [
+                'deleted_count' => $deletedCount
+            ];
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error deleting MTN Sites batch: ' . $e->getMessage(), [
@@ -150,6 +127,7 @@ class MtnSiteService
             throw $e;
         }
     }
+
 
     public function getGeneratorsBySiteId(int $siteId)
     {

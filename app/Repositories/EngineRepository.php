@@ -35,16 +35,19 @@ class EngineRepository implements EngineRepositoryInterface
     /**
      * Delete engine by ID
      */
-    public function delete(int $id): bool
+    public function deleteMany(array $ids): array
     {
-        $engine = $this->model->find($id);
+        $existingIds = $this->model->whereIn('id', $ids)->pluck('id')->toArray();
+        $notFoundIds = array_diff($ids, $existingIds);
 
-        if (!$engine) {
-            return false;
-        }
+        $deletedCount = $this->model->whereIn('id', $existingIds)->delete();
 
-        return $engine->delete();
+        return [
+            'deleted_count' => $deletedCount,
+            'not_found_ids' => array_values($notFoundIds)
+        ];
     }
+
 
     /**
      * Check if engine exists with given brand and capacity

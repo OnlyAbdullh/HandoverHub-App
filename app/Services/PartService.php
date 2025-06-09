@@ -103,22 +103,25 @@ class PartService
         }
     }
 
-    public function deletePart($id): bool
+    public function deleteParts(array $ids): bool
     {
         try {
             DB::beginTransaction();
 
-            $deleted = $this->partRepository->delete($id);
-            if (!$deleted) {
-                throw new Exception('part is not exist');
+            $deleted = $this->partRepository->deleteMany($ids);
+
+            if ($deleted === 0) {
+                throw new Exception('Parts not found');
             }
 
             DB::commit();
             return true;
+
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Error deleting part: ' . $e->getMessage());
+            Log::error('Error deleting parts: ' . $e->getMessage());
             throw $e;
         }
     }
+
 }

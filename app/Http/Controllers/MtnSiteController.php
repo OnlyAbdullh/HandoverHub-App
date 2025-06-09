@@ -92,8 +92,7 @@ class MtnSiteController extends Controller
 
         return response()->json([
             'message' => 'MTN Sites deleted successfully',
-            'deleted_ids' => $result['deleted'],
-            'skipped_ids' => $result['skipped'],
+            'deleted_count' => $result['deleted_count'],
         ], Response::HTTP_OK);
     }
 

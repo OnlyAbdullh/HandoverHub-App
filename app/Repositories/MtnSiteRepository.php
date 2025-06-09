@@ -119,6 +119,12 @@ class MtnSiteRepository
             ->generators;
     }
 
+    public function deleteManyByIds(array $ids): int
+    {
+        return MtnSite::whereIn('id', $ids)->delete();
+    }
+
+
     public function getByIds(array $ids)
     {
         return MtnSite::whereIn('id', $ids)->get();

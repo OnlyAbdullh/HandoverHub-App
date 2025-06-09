@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\Contracts\BrandRepositoryInterface;
@@ -76,40 +77,31 @@ class BrandService
         }
     }
 
-    public function deleteBrand(int $id): array
+    public function deleteMultipleBrands(array $ids): array
     {
         try {
-            $brand = $this->brandRepository->find($id);
+            $result = $this->brandRepository->deleteMany($ids);
 
-            if (!$brand) {
-                return [
-                    'success' => false,
-                    'message' => 'Brand not found',
-                    'data' => null
-                ];
-            }
-
-            $deleted = $this->brandRepository->delete($id);
-
-            if ($deleted) {
+            if ($result['deleted_count'] > 0) {
                 return [
                     'success' => true,
-                    'message' => 'Brand deleted successfully',
-                    'data' => null
+                    'message' => 'Brands deleted successfully',
+                    'not_found_ids' => $result['not_found_ids']
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Failed to delete brand',
-                'data' => null
+                'message' => 'No brands were deleted',
+                'not_found_ids' => $result['not_found_ids']
             ];
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Failed to delete brand: ' . $e->getMessage(),
-                'data' => null
+                'message' => 'Failed to delete brands: ' . $e->getMessage(),
+                'not_found_ids' => []
             ];
         }
     }
+
 }

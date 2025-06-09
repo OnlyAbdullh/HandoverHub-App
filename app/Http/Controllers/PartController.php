@@ -84,20 +84,33 @@ class PartController extends Controller
     /**
      * حذف قطعة
      */
-    public function destroy($id): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
         try {
-            $this->partService->deletePart($id);
+            $ids = $request->input('ids');
+
+            if (!is_array($ids) || empty($ids)) {
+                return response()->json([
+                    'message' => 'Invalid or empty ID list',
+                    'status' => 400
+                ], 400);
+            }
+
+            $this->partService->deleteParts($ids);
 
             return response()->json([
-                'message' => 'part deleted successfully',
+                'message' => 'Parts deleted successfully',
                 'status' => 200
             ], 200);
+
         } catch (Exception $e) {
+            $code = $e->getMessage() === 'Parts not found' ? 404 : 500;
+
             return response()->json([
                 'message' => $e->getMessage(),
-                'status' => $e->getMessage() === 'part is not exist' ? 404 : 500
-            ], $e->getMessage() === 'part is not exist' ? 404 : 500);
+                'status' => $code
+            ], $code);
         }
     }
+
 }

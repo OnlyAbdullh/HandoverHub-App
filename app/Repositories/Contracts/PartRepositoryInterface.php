@@ -12,7 +12,7 @@ interface PartRepositoryInterface
 
     public function update($id, array $data);
 
-    public function delete($id);
+    public function deleteMany(array $ids);
 
     public function attachEngines($partId, array $engineIds);
     // public function syncEngines($partId, array $engineIds);

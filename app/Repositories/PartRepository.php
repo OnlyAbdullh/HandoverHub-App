@@ -45,14 +45,11 @@ class PartRepository implements PartRepositoryInterface
         return $part->update($data);
     }
 
-    public function delete($id): bool
+    public function deleteMany(array $ids): int
     {
-        $part = $this->model->find($id);
-        if (!$part) {
-            return false;
-        }
-        return $part->delete();
+        return $this->model->whereIn('id', $ids)->delete();
     }
+
 
     public function attachEngines($partId, array $engineIds): void
     {
