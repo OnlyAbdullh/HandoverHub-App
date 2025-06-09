@@ -122,7 +122,7 @@ Route::prefix('reports')->group(function () {
     Route::get('{id}', [ReportController::class, 'show']);
     Route::post('/', [ReportController::class, 'store']);
     Route::put('/', [ReportController::class, 'update']);
-    Route::delete('{id}', [ReportController::class, 'destroy']);
+    Route::delete('/{id}', [ReportController::class, 'destroy']);
     Route::post('{reportId}/tasks', [ReportController::class, 'addTask']);
     Route::delete('{reportId}/tasks/{taskId}', [ReportController::class, 'deleteTask']);
     Route::delete('{reportId}/notes/{noteId}', [ReportController::class, 'deleteNote']);

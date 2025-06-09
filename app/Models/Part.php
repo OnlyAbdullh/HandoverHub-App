@@ -9,7 +9,7 @@ class Part extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'is_general'];
+    protected $fillable = ['name', 'code', 'is_general', 'note'];
 
     /**
      * Get the engines that use this part.
