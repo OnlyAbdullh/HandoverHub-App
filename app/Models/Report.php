@@ -18,7 +18,7 @@ class Report extends Model
         'visit_time',
         'current_reading',
         'previous_reading',
-        'link_status',
+        'ats_status',
         'previous_visit_date',
         'oil_pressure',
         'temperature',
@@ -33,7 +33,9 @@ class Report extends Model
         'load_L3',
         'oil_quantity',
         'visit_reason',
-        'technical_status'
+        'technical_status',
+        'longitude',
+        'latitude'
     ];
 
     protected $casts = [

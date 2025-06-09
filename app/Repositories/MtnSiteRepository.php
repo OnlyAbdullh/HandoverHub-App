@@ -40,8 +40,7 @@ class MtnSiteRepository
         if (!empty($filters['code'])) {
             $query->where('code', 'like', '%' . $filters['code'] . '%');
         }
-
-        return $query->get();
+        return $query->paginate(20);
     }
 
     /**

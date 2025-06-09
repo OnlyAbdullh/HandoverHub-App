@@ -29,7 +29,7 @@ class StoreReportRequest extends FormRequest
             'report.visit_date'         => 'sometimes|date',
             'report.visit_time'         => 'sometimes|date_format:H:i:s',
             'report.current_reading'    => 'sometimes|numeric',
-            'report.link_status'        => 'sometimes|string|max:20',
+            'report.ats_status'        => 'sometimes|string|max:20',
             'report.oil_pressure'       => 'sometimes|numeric',
             'report.temperature'        => 'sometimes|numeric',
             'report.burned_oil_quantity'=> 'sometimes|numeric',
@@ -44,7 +44,8 @@ class StoreReportRequest extends FormRequest
             'report.oil_quantity'       => 'sometimes|numeric',
             'report.visit_reason'       => 'sometimes|string|max:100',
             'report.technical_status'   => 'sometimes|string|max:50',
-
+            'report.longitude'          => 'sometimes|string|max:50',
+            'report.latitude'          => 'sometimes|string|max:50',
             'parts_used'                => 'sometimes|array|min:1',
             'parts_used.*.part_id'      => 'sometimes|integer|exists:parts,id',
             'parts_used.*.quantity'     => 'sometimes|integer|min:1',

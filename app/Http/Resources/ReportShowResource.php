@@ -38,6 +38,8 @@ class ReportShowResource extends JsonResource
             'load_l2'          => $this->load_L2,
             'load_l3'          => $this->load_L3,
             'visit_resons'     => $this->visit_reason,
+            'longitude'        =>$this->longitude,
+            'latitude'         =>$this->latitude,
             'technician_notes' => TechnicianNoteResource::collection($this->whenLoaded('technicianNotes')),
             'technical_status' => $this->technical_status,
             'completed_works'  => CompletedTaskResource::collection($this->whenLoaded('completedTasks')),
