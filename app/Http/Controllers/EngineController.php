@@ -11,6 +11,7 @@ use App\Services\EngineService;
 use App\Exceptions\EngineException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
 class EngineController extends Controller
 {
     public function __construct(
@@ -56,6 +57,27 @@ class EngineController extends Controller
 
         }
     }
+
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'brand_id' => 'sometimes|exists:brands,id',
+            'capacity_id' => 'sometimes|exists:capacities,id',
+        ]);
+
+        if (empty($validated)) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'At least one field (brand_id or capacity_id) is required.',
+                'data' => null
+            ], 400);
+        }
+
+        $result = $this->engineService->update($id, $validated);
+
+        return response()->json($result, $result['status']);
+    }
+
 
     /**
      * Delete engine

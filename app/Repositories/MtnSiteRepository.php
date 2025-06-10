@@ -125,11 +125,6 @@ class MtnSiteRepository
     }
 
 
-    public function getByIds(array $ids)
-    {
-        return MtnSite::whereIn('id', $ids)->get();
-    }
-
     public function unlinkGenerators(int $siteId, array $generatorIds): int
     {
         return Generator::where('mtn_site_id', $siteId)

@@ -73,12 +73,13 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('brands/import', [BrandImportController::class, 'import']);
 Route::post('brands', [BrandImportController::class, 'store']);
 
+
 Route::apiResource('mtn-sites', MtnSiteController::class);
 Route::delete('mtn-sites', [MtnSiteController::class, 'destroyBatch']);
 Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);
 Route::get('mtn-sites/generators/{id}', [MtnSiteController::class, 'getGenerator']);
-Route::post('/mtn-sites/{site}/assign-generators', [GeneratorController::class, 'assignGeneratorsToSite']);
 Route::delete('/mtn-sites/{site}/generators/unlink', [MtnSiteController::class, 'unlinkGenerators']);
+
 
 Route::prefix('capacities')->group(function () {
     Route::get('/', [CapacityController::class, 'index']);
@@ -87,6 +88,7 @@ Route::prefix('capacities')->group(function () {
     Route::delete('/', [CapacityController::class, 'destroyList']);
 });
 
+
 Route::prefix('brands')->group(function () {
     Route::get('/', [BrandController::class, 'index']);
     Route::post('/', [BrandController::class, 'store']);
@@ -94,13 +96,13 @@ Route::prefix('brands')->group(function () {
     Route::delete('/', [BrandController::class, 'destroy']);
 });
 
-Route::apiResource('engines', EngineController::class)->only([
-    'index', 'store'
-]);
+
+Route::apiResource('engines', EngineController::class)->only(['index', 'store','update']);
 Route::delete('engines', [EngineController::class, 'destroy']);
 Route::get('/engines/parts/{engine}', [EngineController::class, 'getPartsByEngine'])
     ->name('engines.parts')
     ->whereNumber('engine');
+
 
 Route::prefix('parts')->group(function () {
     Route::get('/', [PartController::class, 'index']);
@@ -108,6 +110,7 @@ Route::prefix('parts')->group(function () {
     Route::put('/{id}', [PartController::class, 'update']);
     Route::delete('/', [PartController::class, 'destroy']);
 });
+
 
 Route::prefix('generators')->group(function () {
     Route::get('/unassigned', [GeneratorController::class, 'getUnassigned']);
@@ -117,6 +120,8 @@ Route::prefix('generators')->group(function () {
     Route::put('/{id}', [GeneratorController::class, 'update']);
     Route::delete('/{id}', [GeneratorController::class, 'destroy']);
 });
+Route::post('/mtn-sites/{site}/assign-generators', [GeneratorController::class, 'assignGeneratorsToSite']);
+
 
 Route::prefix('reports')->group(function () {
     Route::get('/', [ReportController::class, 'index']);

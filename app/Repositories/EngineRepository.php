@@ -74,4 +74,11 @@ class EngineRepository implements EngineRepositoryInterface
             ->parts()
             ->get();
     }
+
+    public function update(Engine $engine, array $data): Engine
+    {
+        $engine->update($data);
+        return $engine->refresh();
+    }
+
 }

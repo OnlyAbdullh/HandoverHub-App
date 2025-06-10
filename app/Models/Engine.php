@@ -45,7 +45,7 @@ class Engine extends Model
             ],
             'engine_capacity' => [
                 'id' => $this->capacity?->id,
-                'capacity' => $this->capacity?->name ?? '',
+                'capacity' => $this->capacity?->value ?? '',
             ],
         ];
     }

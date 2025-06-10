@@ -94,6 +94,49 @@ class EngineService
         }
     }
 
+    public function update(int $id, array $data): array
+    {
+        try {
+            $engine = $this->engineRepository->findById($id);
+
+            if (!$engine) {
+                return [
+                    'status' => 404,
+                    'message' => 'Engine not found.',
+                    'data' => null,
+                ];
+            }
+
+            $newBrandId = $data['brand_id'] ?? $engine->brand_id;
+            $newCapacityId = $data['capacity_id'] ?? $engine->capacity_id;
+
+            $duplicate = $this->engineRepository->existsByBrandAndCapacity($newBrandId, $newCapacityId, $id);
+            if ($duplicate) {
+                return [
+                    'status' => 422,
+                    'message' => 'An engine with the same brand and capacity already exists.',
+                    'data' => null,
+                ];
+            }
+
+            $updatedEngine = $this->engineRepository->update($engine, $data);
+            $updatedEngine->load(['brand', 'capacity']);
+
+            return [
+                'status' => 200,
+                'message' => 'Engine updated successfully.',
+                'data' => $updatedEngine,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 500,
+                'message' => 'An error occurred: ' . $e->getMessage(),
+                'data' => null,
+            ];
+        }
+    }
+
+
     /**
      * Delete engine
      */
