@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReportResource;
 use App\Http\Resources\ReportShowResource;
 use App\Services\ReportService;
 use App\Http\Requests\StoreReportRequest;
@@ -22,12 +23,20 @@ class ReportController extends Controller
     /**
      * Get all reports
      */
+
     public function index(): JsonResponse
     {
-        $result = $this->reportService->getAllReports();
-        return response()->json($result, $result['status']);
-    }
+        $paginator = $this->reportService->getAllReports();
 
+        return response()->json([
+            'total' => $paginator->total(),
+            'count' => $paginator->count(),
+            'current_page' => $paginator->currentPage(),
+            'prev_page_url' => $paginator->previousPageUrl(),
+            'next_page_url' => $paginator->nextPageUrl(),
+            'data' => ReportResource::collection($paginator),
+        ]);
+    }
     /**
      * Get report details
      */

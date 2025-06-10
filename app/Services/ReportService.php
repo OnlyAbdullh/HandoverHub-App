@@ -20,37 +20,11 @@ class ReportService
     /**
      * Get all reports
      */
-    public function getAllReports(): array
+    public function getAllReports(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        try {
-            $reports = $this->reportRepository->getAllReports();
-
-            $formattedReports = $reports->map(function ($report) {
-                return [
-                    'id' => $report->id,
-                    'mtn_site' => [
-                        'id' => $report->mtn_site->id,
-                        'name' => $report->mtn_site->name,
-                        'code' => $report->mtn_site->code,
-                    ],
-                    'visit_type' => $report->visit_type,
-                    'visit_date' => $report->visit_date,
-                ];
-            });
-
-            return [
-                'status' => 200,
-                'message' => 'Reports retrieved successfully',
-                'data' => $formattedReports
-            ];
-        } catch (Exception $e) {
-            return [
-                'status' => 500,
-                'message' => 'Failed to retrieve reports: ' . $e->getMessage(),
-                'data' => []
-            ];
-        }
+        return $this->reportRepository->getAllReports();
     }
+
 
     /**
      * Get report details

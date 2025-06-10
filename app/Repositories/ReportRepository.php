@@ -20,12 +20,12 @@ class ReportRepository
     /**
      * Get all reports with basic info
      */
-    public function getAllReports(): Collection
+    public function getAllReports(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->model->with(['mtn_site:id,name,code'])
             ->select('id', 'mtn_site_id', 'visit_type', 'visit_date')
             ->orderBy('visit_date', 'desc')
-            ->get();
+            ->paginate(20);
     }
 
     /**
