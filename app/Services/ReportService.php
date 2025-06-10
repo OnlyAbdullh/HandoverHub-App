@@ -234,32 +234,33 @@ class ReportService
     /**
      * Delete completed task from report
      */
-    public function deleteCompletedTask(int $reportId, int $taskId): array
+    public function deleteCompletedTasks(int $reportId, array $taskIds): array
     {
         try {
-            $deleted = $this->reportRepository->deleteCompletedTask($reportId, $taskId);
+            $deletedCount = $this->reportRepository->deleteCompletedTasks($reportId, $taskIds);
 
-            if (!$deleted) {
+            if ($deletedCount === 0) {
                 return [
                     'status' => 404,
-                    'message' => 'Task not found',
+                    'message' => 'No matching tasks found to delete.',
                     'data' => null
                 ];
             }
 
             return [
                 'status' => 200,
-                'message' => 'Task deleted successfully',
-                'data' => null
+                'message' => "Deleted $deletedCount task(s) successfully.",
+                'data' => ['deleted_count' => $deletedCount]
             ];
         } catch (Exception $e) {
             return [
                 'status' => 500,
-                'message' => 'Failed to delete task: ' . $e->getMessage(),
+                'message' => 'Failed to delete tasks: ' . $e->getMessage(),
                 'data' => null
             ];
         }
     }
+
 
     /**
      * Delete technician note from report

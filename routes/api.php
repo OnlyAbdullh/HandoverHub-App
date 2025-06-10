@@ -124,7 +124,7 @@ Route::prefix('reports')->group(function () {
     Route::put('/', [ReportController::class, 'update']);
     Route::delete('/{id}', [ReportController::class, 'destroy']);
     Route::post('{reportId}/tasks', [ReportController::class, 'addTask']);
-    Route::delete('{reportId}/tasks/{taskId}', [ReportController::class, 'deleteTask']);
+    Route::delete('{reportId}/tasks', [ReportController::class, 'deleteTasks']);
     Route::delete('{reportId}/notes/{noteId}', [ReportController::class, 'deleteNote']);
     Route::delete('{reportId}/parts/{partId}', [ReportController::class, 'deletePart']);
 });

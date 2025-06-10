@@ -129,12 +129,13 @@ class ReportRepository
     /**
      * Delete completed task
      */
-    public function deleteCompletedTask(int $reportId, int $taskId): bool
+    public function deleteCompletedTasks(int $reportId, array $taskIds): int
     {
         return CompletedTask::where('report_id', $reportId)
-            ->where('id', $taskId)
+            ->whereIn('id', $taskIds)
             ->delete();
     }
+
 
     /**
      * Delete technician note

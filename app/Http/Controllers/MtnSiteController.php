@@ -30,14 +30,23 @@ class MtnSiteController extends Controller
      * Display a listing of the MTN sites with filtering capabilities.
      *
      * @param Request $request
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
         $filters = $request->only(['name', 'code']);
-        $sites = $this->mtnSiteService->getAllSites($filters);
+        $sitesPaginated = $this->mtnSiteService->getAllSites($filters);
 
-        return MtnSiteResource::collection($sites);
+        $sitesData = MtnSiteResource::collection($sitesPaginated->items());
+
+        return response()->json([
+            'total' => $sitesPaginated->total(),
+            'count' => $sitesPaginated->count(),
+            'current_page' => $sitesPaginated->currentPage(),
+            'prev_page_url' => $sitesPaginated->previousPageUrl(),
+            'next_page_url' => $sitesPaginated->nextPageUrl(),
+            'data' => $sitesData,
+        ]);
     }
 
     /**

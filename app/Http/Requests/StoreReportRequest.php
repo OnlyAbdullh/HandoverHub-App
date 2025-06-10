@@ -29,7 +29,7 @@ class StoreReportRequest extends FormRequest
             'report.visit_date'         => 'sometimes|date',
             'report.visit_time'         => 'sometimes|date_format:H:i:s',
             'report.current_reading'    => 'sometimes|numeric',
-            'report.ats_status'        => 'sometimes|string|max:20',
+            'report.ats_status'        => 'sometimes|boolean|max:20',
             'report.oil_pressure'       => 'sometimes|numeric',
             'report.temperature'        => 'sometimes|numeric',
             'report.burned_oil_quantity'=> 'sometimes|numeric',

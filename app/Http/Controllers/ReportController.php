@@ -93,11 +93,23 @@ class ReportController extends Controller
     /**
      * Delete completed task from report
      */
-    public function deleteTask(int $reportId, int $taskId): JsonResponse
+    public function deleteTasks(Request $request, int $reportId): JsonResponse
     {
-        $result = $this->reportService->deleteCompletedTask($reportId, $taskId);
+        $taskIds = $request->input('task_ids');
+
+        if (!is_array($taskIds) || empty($taskIds)) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Invalid or missing task_ids array.',
+                'data' => null
+            ], 422);
+        }
+
+        $result = $this->reportService->deleteCompletedTasks($reportId, $taskIds);
+
         return response()->json($result, $result['status']);
     }
+
 
     /**
      * Delete technician note from report
