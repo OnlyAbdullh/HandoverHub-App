@@ -177,7 +177,7 @@ class EngineService
             $parts = $this->engineRepository->getPartsByEngine($engine);
 
             return [
-                'data' => $parts,  // سنحوّله لاحقًا إلى Resource داخل الـ Controller إن أردت
+                'data' => $parts,
                 'message' => 'Parts retrieved successfully for engine ID ' . $engine->id,
                 'status' => Response::HTTP_OK,
             ];

@@ -16,10 +16,8 @@ return new class extends Migration {
             $table->integer('quantity')->default(1);
             $table->text('notes')->nullable();
             $table->boolean('is_faulty')->default(false);
-            $table->date('last_replacement_date')->nullable();
             $table->decimal('current_work_hours')->nullable();
             $table->decimal('last_replacement_hours')->nullable();
-
             $table->primary(['part_id', 'report_id']);
             $table->timestamps();
         });

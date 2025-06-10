@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Engine;
+use App\Models\Part;
 use App\Repositories\Contracts\EngineRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -70,9 +71,11 @@ class EngineRepository implements EngineRepositoryInterface
 
     public function getPartsByEngine(Engine $engine): Collection
     {
-        return $engine
-            ->parts()
-            ->get();
+        $engineParts = $engine->parts()->get();
+
+        $generalParts = Part::where('is_general', 1)->get();
+
+        return $engineParts->merge($generalParts);
     }
 
     public function update(Engine $engine, array $data): Engine

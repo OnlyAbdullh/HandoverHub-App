@@ -113,7 +113,6 @@ class EngineController extends Controller
         }
     }
 
-
     public function getPartsByEngine(Engine $engine): JsonResponse
     {
         $result = $this->engineService->getPartsByEngine($engine);

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePartRequest extends FormRequest
 {
@@ -19,25 +20,37 @@ class StorePartRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:parts,code',
-            'is_general' => ['required', 'boolean'],
-            'note' => 'nullable|string|max:1000',
-            'engine_ids' => 'array',
-            'engine_ids.*' => 'exists:engines,id'
+            'name'         => ['required', 'string', 'max:255'],
+            'code'         => ['required', 'string', 'max:255', 'unique:parts,code'],
+            'is_general'   => ['required', 'boolean'],
+            'note'         => ['nullable', 'string', 'max:1000'],
+
+            'engine_ids'   => [
+                'array',
+                Rule::prohibitedIf($this->boolean('is_general')),
+            ],
+
+            'engine_ids.*' => [
+                'exists:engines,id',
+                Rule::prohibitedIf($this->boolean('is_general')),
+            ],
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
-            'name.required' => 'the name of the part is required',
-            'code.required' => 'the code of the part is required',
-            'code.unique' => 'the code of the part is already exist',
-            'engine_ids.*.exists' => 'one of the Engines is not exist'
+            'name.required'              => 'The name of the part is required.',
+            'code.required'              => 'The code of the part is required.',
+            'code.unique'                => 'The code of the part already exists.',
+            'is_general.required'        => 'Please specify whether the part is general or not.',
+
+            'engine_ids.prohibited'      => 'You cannot select engines when the part is marked as general.',
+            'engine_ids.*.prohibited'    => 'You cannot select engines when the part is marked as general.',
+            'engine_ids.*.exists'        => 'One of the selected engines does not exist.',
         ];
     }
 }
