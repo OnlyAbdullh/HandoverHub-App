@@ -133,4 +133,32 @@ class MtnSiteService
     {
         return $this->mtnSiteRepository->getGenerators($siteId);
     }
+
+    public function unlinkGenerators(int $siteId, array $generatorIds): array
+    {
+        try {
+            $affectedRows = $this->mtnSiteRepository->unlinkGenerators($siteId, $generatorIds);
+
+            if ($affectedRows === 0) {
+                return [
+                    'status' => 404,
+                    'message' => 'No matching generators found for this site.',
+                    'data' => null
+                ];
+            }
+
+            return [
+                'status' => 200,
+                'message' => "Unlinked $affectedRows generator(s) from site successfully.",
+                'data' => ['unlinked_count' => $affectedRows]
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 500,
+                'message' => 'Failed to unlink generators: ' . $e->getMessage(),
+                'data' => null
+            ];
+        }
+    }
+
 }

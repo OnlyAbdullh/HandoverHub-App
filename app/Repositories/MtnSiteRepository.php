@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Generator;
 use App\Models\MtnSite;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -128,4 +129,12 @@ class MtnSiteRepository
     {
         return MtnSite::whereIn('id', $ids)->get();
     }
+
+    public function unlinkGenerators(int $siteId, array $generatorIds): int
+    {
+        return Generator::where('mtn_site_id', $siteId)
+            ->whereIn('id', $generatorIds)
+            ->update(['mtn_site_id' => null]);
+    }
+
 }

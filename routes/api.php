@@ -78,6 +78,7 @@ Route::delete('mtn-sites', [MtnSiteController::class, 'destroyBatch']);
 Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);
 Route::get('mtn-sites/generators/{id}', [MtnSiteController::class, 'getGenerator']);
 Route::post('/mtn-sites/{site}/assign-generators', [GeneratorController::class, 'assignGeneratorsToSite']);
+Route::delete('/mtn-sites/{site}/generators/unlink', [MtnSiteController::class, 'unlinkGenerators']);
 
 Route::prefix('capacities')->group(function () {
     Route::get('/', [CapacityController::class, 'index']);

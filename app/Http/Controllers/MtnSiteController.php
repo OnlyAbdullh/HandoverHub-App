@@ -105,4 +105,21 @@ class MtnSiteController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function unlinkGenerators(Request $request, int $siteId): JsonResponse
+    {
+        $generatorIds = $request->input('generator_ids');
+
+        if (!is_array($generatorIds) || empty($generatorIds)) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Invalid or missing generator_ids array.',
+                'data' => null
+            ], 422);
+        }
+
+        $result = $this->mtnSiteService->unlinkGenerators($siteId, $generatorIds);
+
+        return response()->json($result, $result['status']);
+    }
+
 }
