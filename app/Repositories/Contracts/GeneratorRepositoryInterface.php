@@ -12,7 +12,7 @@ interface GeneratorRepositoryInterface
      *
      * @return Collection
      */
-    public function getAllWithRelations(): Collection;
+    public function getAllWithRelations();
 
     /**
      * Find generator by ID with relationships

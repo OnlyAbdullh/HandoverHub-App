@@ -28,7 +28,16 @@ class GeneratorController extends Controller
     {
         $result = $this->generatorService->getAllGenerators(false);
 
-        return response()->json($result, $result['status']);
+        return response()->json([
+            'message' => 'All generators retrieved successfully',
+            'total' => $result->total(),
+            'count' => $result->count(),
+            'current_page' => $result->currentPage(),
+            'prev_page_url' => $result->previousPageUrl(),
+            'next_page_url' => $result->nextPageUrl(),
+            'data' => $result->items(),
+        ]);
+
     }
 
     /**

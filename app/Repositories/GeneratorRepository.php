@@ -18,9 +18,9 @@ class GeneratorRepository implements GeneratorRepositoryInterface
     /**
      * Get all generators with relationships
      * @param bool $onlyUnassigned
-     * @return Collection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllWithRelations(bool $onlyUnassigned = false): Collection
+    public function getAllWithRelations(bool $onlyUnassigned = false): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = $this->model
             ->with([
@@ -34,7 +34,7 @@ class GeneratorRepository implements GeneratorRepositoryInterface
             $query->whereNull('mtn_site_id');
         }
 
-        return $query->get();
+        return $query->paginate(20);
     }
 
     /**
