@@ -97,7 +97,7 @@ Route::prefix('brands')->group(function () {
 });
 
 
-Route::apiResource('engines', EngineController::class)->only(['index', 'store','update']);
+Route::apiResource('engines', EngineController::class)->only(['index', 'store', 'update']);
 Route::delete('engines', [EngineController::class, 'destroy']);
 Route::get('/engines/parts/{engine}', [EngineController::class, 'getPartsByEngine'])
     ->name('engines.parts')
@@ -131,6 +131,8 @@ Route::prefix('reports')->group(function () {
     Route::delete('/{id}', [ReportController::class, 'destroy']);
     Route::post('{reportId}/tasks', [ReportController::class, 'addTask']);
     Route::delete('{reportId}/tasks', [ReportController::class, 'deleteTasks']);
-    Route::delete('{reportId}/notes/{noteId}', [ReportController::class, 'deleteNote']);
+    Route::delete('{reportId}/notes', [ReportController::class, 'deleteNotes']);
     Route::delete('{reportId}/parts/{partId}', [ReportController::class, 'deletePart']);
+    Route::post('/{reportId}/add-note', [ReportController::class, 'addTechnicianNote']);
+    Route::post('/{reportId}/add-part', [ReportController::class, 'addPart']);
 });

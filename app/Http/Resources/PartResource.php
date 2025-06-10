@@ -19,7 +19,6 @@ class PartResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'is_general' => $this->is_general,
-            'note' => $this->note,
             'engines' => $this->when(
                 !$request->routeIs('engines.parts'),
                 EngineResource::collection($this->whenLoaded('engines'))

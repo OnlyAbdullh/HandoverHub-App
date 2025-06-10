@@ -21,7 +21,6 @@ class ReplacedPartResource extends JsonResource
             'code'                  => $this->part?->code,
             'note'                  => $this->notes,
             'is_faulty'             => (bool) $this->is_faulty,
-            'last_replacement_date' => $this->last_replacement_date?->toDateString(),
         ];
     }
 }

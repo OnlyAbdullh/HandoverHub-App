@@ -4,10 +4,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReportPartRequest;
 use App\Http\Resources\ReportResource;
 use App\Http\Resources\ReportShowResource;
 use App\Services\ReportService;
 use App\Http\Requests\StoreReportRequest;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -123,9 +126,15 @@ class ReportController extends Controller
     /**
      * Delete technician note from report
      */
-    public function deleteNote(int $reportId, int $noteId): JsonResponse
+    public function deleteNotes(Request $request, int $reportId): JsonResponse
     {
-        $result = $this->reportService->deleteTechnicianNote($reportId, $noteId);
+        $request->validate([
+            'note_ids' => 'required|array',
+            'note_ids.*' => 'integer|distinct',
+        ]);
+
+        $result = $this->reportService->deleteTechnicianNotes($reportId, $request->input('note_ids'));
+
         return response()->json($result, $result['status']);
     }
 
@@ -136,5 +145,52 @@ class ReportController extends Controller
     {
         $result = $this->reportService->deleteReplacedPart($reportId, $partId);
         return response()->json($result, $result['status']);
+    }
+
+    public function addTechnicianNote(int $reportId, Request $request): JsonResponse
+    {
+        try {
+            $this->reportService->addTechnicianNote(
+                $reportId,
+                $request->input('note')
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Technician note added successfully',
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], $e instanceof ModelNotFoundException ? 404 : 400);
+        }
+    }
+
+    /**
+     * إضافة مادة/قطعة لتقرير
+     * POST /api/reports/{reportId}/add-part
+     */
+    public function addPart(int $reportId, ReportPartRequest $request): JsonResponse
+    {
+        try {
+            $this->reportService->addPartToReport(
+                $reportId,
+                $request->part_id,
+                $request->only(['quantity', 'notes', 'is_faulty'])
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Part added to report successfully'
+            ], 201);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], $e instanceof ModelNotFoundException ? 404 : 400);
+        }
     }
 }

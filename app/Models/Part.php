@@ -30,9 +30,6 @@ class Part extends Model
                 'quantity',
                 'notes',
                 'is_faulty',
-                'last_replacement_date',
-                'current_work_hours',
-                'last_replacement_hours'
             ])
             ->withTimestamps();
     }

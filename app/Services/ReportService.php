@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\TechnicianNote;
 use App\Repositories\ReportRepository;
 use App\Models\Report;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use InvalidArgumentException;
 
 class ReportService
 {
@@ -29,7 +32,7 @@ class ReportService
     /**
      * Get report details
      */
-    public function getReportDetails(int $id): ?Report
+    public function getReportDetails(int $id)
     {
         return $this->reportRepository->findWithDetails($id);
     }
@@ -239,29 +242,29 @@ class ReportService
     /**
      * Delete technician note from report
      */
-    public function deleteTechnicianNote(int $reportId, int $noteId): array
+    public function deleteTechnicianNotes(int $reportId, array $noteIds): array
     {
         try {
-            $deleted = $this->reportRepository->deleteTechnicianNote($reportId, $noteId);
+            $deletedIds = $this->reportRepository->deleteTechnicianNotes($reportId, $noteIds);
 
-            if (!$deleted) {
+            if (empty($deletedIds)) {
                 return [
                     'status' => 404,
-                    'message' => 'Note not found',
-                    'data' => null
+                    'message' => 'No matching notes found to delete.',
+                    'data' => [],
                 ];
             }
 
             return [
                 'status' => 200,
-                'message' => 'Note deleted successfully',
-                'data' => null
+                'message' => 'Notes deleted successfully.',
+                'data' => $deletedIds,  // list of IDs actually deleted
             ];
         } catch (Exception $e) {
             return [
                 'status' => 500,
-                'message' => 'Failed to delete note: ' . $e->getMessage(),
-                'data' => null
+                'message' => 'Failed to delete notes: ' . $e->getMessage(),
+                'data' => [],
             ];
         }
     }
@@ -295,4 +298,44 @@ class ReportService
             ];
         }
     }
+
+    public function addTechnicianNote(int $reportId, string $note)
+    {
+        if (empty(trim($note ?? ''))) {
+            throw new InvalidArgumentException('Note content cannot be empty');
+        }
+        $this->reportRepository->addTechnicianNote($reportId, $note);
+    }
+
+    /**
+     * إضافة مادة/قطعة لتقرير
+     */
+    public function addPartToReport(int $reportId, int $partId, array $data = []): bool
+    {
+        $report = $this->reportRepository->findReportOrFail($reportId);
+
+        if (!$this->reportRepository->partExists($partId)) {
+            throw new ModelNotFoundException("Part #{$partId} not found");
+        }
+
+        if ($this->reportRepository->partExistsInReport($report, $partId)) {
+            throw new InvalidArgumentException("Part #{$partId} already added to Report #{$reportId}");
+        }
+        $quantity = $data['quantity'] ?? 1;
+        if (!is_numeric($quantity) || $quantity < 1) {
+            throw new InvalidArgumentException("Quantity must be a positive number");
+        }
+
+        $pivotData = [
+            'quantity' => (int)$quantity,
+            'faulty_quantity' => isset($data['faulty_quantity'])
+                ? (int)$data['faulty_quantity']
+                : 0,
+            'notes' => $data['notes'] ?? null,
+            'is_faulty' => isset($data['is_faulty']) && $data['is_faulty'],
+        ];
+
+        return $this->reportRepository->attachPart($report, $partId, $pivotData);
+    }
+
 }

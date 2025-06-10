@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\Report;
@@ -7,6 +8,7 @@ use App\Models\TechnicianNote;
 use App\Models\ReplacedPart;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAware\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class ReportRepository
 {
@@ -31,9 +33,10 @@ class ReportRepository
     /**
      * Find report by ID with all relationships
      */
-    public function findWithDetails(int $id): ?Report
+
+    public function findWithDetails(int $id)
     {
-        return $this->model->with([
+        $report = $this->model->with([
             'generator.brand:id,name',
             'generator.engine.brand:id,name',
             'generator.engine.capacity:id,value',
@@ -42,6 +45,23 @@ class ReportRepository
             'technicianNotes:id,report_id,note',
             'replacedParts.part:id,name,code'
         ])->find($id);
+
+      /*  if (!$report) {
+            return null;
+        }*/
+
+    /*    $visitDate = $report->visit_date;
+
+        $lastPeriodicVisit = $this->model
+            ->where('visit_type', 'routine')
+            ->where('visit_date', '<', $visitDate)
+            ->where('id', '!=', $id)
+            ->orderByDesc('visit_date')
+            ->first();
+
+        $report->last_routine_visit_date = $lastPeriodicVisit;*/
+
+        return $report;
     }
 
     /**
@@ -106,16 +126,6 @@ class ReportRepository
         ]);
     }
 
-    /**
-     * Add technician note to report
-     */
-    public function addTechnicianNote(int $reportId, string $note): TechnicianNote
-    {
-        return TechnicianNote::create([
-            'report_id' => $reportId,
-            'note' => $note
-        ]);
-    }
 
     /**
      * Add replaced part to report
@@ -140,11 +150,21 @@ class ReportRepository
     /**
      * Delete technician note
      */
-    public function deleteTechnicianNote(int $reportId, int $noteId): bool
+    public function deleteTechnicianNotes(int $reportId, array $noteIds): array
     {
-        return TechnicianNote::where('report_id', $reportId)
-            ->where('id', $noteId)
+        $toDelete = TechnicianNote::where('report_id', $reportId)
+            ->whereIn('id', $noteIds)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($toDelete)) {
+            return [];
+        }
+        TechnicianNote::where('report_id', $reportId)
+            ->whereIn('id', $toDelete)
             ->delete();
+
+        return $toDelete;
     }
 
     /**
@@ -201,5 +221,44 @@ class ReportRepository
         foreach ($parts as $part) {
             $this->addReplacedPart($reportId, $part);
         }
+    }
+
+    public function addTechnicianNote(int $reportId, string $note): TechnicianNote
+    {
+        $report = $this->model->findOrFail($reportId);
+
+        return $report->technicianNotes()->create([
+            'note' => $note,
+        ]);
+    }
+
+    public function findReportOrFail(int $reportId): Report
+    {
+        return Report::findOrFail($reportId);
+    }
+
+    /**
+     * التحقق من وجود Part برقم مُعيّن
+     */
+    public function partExists(int $partId): bool
+    {
+        return Part::where('id', $partId)->exists();
+    }
+
+    /**
+     * التحقق من أن الجزء غير مُضاف مسبقاً في التقرير
+     */
+    public function partExistsInReport(Report $report, int $partId): bool
+    {
+        return $report->parts()->where('part_id', $partId)->exists();
+    }
+
+    /**
+     * ربط Part بالتقرير بالبيانات الممررة
+     */
+    public function attachPart(Report $report, int $partId, array $pivotData): bool
+    {
+        $report->parts()->attach($partId, $pivotData);
+        return true;
     }
 }

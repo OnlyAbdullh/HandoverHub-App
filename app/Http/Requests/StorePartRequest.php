@@ -26,7 +26,6 @@ class StorePartRequest extends FormRequest
             'name'         => ['required', 'string', 'max:255'],
             'code'         => ['required', 'string', 'max:255', 'unique:parts,code'],
             'is_general'   => ['required', 'boolean'],
-            'note'         => ['nullable', 'string', 'max:1000'],
 
             'engine_ids'   => [
                 'array',

@@ -19,9 +19,7 @@ return new class extends Migration {
             $table->date('visit_date');
             $table->time('visit_time');
             $table->decimal('current_reading', 10, 2);
-            $table->decimal('previous_reading', 10, 2)->nullable();
             $table->boolean('ats_status')->default(true);
-            $table->date('previous_visit_date')->nullable();
             $table->decimal('oil_pressure', 5, 2)->nullable();
             $table->decimal('temperature', 5, 2)->nullable();
             $table->decimal('burned_oil_quantity', 5, 2)->nullable();
