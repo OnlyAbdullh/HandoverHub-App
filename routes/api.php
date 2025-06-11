@@ -135,4 +135,5 @@ Route::prefix('reports')->group(function () {
     Route::delete('{reportId}/parts', [ReportController::class, 'deleteParts']);
     Route::post('/{reportId}/add-note', [ReportController::class, 'addTechnicianNote']);
     Route::post('/{reportId}/add-part', [ReportController::class, 'addPart']);
+    Route::post('/export', [ReportController::class, 'exportReports'])->name('reports.export');
 });

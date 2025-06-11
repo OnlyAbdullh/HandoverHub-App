@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 
 class ReportShowResource extends JsonResource
 {
@@ -39,8 +41,10 @@ class ReportShowResource extends JsonResource
             'longitude'        => $this->longitude,
             'latitude'         => $this->latitude,
 
-            'last_meter'       => $this->last_routine_visit['current_reading'] ?? null,
-            'last_routine_visit_date' => $this->last_routine_visit['visit_date']->format('Y-m-d') ?? null,
+            'last_meter' => Arr::get($this->last_routine_visit, 'current_reading'),
+            'last_routine_visit_date' => $this->last_routine_visit
+                ? Carbon::parse(Arr::get($this->last_routine_visit, 'visit_date'))->format('Y-m-d')
+                : null,
 
             'technician_notes' => TechnicianNoteResource::collection($this->whenLoaded('technicianNotes')),
             'technical_status' => $this->technical_status,

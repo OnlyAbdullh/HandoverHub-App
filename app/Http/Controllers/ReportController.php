@@ -4,23 +4,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ExportReportsRequest;
 use App\Http\Requests\ReportPartRequest;
 use App\Http\Resources\ReportResource;
 use App\Http\Resources\ReportShowResource;
+use App\Services\ReportExportService;
 use App\Services\ReportService;
 use App\Http\Requests\StoreReportRequest;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController extends Controller
 {
     protected $reportService;
 
-    public function __construct(ReportService $reportService)
+    public function __construct(ReportService $reportService, ReportExportService $exportService)
     {
         $this->reportService = $reportService;
+        $this->exportService = $exportService;
     }
 
     /**
@@ -145,7 +149,7 @@ class ReportController extends Controller
     public function deleteParts(int $reportId, Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'part_ids'   => 'required|array|min:1',
+            'part_ids' => 'required|array|min:1',
             'part_ids.*' => 'integer',
         ]);
 
@@ -155,7 +159,7 @@ class ReportController extends Controller
         );
 
         return response()->json(
-            [ 'message' => $result['message'], 'data' => $result['data'] ],
+            ['message' => $result['message'], 'data' => $result['data']],
             $result['status']
         );
     }
@@ -204,6 +208,26 @@ class ReportController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ], $e instanceof ModelNotFoundException ? 404 : 400);
+        }
+    }
+
+    public function exportReports(ExportReportsRequest $request): BinaryFileResponse|JsonResponse
+    {
+        try {
+            $reportIds = $request->input('report_ids');
+
+            $filePath = $this->exportService->exportReportsToExcel($reportIds);
+
+            $fileName = 'reports_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+            return response()->download($filePath, $fileName)->deleteFileAfterSend();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to export reports',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
