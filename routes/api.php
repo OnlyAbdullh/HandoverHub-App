@@ -99,7 +99,7 @@ Route::prefix('brands')->group(function () {
 
 Route::apiResource('engines', EngineController::class)->only(['index', 'store', 'update']);
 Route::delete('engines', [EngineController::class, 'destroy']);
-Route::get('/engines/parts/{engine}', [EngineController::class, 'getPartsByEngine'])
+Route::get('/engines/parts/{id}', [EngineController::class, 'getPartsByEngine'])
     ->name('engines.parts')
     ->whereNumber('engine');
 

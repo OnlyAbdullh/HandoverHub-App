@@ -113,13 +113,25 @@ class EngineController extends Controller
         }
     }
 
-    public function getPartsByEngine(Engine $engine): JsonResponse
+    public function getPartsByEngine($engineId): JsonResponse
     {
+        $engine = Engine::find($engineId);
+
+        if (! $engine) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Engine not found.',
+                'data'    => [],
+            ], 404);
+        }
+
         $result = $this->engineService->getPartsByEngine($engine);
 
         if ($result['status'] === 200) {
             $result['data'] = PartResource::collection($result['data']);
         }
+
         return response()->json($result, $result['status']);
     }
+
 }
