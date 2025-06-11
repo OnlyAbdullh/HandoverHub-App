@@ -18,6 +18,7 @@ class ReplacedPartResource extends JsonResource
             'id'                    => $this->part?->id,
             'name'                  => $this->part?->name,
             'quantity'              => $this->quantity,
+            'faulty_quantity'       =>$this->faulty_quantity,
             'code'                  => $this->part?->code,
             'note'                  => $this->notes,
             'is_faulty'             => (bool) $this->is_faulty,

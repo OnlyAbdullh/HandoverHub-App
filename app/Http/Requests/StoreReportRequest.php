@@ -22,7 +22,7 @@ class StoreReportRequest extends FormRequest
     public function rules()
     {
         return [
-            'report.generator_id'       => 'sometimes|integer|exists:generators,id',
+            'report.generator_id'       => 'required|integer|exists:generators,id',
             'report.mtn_site_id'        => 'sometimes|integer|exists:mtn_sites,id',
             'report.visit_type'         => 'sometimes|string|max:50',
             'report.report_number'      => 'sometimes|string|unique:reports,report_number',

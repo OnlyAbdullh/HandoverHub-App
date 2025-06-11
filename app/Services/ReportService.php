@@ -45,28 +45,23 @@ class ReportService
     {
         DB::beginTransaction();
         try {
-            // Generate report number
             $reportNumber = $this->reportRepository->generateReportNumber($cityCode);
             $data['report']['report_number'] = $reportNumber;
 
-            // Create report
             $report = $this->reportRepository->create($data['report']);
 
-            // Add completed tasks
             if (isset($data['completed_task'])) {
                 foreach ($data['completed_task'] as $task) {
                     $this->reportRepository->addCompletedTask($report->id, $task);
                 }
             }
 
-            // Add technician notes
             if (isset($data['technician_notes'])) {
                 foreach ($data['technician_notes'] as $note) {
                     $this->reportRepository->addTechnicianNote($report->id, $note);
                 }
             }
 
-            // Add replaced parts
             if (isset($data['parts_used'])) {
                 foreach ($data['parts_used'] as $part) {
                     $part['last_replacement_date'] = now()->toDateString();
