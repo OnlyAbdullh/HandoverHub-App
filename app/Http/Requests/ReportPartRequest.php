@@ -23,9 +23,10 @@ class ReportPartRequest extends FormRequest
     {
         return [
             'part_id' => 'required|integer|exists:parts,id',
-            'quantity' => 'sometimes|integer|min:1|max:999',
+            'quantity' => 'sometimes|integer|min:1',
             'is_faulty' => 'required|boolean',
             'notes' => 'sometimes|nullable|string|max:500',
+            'faulty_quantity' => 'sometimes|integer|min:1'
         ];
     }
 
@@ -36,7 +37,8 @@ class ReportPartRequest extends FormRequest
             'part_id.exists' => 'The selected part does not exist.',
             'quantity.integer' => 'The quantity must be an integer.',
             'quantity.min' => 'The quantity must be at least 1.',
-            'quantity.max' => 'The quantity may not be greater than 999.',
+            'faulty_quantity.integer' => 'The quantity must be an integer.',
+            'faulty_quantity.min' => 'The quantity must be at least 1.',
             'notes.max' => 'The notes may not be greater than 500 characters.',
         ];
     }

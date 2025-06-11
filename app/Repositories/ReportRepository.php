@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Part;
 use App\Models\Report;
 use App\Models\CompletedTask;
 use App\Models\TechnicianNote;
@@ -46,20 +47,20 @@ class ReportRepository
             'replacedParts.part:id,name,code'
         ])->find($id);
 
-      /*  if (!$report) {
-            return null;
-        }*/
+        /*  if (!$report) {
+              return null;
+          }*/
 
-    /*    $visitDate = $report->visit_date;
+        /*    $visitDate = $report->visit_date;
 
-        $lastPeriodicVisit = $this->model
-            ->where('visit_type', 'routine')
-            ->where('visit_date', '<', $visitDate)
-            ->where('id', '!=', $id)
-            ->orderByDesc('visit_date')
-            ->first();
+            $lastPeriodicVisit = $this->model
+                ->where('visit_type', 'routine')
+                ->where('visit_date', '<', $visitDate)
+                ->where('id', '!=', $id)
+                ->orderByDesc('visit_date')
+                ->first();
 
-        $report->last_routine_visit_date = $lastPeriodicVisit;*/
+            $report->last_routine_visit_date = $lastPeriodicVisit;*/
 
         return $report;
     }
@@ -250,7 +251,10 @@ class ReportRepository
      */
     public function partExistsInReport(Report $report, int $partId): bool
     {
-        return $report->parts()->where('part_id', $partId)->exists();
+        return $report
+            ->replacedParts()
+            ->where('part_id', $partId)
+            ->exists();
     }
 
     /**
@@ -258,7 +262,12 @@ class ReportRepository
      */
     public function attachPart(Report $report, int $partId, array $pivotData): bool
     {
-        $report->parts()->attach($partId, $pivotData);
+        $data = array_merge($pivotData, [
+            'part_id' => $partId,
+        ]);
+        $report->replacedParts()->create($data);
+
         return true;
     }
+
 }

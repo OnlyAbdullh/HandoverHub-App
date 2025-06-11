@@ -40,6 +40,7 @@ class ReportController extends Controller
             'data' => ReportResource::collection($paginator),
         ]);
     }
+
     /**
      * Get report details
      */
@@ -178,7 +179,7 @@ class ReportController extends Controller
             $this->reportService->addPartToReport(
                 $reportId,
                 $request->part_id,
-                $request->only(['quantity', 'notes', 'is_faulty'])
+                $request->only(['quantity', 'notes', 'is_faulty', 'faulty_quantity'])
             );
 
             return response()->json([

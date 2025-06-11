@@ -15,16 +15,11 @@ class ReplacedPart extends Model
         'quantity',
         'notes',
         'is_faulty',
-        'last_replacement_date',
-        'current_work_hours',
-        'last_replacement_hours'
+        'faulty_quantity'
     ];
 
     protected $casts = [
         'is_faulty' => 'boolean',
-        'last_replacement_date' => 'date',
-        'current_work_hours' => 'decimal:2',
-        'last_replacement_hours' => 'decimal:2',
         'quantity' => 'integer'
     ];
 
