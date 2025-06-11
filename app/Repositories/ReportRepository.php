@@ -47,20 +47,23 @@ class ReportRepository
             'replacedParts.part:id,name,code'
         ])->find($id);
 
-        /*  if (!$report) {
-              return null;
-          }*/
+        if (!$report) {
+            return null;
+        }
 
-        /*    $visitDate = $report->visit_date;
+        $lastRoutineVisit = $this->model
+            ->where('generator_id', $report->generator_id)
+            ->where('id', '<', $id)
+            ->where('visit_type', 'routine')
+            ->orderBy('id', 'desc')
+            ->select('visit_date', 'visit_time', 'current_reading')
+            ->first();
 
-            $lastPeriodicVisit = $this->model
-                ->where('visit_type', 'routine')
-                ->where('visit_date', '<', $visitDate)
-                ->where('id', '!=', $id)
-                ->orderByDesc('visit_date')
-                ->first();
-
-            $report->last_routine_visit_date = $lastPeriodicVisit;*/
+        $report->last_routine_visit = $lastRoutineVisit ? [
+            'visit_date' => $lastRoutineVisit->visit_date,
+            'visit_time' => $lastRoutineVisit->visit_time,
+            'current_reading' => $lastRoutineVisit->current_reading,
+        ] : null;
 
         return $report;
     }
@@ -174,7 +177,7 @@ class ReportRepository
     /**
      * Return a Collection of replaced_parts (part_id) for a given report.
      *
-     * @param  int  $reportId
+     * @param int $reportId
      * @return \Illuminate\Support\Collection
      */
     public function getReplacedPartsByReport(int $reportId)
@@ -186,8 +189,8 @@ class ReportRepository
     /**
      * Delete replaced_parts for given part_ids under a specific report.
      *
-     * @param  int    $reportId
-     * @param  array  $partIds
+     * @param int $reportId
+     * @param array $partIds
      * @return int    Number of records deleted
      */
     public function deleteReplacedParts(int $reportId, array $partIds): int
@@ -196,6 +199,7 @@ class ReportRepository
             ->whereIn('part_id', $partIds)
             ->delete();
     }
+
     /**
      * Update completed tasks
      */
