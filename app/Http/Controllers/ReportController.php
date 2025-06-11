@@ -142,10 +142,22 @@ class ReportController extends Controller
     /**
      * Delete replaced part from report
      */
-    public function deletePart(int $reportId, int $partId): JsonResponse
+    public function deleteParts(int $reportId, Request $request): JsonResponse
     {
-        $result = $this->reportService->deleteReplacedPart($reportId, $partId);
-        return response()->json($result, $result['status']);
+        $validated = $request->validate([
+            'part_ids'   => 'required|array|min:1',
+            'part_ids.*' => 'integer',
+        ]);
+
+        $result = $this->reportService->deleteReplacedParts(
+            $reportId,
+            $validated['part_ids']
+        );
+
+        return response()->json(
+            [ 'message' => $result['message'], 'data' => $result['data'] ],
+            $result['status']
+        );
     }
 
     public function addTechnicianNote(int $reportId, Request $request): JsonResponse

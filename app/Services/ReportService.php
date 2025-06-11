@@ -267,29 +267,58 @@ class ReportService
     /**
      * Delete replaced part from report
      */
-    public function deleteReplacedPart(int $reportId, int $partId): array
-    {
-        try {
-            $deleted = $this->reportRepository->deleteReplacedPart($reportId, $partId);
 
-            if (!$deleted) {
+    /**
+     * Delete only the replaced parts that actually exist under the report.
+     *
+     * @param  int    $reportId
+     * @param  array  $partIds
+     * @return array
+     */
+    public function deleteReplacedParts(int $reportId, array $partIds): array
+    {
+        DB::beginTransaction();
+        try {
+            $existing = $this->reportRepository
+                ->getReplacedPartsByReport($reportId)
+                ->pluck('part_id')
+                ->toArray();
+
+            $toDelete = array_values(array_intersect($partIds, $existing));
+
+            if (empty($toDelete)) {
                 return [
-                    'status' => 404,
-                    'message' => 'Part not found',
-                    'data' => null
+                    'status'  => 200,
+                    'message' => 'No matching parts found; nothing to delete.',
+                    'data'    => ['deleted_count' => 0],
                 ];
             }
 
+            $deletedCount = $this->reportRepository
+                ->deleteReplacedParts($reportId, $toDelete);
+
+            DB::commit();
+
+            $ignored = array_diff($partIds, $toDelete);
+            $msg = "{$deletedCount} part(s) deleted successfully.";
+            if (!empty($ignored)) {
+                $msg .= ' Ignored IDs: ' . implode(', ', $ignored) . '.';
+            }
+
             return [
-                'status' => 200,
-                'message' => 'Part deleted successfully',
-                'data' => null
+                'status'  => 200,
+                'message' => $msg,
+                'data'    => [
+                    'deleted_count' => $deletedCount,
+                    'ignored_ids'   => array_values($ignored),
+                ],
             ];
         } catch (Exception $e) {
+            DB::rollBack();
             return [
-                'status' => 500,
-                'message' => 'Failed to delete part: ' . $e->getMessage(),
-                'data' => null
+                'status'  => 500,
+                'message' => 'Failed to delete parts: ' . $e->getMessage(),
+                'data'    => null,
             ];
         }
     }

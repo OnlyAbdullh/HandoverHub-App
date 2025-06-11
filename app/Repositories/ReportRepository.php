@@ -171,13 +171,31 @@ class ReportRepository
     /**
      * Delete replaced part
      */
-    public function deleteReplacedPart(int $reportId, int $partId): bool
+    /**
+     * Return a Collection of replaced_parts (part_id) for a given report.
+     *
+     * @param  int  $reportId
+     * @return \Illuminate\Support\Collection
+     */
+    public function getReplacedPartsByReport(int $reportId)
     {
         return ReplacedPart::where('report_id', $reportId)
-            ->where('id', $partId)
-            ->delete();
+            ->get(['part_id']);
     }
 
+    /**
+     * Delete replaced_parts for given part_ids under a specific report.
+     *
+     * @param  int    $reportId
+     * @param  array  $partIds
+     * @return int    Number of records deleted
+     */
+    public function deleteReplacedParts(int $reportId, array $partIds): int
+    {
+        return ReplacedPart::where('report_id', $reportId)
+            ->whereIn('part_id', $partIds)
+            ->delete();
+    }
     /**
      * Update completed tasks
      */

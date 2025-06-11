@@ -132,7 +132,7 @@ Route::prefix('reports')->group(function () {
     Route::post('{reportId}/tasks', [ReportController::class, 'addTask']);
     Route::delete('{reportId}/tasks', [ReportController::class, 'deleteTasks']);
     Route::delete('{reportId}/notes', [ReportController::class, 'deleteNotes']);
-    Route::delete('{reportId}/parts/{partId}', [ReportController::class, 'deletePart']);
+    Route::delete('{reportId}/parts', [ReportController::class, 'deleteParts']);
     Route::post('/{reportId}/add-note', [ReportController::class, 'addTechnicianNote']);
     Route::post('/{reportId}/add-part', [ReportController::class, 'addPart']);
 });
