@@ -122,4 +122,27 @@ class MtnSiteController extends Controller
         return response()->json($result, $result['status']);
     }
 
+    public function getGenerator(int $id): array
+    {
+        try {
+            $generators = $this->mtnSiteService->getGeneratorsBySiteId($id);
+            return [
+                'data' => GeneratorResource::collection($generators),
+                'message' => 'Generators retrieved successfully',
+                'status' => 200
+            ];
+
+        } catch
+        (\Exception $e) {
+
+            \Log::error('Error fetching generators for site ID ' . $id . ': ' . $e->getMessage());
+
+            return [
+                'data' => [],
+                'message' => 'Error retrieving generators',
+                'status' => 500
+            ];
+
+        }
+    }
 }
