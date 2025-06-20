@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignGeneratorsRequest;
 use App\Http\Requests\StoreGeneratorRequest;
 use App\Http\Requests\UpdateRequests\UpdateGeneratorRequest;
+use App\Http\Resources\GeneratorResource;
 use App\Models\MtnSite;
 use App\Services\GeneratorService;
 use Illuminate\Http\JsonResponse;
@@ -35,7 +36,7 @@ class GeneratorController extends Controller
             'current_page' => $result->currentPage(),
             'prev_page_url' => $result->previousPageUrl(),
             'next_page_url' => $result->nextPageUrl(),
-            'data' => $result->items(),
+            'data' => GeneratorResource::collection($result->items()),
         ]);
 
     }
