@@ -109,6 +109,7 @@ Route::prefix('parts')->group(function () {
     Route::post('/', [PartController::class, 'store']);
     Route::put('/{id}', [PartController::class, 'update']);
     Route::delete('/', [PartController::class, 'destroy']);
+    Route::post('/import', [PartController::class, 'import']);
 });
 
 

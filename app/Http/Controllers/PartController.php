@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePartRequest;
 use App\Http\Requests\UpdateRequests\UpdatePartRequest;
 use App\Http\Resources\PartResource;
+use App\Imports\PartsImport;
 use App\Services\PartService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
 class PartController extends Controller
 {
     protected $partService;
@@ -19,9 +20,6 @@ class PartController extends Controller
         $this->partService = $partService;
     }
 
-    /**
-     * عرض جميع القطع
-     */
     public function index(): JsonResponse
     {
         try {
@@ -40,9 +38,6 @@ class PartController extends Controller
         }
     }
 
-    /**
-     * إنشاء قطعة جديدة
-     */
     public function store(StorePartRequest $request): JsonResponse
     {
         try {
@@ -61,9 +56,6 @@ class PartController extends Controller
         }
     }
 
-    /**
-     * تحديث قطعة موجودة
-     */
     public function update(UpdatePartRequest $request, $id): JsonResponse
     {
         try {
@@ -82,9 +74,6 @@ class PartController extends Controller
         }
     }
 
-    /**
-     * حذف قطعة
-     */
     public function destroy(Request $request): JsonResponse
     {
         try {
@@ -113,5 +102,14 @@ class PartController extends Controller
             ], $code);
         }
     }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
 
+        Excel::import(new PartsImport, $request->file('file'));
+
+        return response()->json(['message' => 'تم استيراد المواد بنجاح']);
+    }
 }
