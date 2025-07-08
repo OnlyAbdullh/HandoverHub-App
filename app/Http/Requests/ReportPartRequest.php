@@ -23,10 +23,10 @@ class ReportPartRequest extends FormRequest
     {
         return [
             'part_id' => 'required|integer|exists:parts,id',
-            'quantity' => 'sometimes|integer|min:1',
+            'quantity' => 'sometimes|nullable|integer|min:1',
             'is_faulty' => 'required|boolean',
             'notes' => 'sometimes|nullable|string|max:500',
-            'faulty_quantity' => 'sometimes|integer|min:1'
+            'faulty_quantity' => 'sometimes|nullable|integer|min:1'
         ];
     }
 
