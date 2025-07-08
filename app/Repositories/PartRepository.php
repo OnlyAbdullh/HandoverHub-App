@@ -15,12 +15,12 @@ class PartRepository implements PartRepositoryInterface
         $this->model = $model;
     }
 
-    public function all(): Collection
+    public function all(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->model->with([
             'engines.brand',
             'engines.capacity'
-        ])->get();
+        ])->paginate(20);
     }
 
     public function find($id): \Illuminate\Database\Eloquent\Builder|array|Collection|\Illuminate\Database\Eloquent\Model

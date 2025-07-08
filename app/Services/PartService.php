@@ -8,7 +8,7 @@ use App\Models\Part;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Pagination\LengthAwarePaginator;
 class PartService
 {
     protected $partRepository;
@@ -18,7 +18,7 @@ class PartService
         $this->partRepository = $partRepository;
     }
 
-    public function getAllParts(): Collection
+    public function getAllParts(): LengthAwarePaginator
     {
         try {
             return $this->partRepository->all();

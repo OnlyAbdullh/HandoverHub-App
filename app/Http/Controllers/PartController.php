@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+
 class PartController extends Controller
 {
     protected $partService;
@@ -24,12 +25,16 @@ class PartController extends Controller
     {
         try {
             $parts = $this->partService->getAllParts();
+            $partsData = PartResource::collection($parts->items());
 
             return response()->json([
-                'data' => PartResource::collection($parts),
-                'message' => 'Parts retrieved successfully',
-                'status' => 200
-            ], 200);
+                'total' => $parts->total(),
+                'count' => $parts->count(),
+                'current_page' => $parts->currentPage(),
+                'prev_page_url' => $parts->previousPageUrl(),
+                'next_page_url' => $parts->nextPageUrl(),
+                'data' => $partsData,
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
@@ -102,6 +107,7 @@ class PartController extends Controller
             ], $code);
         }
     }
+
     public function import(Request $request)
     {
         $request->validate([
