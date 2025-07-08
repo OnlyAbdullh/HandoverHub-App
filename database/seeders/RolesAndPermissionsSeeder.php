@@ -16,7 +16,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
     public function run()
     {
-        // Clear cache to prevent permission issues
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $sitePermissions = [
@@ -36,25 +35,40 @@ class RolesAndPermissionsSeeder extends Seeder
             'user.delete',
         ];
 
-        foreach (array_merge($sitePermissions, $userPermissions) as $permission) {
+        $reportPermissions = [
+            'report.view',
+            'report.get',
+            'report.create',
+            'report.update',
+            'report.delete',
+            'report.export',
+            'report.add-task',
+            'report.delete-tasks',
+            'report.add-note',
+            'report.delete-notes',
+            'report.add-part',
+            'report.delete-parts',
+        ];
+
+        $allPermissions = array_merge($sitePermissions, $userPermissions, $reportPermissions);
+
+        foreach ($allPermissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'sanctum'
+                'guard_name' => 'sanctum',
             ]);
         }
 
         // Create roles with correct guard
         $role1 = Role::firstOrCreate(['name' => 'employee', 'guard_name' => 'sanctum']);
-        $role1->syncPermissions(['site.get', 'site.view', 'site.images', 'site.create']);
+        $role1->syncPermissions(['site.get', 'site.view', 'site.images', 'site.create', 'report.create']);
 
-        $role2 = Role::firstOrCreate(['name' => 'mtn_account', 'guard_name' => 'sanctum']);
-        $role2->syncPermissions(['site.get', 'site.view', 'site.images']);
+        $siteAdmin = Role::firstOrCreate(['name' => 'site_admin', 'guard_name' => 'sanctum']);
+        $siteAdmin->syncPermissions(array_merge($sitePermissions, $reportPermissions));
 
-        $role3 = Role::firstOrCreate(['name' => 'sites_admin', 'guard_name' => 'sanctum']);
-        $role3->syncPermissions($sitePermissions);
-        $role3->revokePermissionTo('site.create');
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
+        $admin->syncPermissions($allPermissions);
 
-        $role4 = Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'sanctum']);
-        $role4->syncPermissions(array_merge($sitePermissions, $userPermissions));
     }
+
 }
