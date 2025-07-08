@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
+
 class PartService
 {
     protected $partRepository;
@@ -49,7 +50,7 @@ class PartService
 
             $partData = [
                 'name' => $data['name'],
-                'code' => $data['code'],
+                'code' => $data['code'] ?? null,
                 'is_general' => $data['is_general'],
             ];
 

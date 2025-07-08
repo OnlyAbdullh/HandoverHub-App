@@ -24,7 +24,7 @@ class StorePartRequest extends FormRequest
     {
         return [
             'name'         => ['required', 'string', 'max:255'],
-            'code'         => ['required', 'string', 'max:255', 'unique:parts,code'],
+            'code'         => ['sometimes', 'string', 'max:255', 'unique:parts,code'],
             'is_general'   => ['required', 'boolean'],
 
             'engine_ids'   => [
@@ -43,7 +43,6 @@ class StorePartRequest extends FormRequest
     {
         return [
             'name.required'              => 'The name of the part is required.',
-            'code.required'              => 'The code of the part is required.',
             'code.unique'                => 'The code of the part already exists.',
             'is_general.required'        => 'Please specify whether the part is general or not.',
 
