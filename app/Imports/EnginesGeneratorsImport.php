@@ -9,17 +9,21 @@ use App\Models\Generator;
 use App\Models\MtnSite;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Concerns\{
-    ToCollection,
+use Maatwebsite\Excel\Concerns\{ToCollection,
     WithHeadingRow,
+    WithStartRow,
     WithValidation,
     SkipsOnFailure,
-    SkipsFailures
-};
+    SkipsFailures};
 
-class EnginesGeneratorsImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOnFailure
+class EnginesGeneratorsImport implements ToCollection, WithHeadingRow, WithValidation, SkipsOnFailure,WithStartRow
 {
     use SkipsFailures;
+
+    public function startRow(): int
+    {
+        return 2;
+    }
 
     public function collection(Collection $rows)
     {
@@ -57,10 +61,6 @@ class EnginesGeneratorsImport implements ToCollection, WithHeadingRow, WithValid
 
                     $genBrandId = $genBrand->id;
                 }
-                \Log::info('mtn_site_id'. $site->id);
-                \Log::info('engine_id'. $engine->id);
-                \Log::info('brand_id'. $genBrandId);
-                \Log::info('**************');
                 Generator::create([
                     'mtn_site_id' => $site->id,
                     'engine_id' => $engine->id,
