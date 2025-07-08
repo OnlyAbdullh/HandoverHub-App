@@ -6,11 +6,14 @@ use App\Http\Requests\StoreMtnSiteRequest;
 use App\Http\Requests\UpdateRequests\UpdateMtnSiteRequest;
 use App\Http\Resources\GeneratorResource;
 use App\Http\Resources\MtnSiteResource;
+use App\Imports\MtnSitesImport;
+use App\Models\MtnSite;
 use App\Services\MtnSiteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MtnSiteController extends Controller
 {
@@ -144,5 +147,16 @@ class MtnSiteController extends Controller
             ];
 
         }
+    }
+
+    function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new MtnSitesImport, $request->file('file'));
+
+        return response()->json(['message' => 'تم الاستيراد بنجاح']);
     }
 }

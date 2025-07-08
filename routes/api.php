@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\BrandImportController;
 use App\Http\Controllers\CapacityController;
-use App\Http\Controllers\CompletedTaskController;
 use App\Http\Controllers\EngineController;
 use App\Http\Controllers\GeneratorController;
 use App\Http\Controllers\PartController;
@@ -79,7 +78,7 @@ Route::delete('mtn-sites', [MtnSiteController::class, 'destroyBatch']);
 Route::post('mtn-sites/search', [MtnSiteController::class, 'index']);
 Route::get('mtn-sites/generators/{id}', [MtnSiteController::class, 'getGenerator']);
 Route::delete('/mtn-sites/{site}/generators/unlink', [MtnSiteController::class, 'unlinkGenerators']);
-
+Route::post('mtn-sites/import', [MtnSiteController::class, 'importExcel']);
 
 Route::prefix('capacities')->group(function () {
     Route::get('/', [CapacityController::class, 'index']);
