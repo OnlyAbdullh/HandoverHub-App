@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('generators', function (Blueprint $table) {
             $table->id();
             $table->foreignId('engine_id')->constrained()->onDelete('cascade');
-            $table->foreignId('brand_id')->constrained()->onDelete('cascade');
+            $table->foreignId('brand_id')->nullable()->constrained()->onDelete('cascade');
 
             $table->foreignId('mtn_site_id')->nullable()->constrained()->onDelete('cascade');
             $table->decimal('initial_meter')->default(0);

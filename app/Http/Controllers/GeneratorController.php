@@ -7,9 +7,12 @@ use App\Http\Requests\AssignGeneratorsRequest;
 use App\Http\Requests\StoreGeneratorRequest;
 use App\Http\Requests\UpdateRequests\UpdateGeneratorRequest;
 use App\Http\Resources\GeneratorResource;
+use App\Imports\EnginesGeneratorsImport;
 use App\Models\MtnSite;
 use App\Services\GeneratorService;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GeneratorController extends Controller
 {
@@ -116,5 +119,18 @@ class GeneratorController extends Controller
             ->assignGeneratorsToSite($site, $generatorIds);
 
         return response()->json($result, $result['status']);
+    }
+    public function import(Request $request): JsonResponse
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new EnginesGeneratorsImport, $request->file('file'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم استيراد المحركات والمولدات بنجاح.'
+        ], 200);
     }
 }

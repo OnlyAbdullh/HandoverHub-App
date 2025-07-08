@@ -118,6 +118,7 @@ Route::prefix('generators')->group(function () {
     Route::get('/{id}', [GeneratorController::class, 'show']);
     Route::put('/{id}', [GeneratorController::class, 'update']);
     Route::delete('/{id}', [GeneratorController::class, 'destroy']);
+    Route::post('/import', [GeneratorController::class, 'import']);
 });
 Route::post('/mtn-sites/{site}/assign-generators', [GeneratorController::class, 'assignGeneratorsToSite']);
 
