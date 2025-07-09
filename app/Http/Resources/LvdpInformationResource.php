@@ -15,8 +15,8 @@ class LvdpInformationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'exiting'  => $this->exiting,
-            'working'  => $this->working,
+            'exiting'  => (bool)$this->exiting,
+            'working'  => (bool)$this->working,
             'status'   => $this->status,
             'remarks'  => $this->remarks,
         ];

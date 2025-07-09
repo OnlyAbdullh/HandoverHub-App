@@ -15,15 +15,15 @@ class TowerInformationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'mast' => $this->mast,
-            'tower' => $this->tower,
-            'monopole' => $this->monopole,
-            'mast_number' => $this->mast_number,
+            'mast' =>(bool) $this->mast,
+            'tower' => (bool) $this->tower,
+            'monopole' => (bool) $this->monopole,
+            'mast_number' =>$this->mast_number,
             'mast_status' => $this->mast_status,
             'tower_number' => $this->tower_number,
             'tower_status' => $this->tower_status,
             'beacon_status' => $this->beacon_status,
-            'monopole_number' => $this->monopole_number,
+            'monopole_number' => (int)$this->monopole_number,
             'monopole_status' => $this->monopole_status,
             'mast_1_height' => $this->mast_1_height,
             'mast_2_height' => $this->mast_2_height,

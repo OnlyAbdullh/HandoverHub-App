@@ -15,7 +15,7 @@ class TcuInformationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'tcu'         => $this->tcu,
+            'tcu'         => (bool) $this->tcu,
             'tcu_types'   => $this->tcu_types_array,
             'remarks'     => $this->remarks,
         ];

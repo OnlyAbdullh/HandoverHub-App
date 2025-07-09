@@ -34,7 +34,7 @@ class SiteResource extends JsonResource
                 'wind' => (bool)$this->wind,
                 'grid' => (bool)$this->grid,
                 'fence' => (bool)$this->fence,
-                'cabinet_number' => $this->cabinet_number,
+                'cabinet_number' => (int) $this->cabinet_number,
                 'electricity_meter' => $this->electricity_meter,
                 'electricity_meter_reading' => $this->electricity_meter_reading,
                 'generator_remark' => $this->generator_remark,

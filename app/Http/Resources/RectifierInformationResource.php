@@ -24,7 +24,7 @@ class RectifierInformationResource extends JsonResource
             'number_of_batteries'          => $this->number_of_batteries,
             'battery_type'                 => $this->battery_type,
             'batteries_cabinet_type'       => $this->batteries_cabinet_type,
-            'cabinet_cage'                 => $this->cabinet_cage,
+            'cabinet_cage'                 => (bool) $this->cabinet_cage,
             'batteries_status'             => $this->batteries_status,
             'remarks'                      => $this->remarks,
         ];
