@@ -23,35 +23,29 @@ class ReportExportService
      * @return string File path
      * @throws \Exception
      */
-    public function exportReportsToExcel(array $reportIds): string
+    public function exportReportsToExcel(array|null $reportIds): string
     {
-        try {
-            // Get reports with all details
+        if (is_null($reportIds)) {
+            $reports = $this->reportRepository->getAllWithDetails();
+        } else {
             $reports = $this->getReportsForExport($reportIds);
-
-            if ($reports->isEmpty()) {
-                throw new \Exception('No reports found for the provided IDs');
-            }
-
-            // Transform data for Excel export
-            $transformedData = $this->transformReportsForExcel($reports);
-
-            // Generate Excel file
-            $fileName = 'reports_export_' . uniqid() . '.xlsx';
-            $filePath = storage_path('app/temp/' . $fileName);
-
-            // Ensure temp directory exists
-            if (!file_exists(dirname($filePath))) {
-                mkdir(dirname($filePath), 0755, true);
-            }
-
-            Excel::store(new ReportsExport($transformedData), 'temp/' . $fileName);
-
-            return $filePath;
-
-        } catch (\Exception $e) {
-            throw new \Exception('Export failed: ' . $e->getMessage());
         }
+
+     /*   if ($reports->isEmpty()) {
+            throw new \Exception('لا توجد تقارير للتصدير.');
+        }*/
+
+        $transformedData = $this->transformReportsForExcel($reports);
+
+        $fileName = 'reports_export_' . uniqid() . '.xlsx';
+        $filePath = storage_path('app/temp/' . $fileName);
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0755, true);
+        }
+
+        Excel::store(new ReportsExport($transformedData), 'temp/' . $fileName);
+
+        return $filePath;
     }
 
     /**
@@ -62,9 +56,9 @@ class ReportExportService
      */
     protected function getReportsForExport(array $reportIds): Collection
     {
-        return collect($reportIds)->map(function ($id) {
-            return $this->reportRepository->findWithDetails($id);
-        })->filter();
+        return collect($reportIds)
+            ->map(fn($id) => $this->reportRepository->findWithDetails($id))
+            ->filter();
     }
 
     /**

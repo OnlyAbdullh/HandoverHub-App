@@ -22,19 +22,15 @@ class ExportReportsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'report_ids' => 'required|array|min:1',
-            'report_ids.*' => 'required|integer|exists:reports,id'
+            'report_ids' => 'sometimes|array',
+            'report_ids.*' => ['integer', 'distinct'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'report_ids.required' => 'Report IDs are required',
-            'report_ids.array' => 'Report IDs must be an array',
-            'report_ids.min' => 'At least one report ID is required',
-            'report_ids.*.integer' => 'Each report ID must be an integer',
-            'report_ids.*.exists' => 'One or more report IDs do not exist'
+            'report_ids.array'    => 'report_ids يجب أن تكون مصفوفة.',
         ];
     }
 }

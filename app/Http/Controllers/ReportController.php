@@ -214,19 +214,24 @@ class ReportController extends Controller
     public function exportReports(ExportReportsRequest $request): BinaryFileResponse|JsonResponse
     {
         try {
-            $reportIds = $request->input('report_ids');
+            $reportIds = $request->input('report_ids', []);
+
+            if (empty($reportIds)) {
+                $reportIds = null;
+            }
 
             $filePath = $this->exportService->exportReportsToExcel($reportIds);
+            $fileName = 'reports_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
-            $fileName = 'reports_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-
-            return response()->download($filePath, $fileName)->deleteFileAfterSend();
+            return response()
+                ->download($filePath, $fileName)
+                ->deleteFileAfterSend();
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to export reports',
-                'error' => $e->getMessage()
+                'message' => 'فشل تصدير التقارير',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

@@ -126,6 +126,8 @@ Route::post('/mtn-sites/{site}/assign-generators', [GeneratorController::class, 
 
 
 Route::prefix('reports')->group(function () {
+    Route::post('/export', [ReportController::class, 'exportReports'])
+        ->name('reports.export');
     Route::get('/', [ReportController::class, 'index']);
     Route::get('{id}', [ReportController::class, 'show']);
     Route::post('/', [ReportController::class, 'store']);
@@ -137,5 +139,4 @@ Route::prefix('reports')->group(function () {
     Route::delete('{reportId}/parts', [ReportController::class, 'deleteParts']);
     Route::post('/{reportId}/add-note', [ReportController::class, 'addTechnicianNote']);
     Route::post('/{reportId}/add-part', [ReportController::class, 'addPart']);
-    Route::post('/export', [ReportController::class, 'exportReports'])->name('reports.export');
 });

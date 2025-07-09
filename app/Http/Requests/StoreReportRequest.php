@@ -54,7 +54,7 @@ class StoreReportRequest extends FormRequest
             'parts_used.*.is_faulty'         => 'sometimes|nullable|boolean',
             'parts_used.*.faulty_quantity'   => 'sometimes|nullable|integer|min:1',
 
-            'completed_task'                 => 'sometimes|array|min:1',
+            'completed_task'                 => 'sometimes|array',
             'completed_task.*'               => 'sometimes|nullable|string',
 
             'technician_notes'              => 'sometimes|array',
