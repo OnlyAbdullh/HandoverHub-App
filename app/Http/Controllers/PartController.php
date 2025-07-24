@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePartRequest;
 use App\Http\Requests\UpdateRequests\UpdatePartRequest;
+use App\Http\Resources\GeneratorResource;
 use App\Http\Resources\PartResource;
 use App\Imports\PartsImport;
 use App\Services\PartService;
@@ -117,5 +118,21 @@ class PartController extends Controller
         Excel::import(new PartsImport, $request->file('file'));
 
         return response()->json(['message' => 'تم استيراد المواد بنجاح']);
+    }
+    public function search(Request $request)
+    {
+        $filters = $request->only(['name', 'code']);
+        $sitesPaginated = $this->partService->search($filters);
+
+        $sitesData =  PartResource::collection($sitesPaginated->items());
+
+        return response()->json([
+            'total' => $sitesPaginated->total(),
+            'count' => $sitesPaginated->count(),
+            'current_page' => $sitesPaginated->currentPage(),
+            'prev_page_url' => $sitesPaginated->previousPageUrl(),
+            'next_page_url' => $sitesPaginated->nextPageUrl(),
+            'data' => $sitesData,
+        ]);
     }
 }

@@ -16,4 +16,6 @@ interface PartRepositoryInterface
 
     public function attachEngines($partId, array $engineIds);
     // public function syncEngines($partId, array $engineIds);
+    public function search(?string $name, ?string $code);
+
 }

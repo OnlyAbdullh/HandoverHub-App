@@ -66,4 +66,19 @@ class PartRepository implements PartRepositoryInterface
               $part->engines()->sync($engineIds);
           }
       }*/
+    public function search(?string $name, ?string $code ): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $query = Part::query();
+
+        if ($name) {
+            $query->where('name', 'like', "%{$name}%");
+        }
+
+        if ($code) {
+            $query->where('code', 'like', "%{$code}%");
+        }
+
+        return $query->orderBy('name')
+            ->paginate(20);
+    }
 }

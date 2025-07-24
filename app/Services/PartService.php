@@ -123,5 +123,11 @@ class PartService
             throw $e;
         }
     }
+    public function search(array $criteria): LengthAwarePaginator
+    {
+        $name = $criteria['name'] ?? null;
+        $code = $criteria['code'] ?? null;
 
+        return $this->partRepository->search($name, $code);
+    }
 }
