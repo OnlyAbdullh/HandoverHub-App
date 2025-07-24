@@ -133,4 +133,20 @@ class GeneratorController extends Controller
             'message' => 'تم استيراد المحركات والمولدات بنجاح.'
         ], 200);
     }
+    public function search(Request $request): JsonResponse
+    {
+        $brandName = $request->query('brand');
+
+        $paginated = $this->generatorService->searchByBrandName($brandName);
+
+        return response()->json([
+            'total'         => $paginated->total(),
+            'count'         => $paginated->count(),
+            'per_page'      => $paginated->perPage(),
+            'current_page'  => $paginated->currentPage(),
+            'prev_page_url' => $paginated->previousPageUrl(),
+            'next_page_url' => $paginated->nextPageUrl(),
+            'data'          => GeneratorResource::collection($paginated->items()),
+        ]);
+    }
 }

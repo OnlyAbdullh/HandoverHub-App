@@ -266,4 +266,8 @@ class GeneratorService
             ];
         }
     }
+    public function searchByBrandName(?string $brandName)
+    {
+        return $this->generatorRepository->searchByBrandName($brandName);
+    }
 }

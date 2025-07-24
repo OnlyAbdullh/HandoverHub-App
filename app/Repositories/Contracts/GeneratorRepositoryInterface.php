@@ -54,4 +54,6 @@ interface GeneratorRepositoryInterface
      * @return bool
      */
     public function exists(int $id): bool;
+
+    public function searchByBrandName(?string $brandName);
 }

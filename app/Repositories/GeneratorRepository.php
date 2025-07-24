@@ -122,4 +122,27 @@ class GeneratorRepository implements GeneratorRepositoryInterface
             ->whereNull('mtn_site_id')
             ->update(['mtn_site_id' => $siteId]);
     }
+    public function searchByBrandName(?string $brandName): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        $query = Generator::with(
+            ['brand:id,name',
+            'engine.brand:id,name',
+            'engine.capacity:id,value',
+            'mtn_site:id,name,code,longitude,latitude']
+        )
+            ->whereHas('brand', function($q) {
+                $q->where('type', 'generator');
+            });
+
+        if ($brandName) {
+            $query->whereHas('brand', function($q) use ($brandName) {
+                $q->where('name', 'like', "%{$brandName}%");
+            });
+        }
+
+        return $query
+            ->orderBy('id', 'desc')
+            ->paginate(20);
+    }
+
 }

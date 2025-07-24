@@ -116,6 +116,7 @@ Route::prefix('parts')->group(function () {
 
 
 Route::prefix('generators')->group(function () {
+    Route::get('/search', [GeneratorController::class, 'search']);
     Route::get('/unassigned', [GeneratorController::class, 'getUnassigned']);
     Route::get('/', [GeneratorController::class, 'index']);
     Route::post('/', [GeneratorController::class, 'store']);
