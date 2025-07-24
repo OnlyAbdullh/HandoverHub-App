@@ -211,28 +211,34 @@ class ReportController extends Controller
         }
     }
 
-    public function exportReports(ExportReportsRequest $request): BinaryFileResponse|JsonResponse
+
+    public function exportReports(ExportReportsRequest $request): JsonResponse|BinaryFileResponse
     {
         try {
-            $reportIds = $request->input('report_ids', []);
+            $startDate = $request->input('start_date');
+            $endDate   = $request->input('end_date');
+
+            $reportIds = $this->reportService->getReportIdsByDateRange($startDate, $endDate);
 
             if (empty($reportIds)) {
-                $reportIds = null;
+                $filePath = $this->exportService->exportReportsToExcel([]);
+                $fileName = "reports_{$startDate}_to_{$endDate}_empty_" . now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+                return response()->download($filePath, $fileName)->deleteFileAfterSend();
             }
 
             $filePath = $this->exportService->exportReportsToExcel($reportIds);
-            $fileName = 'reports_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+            $fileName = "reports_{$startDate}_to_{$endDate}_" . now()->format('Y-m-d_H-i-s') . '.xlsx';
 
-            return response()
-                ->download($filePath, $fileName)
-                ->deleteFileAfterSend();
+            return response()->download($filePath, $fileName)->deleteFileAfterSend();
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'فشل تصدير التقارير',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
+
 }

@@ -327,5 +327,11 @@ class ReportRepository
 
         return true;
     }
+    public function getReportsForExport(string $startDate, string $endDate)
+    {
+        return Report::whereBetween('visit_date', [$startDate, $endDate])
+            ->orderBy('visit_date')
+            ->pluck('id');
+    }
 
 }

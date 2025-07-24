@@ -361,5 +361,11 @@ class ReportService
 
         return $this->reportRepository->attachPart($report, $partId, $pivotData);
     }
+    public function getReportIdsByDateRange(string $startDate, string $endDate): array
+    {
+        return $this->reportRepository
+            ->getReportsForExport($startDate, $endDate)
+            ->toArray();
+    }
 
 }

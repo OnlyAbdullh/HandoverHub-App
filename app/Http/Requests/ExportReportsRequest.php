@@ -22,15 +22,18 @@ class ExportReportsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'report_ids' => 'sometimes|array',
-            'report_ids.*' => ['integer', 'distinct'],
+            'start_date' => ['required', 'date', 'before_or_equal:end_date'],
+            'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'report_ids.array'    => 'report_ids يجب أن تكون مصفوفة.',
+            'start_date.required'            => 'يرجى تحديد تاريخ البداية.',
+            'end_date.required'              => 'يرجى تحديد تاريخ النهاية.',
+            'start_date.before_or_equal'     => 'تاريخ البداية يجب أن يكون قبل أو يساوي تاريخ النهاية.',
+            'end_date.after_or_equal'        => 'تاريخ النهاية يجب أن يكون بعد أو يساوي تاريخ البداية.',
         ];
     }
 }

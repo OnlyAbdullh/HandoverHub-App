@@ -23,17 +23,9 @@ class ReportExportService
      * @return string File path
      * @throws \Exception
      */
-    public function exportReportsToExcel(array|null $reportIds): string
+    public function exportReportsToExcel(array $reportIds): string
     {
-        if (is_null($reportIds)) {
-            $reports = $this->reportRepository->getAllWithDetails();
-        } else {
-            $reports = $this->getReportsForExport($reportIds);
-        }
-
-     /*   if ($reports->isEmpty()) {
-            throw new \Exception('لا توجد تقارير للتصدير.');
-        }*/
+        $reports = $this->getReportsForExport($reportIds);
 
         $transformedData = $this->transformReportsForExcel($reports);
 
@@ -184,4 +176,30 @@ class ReportExportService
             return $partInfo;
         })->implode(' | ');
     }
+
+    private function generateEmptyExcelWithMessage(string $message): string
+    {
+        $fileName = 'empty_export_' . uniqid() . '.xlsx';
+        $filePath = storage_path('app/temp/' . $fileName);
+
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0755, true);
+        }
+
+        $data = collect([
+            ['الرسالة'],         // العنوان (header)
+            [$message],          // الصف الوحيد في الملف
+        ]);
+
+        // Export مباشر باستخدام كلاس داخل الدالة
+        Excel::store(new class($data) implements \Maatwebsite\Excel\Concerns\FromCollection {
+            public function __construct(private $data) {}
+            public function collection() {
+                return $this->data;
+            }
+        }, 'temp/' . $fileName);
+
+        return $filePath;
+    }
+
 }
