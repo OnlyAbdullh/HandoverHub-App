@@ -101,12 +101,24 @@ class GeneratorController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
-        $result = $this->generatorService->deleteGenerator($id);
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? null;
+
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json([
+                'data' => null,
+                'message' => 'Please provide a non-empty array of IDs.',
+                'status' => 400
+            ], 400);
+        }
+
+        $result = $this->generatorService->deleteGenerators($ids);
 
         return response()->json($result, $result['status']);
     }
+
 
     public function assignGeneratorsToSite(
         AssignGeneratorsRequest $request,

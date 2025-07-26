@@ -85,11 +85,11 @@ class GeneratorRepository implements GeneratorRepositoryInterface
      * @param int $id
      * @return bool
      */
-    public function delete(int $id): bool
+    public function delete(array $ids): int
     {
-        $generator = $this->model->findOrFail($id);
-        return $generator->delete();
+        return $this->model->whereIn('id', $ids)->delete();
     }
+
 
     /**
      * Check if generator exists
@@ -143,6 +143,10 @@ class GeneratorRepository implements GeneratorRepositoryInterface
         return $query
             ->orderBy('id', 'desc')
             ->paginate(20);
+    }
+    public function getExistingIds(array $ids): array
+    {
+        return $this->model->whereIn('id', $ids)->pluck('id')->toArray();
     }
 
 }

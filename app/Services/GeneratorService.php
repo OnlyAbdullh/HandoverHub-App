@@ -153,39 +153,42 @@ class GeneratorService
      * @param int $id
      * @return array
      */
-    public function deleteGenerator(int $id): array
+    public function deleteGenerators(array $ids): array
     {
         try {
-            if (!$this->generatorRepository->exists($id)) {
+            $existingIds = $this->generatorRepository->getExistingIds($ids);
+
+            if (empty($existingIds)) {
                 return [
                     'data' => null,
-                    'message' => 'Generator not found',
+                    'message' => 'None of the provided generators were found.',
                     'status' => 404
                 ];
             }
 
             DB::beginTransaction();
 
-            $this->generatorRepository->delete($id);
+            $deletedCount = $this->generatorRepository->delete($existingIds);
 
             DB::commit();
 
             return [
-                'data' => null,
-                'message' => 'Generator deleted successfully',
+                'data' => ['deleted_count' => $deletedCount],
+                'message' => 'Generators deleted successfully: ' . implode(', ', $existingIds),
                 'status' => 200
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error deleting generator: ' . $e->getMessage());
+            Log::error('Error deleting generators: ' . $e->getMessage());
 
             return [
                 'data' => null,
-                'message' => 'Error deleting generator',
+                'message' => 'Error deleting generators',
                 'status' => 500
             ];
         }
     }
+
 
 
     /**

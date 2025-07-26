@@ -45,7 +45,7 @@ interface GeneratorRepositoryInterface
      * @param int $id
      * @return bool
      */
-    public function delete(int $id): bool;
+    public function delete(array $ids);
 
     /**
      * Check if generator exists
