@@ -12,6 +12,7 @@ class Report extends Model
     protected $fillable = [
         'generator_id',
         'mtn_site_id',
+        'username',
         'visit_type',
         'report_number',
         'visit_date',

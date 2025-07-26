@@ -18,6 +18,7 @@ class ReportShowResource extends JsonResource
     {
         return [
             'id'               => $this->id,
+            'username'         => $this->username,
             'generator'        => new GeneratorResource($this->whenLoaded('generator')),
             'visit_type'       => $this->visit_type,
             'report_number'    => $this->report_number,
