@@ -26,7 +26,7 @@ class StorePartRequest extends FormRequest
             'name'         => ['required', 'string', 'max:255'],
             'code'         => ['sometimes','nullable', 'string', 'max:255', 'unique:parts,code'],
             'is_general'   => ['required', 'boolean'],
-
+            'is_primary'   => ['sometimes','boolean'],
             'engine_ids'   => [
                 'array',
                 Rule::prohibitedIf($this->boolean('is_general')),

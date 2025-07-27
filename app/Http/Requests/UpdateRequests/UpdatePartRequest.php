@@ -25,6 +25,7 @@ class UpdatePartRequest extends FormRequest
             'name' => 'sometimes|string|max:255',
             'code' => 'sometimes|string|max:255|unique:parts,code,' . $this->part,
             'is_general' => 'sometimes|boolean',
+            'is_primary'=> 'sometimes|boolean',
             /*       'engine_ids' => 'array',
                    'engine_ids.*' => 'exists:engines,id'*/
         ];
