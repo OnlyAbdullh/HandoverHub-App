@@ -52,6 +52,7 @@ class PartService
                 'name' => $data['name'],
                 'code' => $data['code'] ?? null,
                 'is_general' => $data['is_general'],
+                'is_primary'=> $data['is_primary'],
             ];
 
             $part = $this->partRepository->create($partData);
@@ -84,7 +85,9 @@ class PartService
             if (isset($data['is_general'])) {
                 $partData['is_general'] = $data['is_general'];
             }
-
+            if (isset($data['is_primary'])) {
+                $partData['is_primary'] = $data['is_primary'];
+            }
             $updated = $this->partRepository->update($id, $partData);
             if (!$updated) {
                 throw new Exception('part is not exist');
