@@ -51,7 +51,7 @@ class StoreReportRequest extends FormRequest
 
             'parts_used'                     => 'sometimes|array|min:1',
             'parts_used.*.part_id'           => 'sometimes|nullable|integer|exists:parts,id',
-            'parts_used.*.quantity'          => 'sometimes|nullable|integer|min:1',
+            'parts_used.*.quantity'          => 'sometimes|nullable|integer|min:0',
             'parts_used.*.notes'             => 'nullable|string',
             'parts_used.*.is_faulty'         => 'sometimes|nullable|boolean',
             'parts_used.*.faulty_quantity'   => 'sometimes|nullable|integer|min:1',
