@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->foreignId('part_id')->constrained()->onDelete('cascade');
             $table->foreignId('report_id')->constrained()->onDelete('cascade');
             $table->integer('quantity')->default(1);
-            $table->integer('faulty_quantity')->default(1);
+            $table->integer('faulty_quantity')->default(0);
             $table->text('notes')->nullable();
             $table->boolean('is_faulty')->default(false);
             $table->primary(['part_id', 'report_id']);
