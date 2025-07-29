@@ -20,7 +20,7 @@ class PartsImport implements ToModel,WithHeadingRow
     public function model(array $row)
     {
         return new Part([
-            'name' => $row[1],
+            'name' => $row['name'],
         ]);
     }
 }
