@@ -3,7 +3,7 @@
 namespace App\Http\Requests\UpdateRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 class UpdatePartRequest extends FormRequest
 {
     /**
@@ -23,7 +23,12 @@ class UpdatePartRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'code' => 'sometimes|string|max:255|unique:parts,code,' . $this->part,
+            'code' => [
+                'sometimes',
+                'string',
+                'max:255',
+                Rule::unique('parts', 'code')->ignore($this->route('id')),
+            ],
             'is_general' => 'sometimes|boolean',
             'is_primary'=> 'sometimes|boolean',
             /*       'engine_ids' => 'array',

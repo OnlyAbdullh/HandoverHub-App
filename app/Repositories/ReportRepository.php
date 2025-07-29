@@ -66,6 +66,25 @@ class ReportRepository
             'current_reading' => $lastRoutineVisit->current_reading,
         ] : null;
 
+        foreach ($report->replacedParts as $rp) {
+            $lastUsage = $this->model
+                ->where('generator_id', $report->generator_id)
+                ->where('id', '<', $id)
+                ->whereHas('replacedParts', function ($q) use ($rp) {
+                    $q->where('part_id', $rp->part_id);
+                })
+                ->orderBy('id', 'desc')
+                ->select('visit_date', 'current_reading')
+                ->first();
+
+            $rp->last_part_usage = $lastUsage
+                ? [
+                    'visit_date'      => $lastUsage->visit_date,
+                    'current_reading' => $lastUsage->current_reading,
+                ]
+                : null;
+        }
+
         return $report;
     }
 
