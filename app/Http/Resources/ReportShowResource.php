@@ -30,7 +30,7 @@ class ReportShowResource extends JsonResource
             'oil_quantity'     => $this->oil_quantity,
             'burned_oil_quantity'=> $this->burned_oil_quantity,
             'frequency'        => $this->frequency,
-            'current_meter'    => $this->current_reading,
+            'current_meter' => (float) $this->current_reading,
             'ats_status'       => $this->ats_status,
             'volt_l1'          => $this->voltage_L1,
             'volt_l2'          => $this->voltage_L2,
@@ -42,7 +42,7 @@ class ReportShowResource extends JsonResource
             'longitude'        => $this->longitude,
             'latitude'         => $this->latitude,
 
-            'last_meter' => Arr::get($this->last_routine_visit, 'current_reading'),
+            'last_meter' =>(float)Arr::get($this->last_routine_visit, 'current_reading'),
             'last_routine_visit_date' => $this->last_routine_visit
                 ? Carbon::parse(Arr::get($this->last_routine_visit, 'visit_date'))->format('Y-m-d')
                 : null,
