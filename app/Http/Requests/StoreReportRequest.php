@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 class StoreReportRequest extends FormRequest
 {
     /**
@@ -21,6 +21,8 @@ class StoreReportRequest extends FormRequest
      */
     public function rules()
     {
+        $isCreate = $this->isMethod('post');
+        $allowedReasons = ['بدل مسروق', 'بدل عاطل', 'إضافة', 'لا يوجد عاطل'];
         return [
             'report.generator_id'            => 'required|integer|exists:generators,id',
             'report.mtn_site_id'             => 'sometimes|nullable|integer|exists:mtn_sites,id',
@@ -53,6 +55,11 @@ class StoreReportRequest extends FormRequest
             'parts_used.*.notes'             => 'nullable|string',
             'parts_used.*.is_faulty'         => 'sometimes|nullable|boolean',
             'parts_used.*.faulty_quantity'   => 'sometimes|nullable|integer|min:1',
+            'parts_used.*.reason' => [
+                $isCreate ? 'required' : 'sometimes',
+                'string',
+                Rule::in($allowedReasons),
+            ],
 
             'completed_task'                 => 'sometimes|array',
             'completed_task.*'               => 'sometimes|nullable|string',

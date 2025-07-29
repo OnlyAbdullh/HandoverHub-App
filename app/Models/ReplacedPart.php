@@ -15,7 +15,8 @@ class ReplacedPart extends Model
         'quantity',
         'notes',
         'is_faulty',
-        'faulty_quantity'
+        'faulty_quantity',
+        'reason'
     ];
 
     protected $casts = [
