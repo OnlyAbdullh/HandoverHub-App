@@ -16,8 +16,8 @@ class AdminUserSeeder extends Seeder
     {
         if (!User::where('username', 'Super Admin')->exists()) {
             $admin = User::create([
-                'username' => 'Super Admin',
-                'password' => Hash::make('12345678'),
+                'username' => 'Alaa Aydi',
+                'password' => Hash::make('Al@a2025IBC'),
             ]);
 
             $admin->assignRole('manager');
