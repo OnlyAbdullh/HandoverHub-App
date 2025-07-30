@@ -60,14 +60,18 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         // Create roles with correct guard
+        $role2 = Role::firstOrCreate(['name' => 'mtn_account', 'guard_name' => 'sanctum']);
+        $role2->syncPermissions(['site.get', 'site.view', 'site.images']);
+
         $role1 = Role::firstOrCreate(['name' => 'employee', 'guard_name' => 'sanctum']);
         $role1->syncPermissions(['site.get', 'site.view', 'site.images', 'site.create', 'report.create']);
 
         $siteAdmin = Role::firstOrCreate(['name' => 'site_admin', 'guard_name' => 'sanctum']);
         $siteAdmin->syncPermissions(array_merge($sitePermissions, $reportPermissions));
 
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
+        $admin = Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'sanctum']);
         $admin->syncPermissions($allPermissions);
+
 
     }
 
