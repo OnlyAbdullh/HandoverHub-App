@@ -26,7 +26,7 @@ class ReportRepository
     public function getAllReports(): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return $this->model->with(['mtn_site:id,name,code'])
-            ->select('id', 'mtn_site_id', 'visit_type', 'visit_date', 'visit_time')
+            ->select('id','username', 'mtn_site_id', 'visit_type', 'visit_date', 'visit_time')
             ->orderBy('visit_date', 'desc')
             ->orderBy('visit_time', 'desc')
             ->paginate(20);
