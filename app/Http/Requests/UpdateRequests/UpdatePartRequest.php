@@ -25,6 +25,7 @@ class UpdatePartRequest extends FormRequest
             'name' => 'sometimes|string|max:255',
             'code' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique('parts', 'code')->ignore($this->route('id')),
