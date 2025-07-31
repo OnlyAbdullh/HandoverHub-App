@@ -47,7 +47,7 @@ class ReportService
         try {
             $reportNumber = $this->reportRepository->generateReportNumber($cityCode);
             $data['report']['report_number'] = $reportNumber;
-            $data['report']['username']=auth()->user()->username; 
+            $data['report']['username']=auth()->user()->username;
             $report = $this->reportRepository->create($data['report']);
             if (isset($data['completed_task'])) {
                 foreach ($data['completed_task'] as $task) {

@@ -65,68 +65,39 @@ class ReportExportService
 
         foreach ($reports as $report) {
             $base = [
-                'report_id'                    => $report->id,
-                'report_number'                => $report->report_number,
-                'visit_date'                   => $report->visit_date,
-                'visit_time'                   => $report->visit_time,
-                'visit_type'                   => $report->visit_type,
-                'visit_reason'                 => $report->visit_reason,
-                'generator_id'                 => $report->generator->id,
-                'generator_brand'              => $report->generator->brand->name ?? '',
-                'initial_meter'                => $report->generator->initial_meter,
-                'engine_brand'                 => $report->generator->engine->brand->name ?? '',
-                'engine_capacity'              => $report->generator->engine->capacity->value ?? '',
-                'site_name'                    => $report->generator->mtn_site->name ?? '',
-                'site_code'                    => $report->generator->mtn_site->code ?? '',
-                'oil_pressure'                 => $report->oil_pressure,
-                'temperature'                  => $report->temperature,
-                'battery_voltage'              => $report->battery_voltage,
-                'oil_quantity'                 => $report->oil_quantity,
-                'burned_oil_quantity'          => $report->burned_oil_quantity,
-                'frequency'                    => $report->frequency,
-                'current_meter'                => $report->current_meter,
-                'ats_status'                   => $report->ats_status ? 'Active' : 'Inactive',
-                'volt_l1'                      => $report->voltage_L1,
-                'volt_l2'                      => $report->voltage_L2,
-                'volt_l3'                      => $report->voltage_L3,
-                'load_l1'                      => $report->load_L1,
-                'load_l2'                      => $report->load_L2,
-                'load_l3'                      => $report->load_L3,
-                'longitude'                    => $report->longitude,
-                'latitude'                     => $report->latitude,
-                'last_meter'                   => $report->last_meter,
-                'last_routine_visit_date'      => $report->last_routine_visit['visit_date'] ?? '',
-                'last_routine_current_reading' => $report->last_routine_visit['current_reading'] ?? '',
-                'technical_status'             => $report->technical_status,
-                'technician_notes'             => $this->formatNotes($report->technicianNotes),
-                'completed_works'              => $this->formatCompletedWorks($report->completedTasks),
+                'user_name'                     => $report->username ?? '',
+                'report_id'                     => $report->id,
+                'report_number'                 => $report->report_number,
+                'site_name'                     => $report->generator->mtn_site->name ?? '',
+                'site_code'                     => $report->generator->mtn_site->code ?? '',
+                'visit_date'                    => $report->visit_date,
+                'engine_brand'                  => $report->generator->engine->brand->name ?? '',
+                'engine_capacity'               => $report->generator->engine->capacity->value ?? '',
+                'visit_type'                    => $report->visit_type,
+                'visit_reason'                  => $report->visit_reason,
+                'last_meter'                    => $report->last_meter,
+                'last_routine_visit_date'       => $report->last_routine_visit['visit_date'] ?? '',
+                'last_routine_current_reading'  => $report->last_routine_visit['current_reading'] ?? '',
+                'technical_status'              => $report->technical_status,
+                'technician_notes'              => $this->formatNotes($report->technicianNotes),
             ];
 
-            $partTexts = $report->replacedParts->map(function ($rp) {
-                $text  = "{$rp->part->name} (Code: {$rp->part->code})";
-                $text .= " - Qty: {$rp->quantity}";
-                if ($rp->faulty_quantity > 0) {
-                    $text .= " - Faulty_Qty: {$rp->faulty_quantity}";
-                }
-                $text .= " - Faulty: " . ($rp->is_faulty ? 'Yes' : 'No');
-                if ($rp->note) {
-                    $text .= " - Note: {$rp->note}";
-                }
-                return $text;
-            });
-
-            if ($partTexts->isEmpty()) {
-                $rows[] = $base + ['replaced_parts' => ''];
+            if ($report->replacedParts->isEmpty()) {
+                $rows[] = $base + [
+                        'replaced_part' => '',
+                        'qty'           => '',
+                        'faulty_qty'    => '',
+                    ];
             } else {
-                $rows[] = $base + ['replaced_parts' => $partTexts->first()];
-
-                $emptyBase = array_fill_keys(array_keys($base), '');
-                foreach ($partTexts->slice(1) as $text) {
-                    $rows[] = $emptyBase + ['replaced_parts' => $text];
+                foreach ($report->replacedParts as $rp) {
+                    $rows[] = $base + [
+                            'replaced_part' => $rp->part->name . " (Code: {$rp->part->code})",
+                            'qty'           => $rp->quantity,
+                            'faulty_qty'    => $rp->faulty_quantity,
+                        ];
                 }
             }
         }
-
         return $rows;
     }
 

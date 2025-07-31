@@ -24,6 +24,8 @@ use App\Http\Controllers\MtnSiteController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::post('login', [AuthController::class, 'login']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('site/store', [SiteInfrastructureController::class, 'storeAllData'])
@@ -64,9 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:user.delete');
 
     Route::get('logout', [AuthController::class, 'logout']);
-});
 
-Route::post('login', [AuthController::class, 'login']);
 
 
 
@@ -142,4 +142,5 @@ Route::prefix('reports')->group(function () {
     Route::delete('{reportId}/parts', [ReportController::class, 'deleteParts']);
     Route::post('/{reportId}/add-note', [ReportController::class, 'addTechnicianNote']);
     Route::post('/{reportId}/add-part', [ReportController::class, 'addPart']);
+});
 });
