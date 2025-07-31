@@ -67,9 +67,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('logout', [AuthController::class, 'logout']);
 
-
-
-
 Route::post('brands/import', [BrandImportController::class, 'import']);
 Route::post('brands', [BrandImportController::class, 'store']);
 

@@ -69,4 +69,12 @@ class StoreReportRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'parts_used.*.quantity.integer' => 'كمية المادة يجب أن يكون عددًا صحيحًا.',
+            'parts_used.*.quantity.min'     => 'كمية المادة لا يمكن أن تقل عن 1.',
+        ];
+    }
+
 }
