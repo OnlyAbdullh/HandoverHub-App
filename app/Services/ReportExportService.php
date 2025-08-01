@@ -65,21 +65,21 @@ class ReportExportService
 
         foreach ($reports as $report) {
             $base = [
-                'user_name'                     => $report->username ?? '',
-                'report_id'                     => $report->id,
-                'report_number'                 => $report->report_number,
-                'site_name'                     => $report->generator->mtn_site->name ?? '',
-                'site_code'                     => $report->generator->mtn_site->code ?? '',
-                'visit_date'                    => $report->visit_date,
-                'engine_brand'                  => $report->generator->engine->brand->name ?? '',
-                'engine_capacity'               => $report->generator->engine->capacity->value ?? '',
-                'visit_type'                    => $report->visit_type,
-                'visit_reason'                  => $report->visit_reason,
-                'last_meter'                    => $report->last_meter,
-                'last_routine_visit_date'       => $report->last_routine_visit['visit_date'] ?? '',
-                'last_routine_current_reading'  => $report->last_routine_visit['current_reading'] ?? '',
-                'technical_status'              => $report->technical_status,
-                'technician_notes'              => $this->formatNotes($report->technicianNotes),
+                'user_name'                    => $report->username ?? '',
+                'report_id'                    => $report->id,
+                'report_number'                => $report->report_number,
+                'site_name'                    => $report->generator->mtn_site->name ?? '',
+                'site_code'                    => $report->generator->mtn_site->code ?? '',
+                'visit_date'                   => $report->visit_date,
+                'engine_brand'                 => $report->generator->engine->brand->name ?? '',
+                'engine_capacity'              => $report->generator->engine->capacity->value ?? '',
+                'visit_type'                   => $report->visit_type,
+                'visit_reason'                 => $report->visit_reason,
+                'last_meter'                   => $report->last_meter,
+                'last_routine_visit_date'      => $report->last_routine_visit['visit_date'] ?? '',
+                'last_routine_current_reading' => $report->last_routine_visit['current_reading'] ?? '',
+                'technical_status'             => $report->technical_status,
+                'technician_notes'             => $this->formatNotes($report->technicianNotes),
             ];
 
             if ($report->replacedParts->isEmpty()) {
@@ -89,15 +89,25 @@ class ReportExportService
                         'faulty_qty'    => '',
                     ];
             } else {
-                foreach ($report->replacedParts as $rp) {
-                    $rows[] = $base + [
-                            'replaced_part' => $rp->part->name . " (Code: {$rp->part->code})",
+                $first = $report->replacedParts->first();
+                $rows[] = $base + [
+                        'replaced_part' => "{$first->part->name} (Code: {$first->part->code})",
+                        'qty'           => $first->quantity,
+                        'faulty_qty'    => $first->faulty_quantity,
+                    ];
+
+                $emptyBase = array_fill_keys(array_keys($base), '');
+
+                foreach ($report->replacedParts->slice(1) as $rp) {
+                    $rows[] = $emptyBase + [
+                            'replaced_part' => "{$rp->part->name} (Code: {$rp->part->code})",
                             'qty'           => $rp->quantity,
                             'faulty_qty'    => $rp->faulty_quantity,
                         ];
                 }
             }
         }
+
         return $rows;
     }
 
