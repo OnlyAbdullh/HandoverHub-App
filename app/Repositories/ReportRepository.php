@@ -87,42 +87,6 @@ class ReportRepository
 
         return $report;
     }
-
-    public function getAllWithDetails(): Collection
-    {
-        $reports = $this->model
-            ->with([
-                'generator.brand:id,name',
-                'generator.engine.brand:id,name',
-                'generator.engine.capacity:id,value',
-                'generator.mtn_site:id,name,code',
-                'completedTasks:id,report_id,description',
-                'technicianNotes:id,report_id,note',
-                'replacedParts.part:id,name,code'
-            ])
-            ->get();
-
-        return $reports->map(function ($report) {
-            $last = $this->model
-                ->where('generator_id', $report->generator_id)
-                ->where('id', '<', $report->id)
-                ->where('visit_type', 'routine')
-                ->orderBy('id', 'desc')
-                ->select('visit_date', 'visit_time', 'current_reading')
-                ->first();
-
-            $report->last_routine_visit = $last
-                ? [
-                    'visit_date' => $last->visit_date,
-                    'visit_time' => $last->visit_time,
-                    'current_reading' => $last->current_reading,
-                ]
-                : null;
-
-            return $report;
-        });
-    }
-
     /**
      * Create new report
      */

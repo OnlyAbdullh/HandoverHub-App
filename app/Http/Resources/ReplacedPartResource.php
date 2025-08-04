@@ -28,8 +28,6 @@ class ReplacedPartResource extends JsonResource
                 ? Carbon::parse(Arr::get($this->last_part_usage, 'visit_date'))->format('Y-m-d')
                 : null,
             'generator_hours_at_last_replacement' => Arr::get($this->last_part_usage, 'current_reading'),
-
-
         ];
     }
 }

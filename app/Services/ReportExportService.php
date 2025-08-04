@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\ReportRepository;
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportsExport;
 use Illuminate\Support\Collection;
@@ -59,6 +61,7 @@ class ReportExportService
      * @param Collection $reports
      * @return array
      */
+
     protected function transformReportsForExcel(Collection $reports): array
     {
         $rows = [];
@@ -84,25 +87,36 @@ class ReportExportService
 
             if ($report->replacedParts->isEmpty()) {
                 $rows[] = $base + [
-                        'replaced_part' => '',
-                        'qty'           => '',
-                        'faulty_qty'    => '',
+                        'replaced_part'                     => '',
+                        'qty'                               => '',
+                        'faulty_qty'                        => '',
+                        'last_replacement_date'             => '',
+                        'generator_hours_at_last_replacement' => '',
                     ];
             } else {
                 $first = $report->replacedParts->first();
+
                 $rows[] = $base + [
-                        'replaced_part' => "{$first->part->name} (Code: {$first->part->code})",
-                        'qty'           => $first->quantity,
-                        'faulty_qty'    => $first->faulty_quantity,
+                        'replaced_part'                     => "{$first->part->name} (Code: {$first->part->code})",
+                        'qty'                               => $first->quantity,
+                        'faulty_qty'                        => $first->faulty_quantity,
+                        'last_replacement_date'             => $first->last_part_usage
+                            ? Carbon::parse(Arr::get($first->last_part_usage, 'visit_date'))->format('Y-m-d')
+                            : '',
+                        'generator_hours_at_last_replacement' => Arr::get($first->last_part_usage, 'current_reading') ?? '',
                     ];
 
                 $emptyBase = array_fill_keys(array_keys($base), '');
 
                 foreach ($report->replacedParts->slice(1) as $rp) {
                     $rows[] = $emptyBase + [
-                            'replaced_part' => "{$rp->part->name} (Code: {$rp->part->code})",
-                            'qty'           => $rp->quantity,
-                            'faulty_qty'    => $rp->faulty_quantity,
+                            'replaced_part'                     => "{$rp->part->name} (Code: {$rp->part->code})",
+                            'qty'                               => $rp->quantity,
+                            'faulty_qty'                        => $rp->faulty_quantity,
+                            'last_replacement_date'             => $rp->last_part_usage
+                                ? Carbon::parse(Arr::get($rp->last_part_usage, 'visit_date'))->format('Y-m-d')
+                                : '',
+                            'generator_hours_at_last_replacement' => Arr::get($rp->last_part_usage, 'current_reading') ?? '',
                         ];
                 }
             }
@@ -110,6 +124,7 @@ class ReportExportService
 
         return $rows;
     }
+
 
 
 

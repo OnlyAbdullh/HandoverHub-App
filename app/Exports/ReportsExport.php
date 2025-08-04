@@ -46,6 +46,9 @@ class ReportsExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
             'Replaced Part',
             'Qty',
             'Faulty_Qty',
+            'last replacement date',
+            'generator hours at last replacement',
+
         ];
     }
 
