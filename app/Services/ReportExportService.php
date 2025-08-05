@@ -78,7 +78,7 @@ class ReportExportService
                 'engine_capacity'              => $report->generator->engine->capacity->value ?? '',
                 'visit_type'                   => $report->visit_type,
                 'visit_reason'                 => $report->visit_reason,
-                'last_meter'                   => $report->last_meter,
+                'current_reading'              => $report->current_reading,
                 'last_routine_visit_date'      => $report->last_routine_visit['visit_date'] ?? '',
                 'last_routine_current_reading' => $report->last_routine_visit['current_reading'] ?? '',
                 'technical_status'             => $report->technical_status,

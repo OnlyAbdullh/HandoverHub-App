@@ -350,9 +350,9 @@ class ReportService
         }
 
         $pivotData = [
-            'quantity' => (int)$quantity,
+            'quantity' => (double)$quantity,
             'faulty_quantity' => isset($data['faulty_quantity'])
-                ? (int)$data['faulty_quantity']
+                ? (double)$data['faulty_quantity']
                 : 0,
             'notes' => $data['notes'] ?? null,
             'is_faulty' => isset($data['is_faulty']) && $data['is_faulty'],

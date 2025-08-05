@@ -38,7 +38,7 @@ class ReportsExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSi
             'Engine Capacity',
             'Visit Type',
             'Visit Reason',
-            'Last Meter',
+            'current reading',
             'Last Routine Visit Date',
             'Last Routine Current Reading',
             'Technical Status',
